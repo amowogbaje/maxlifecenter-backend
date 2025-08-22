@@ -118,25 +118,6 @@ class DashboardController extends Controller
         return view('admin.updates', compact('metricCards','updates'));
     }
 
-    public function uploads()
-    {
-        $metricCards = [
-            ['title' => '600,000', 'subtitle' => 'Rewards Pending Approval', 'bgColor' => 'bg-green-600'],
-            ['title' => '393', 'subtitle' => 'Total Rewards Sent',  'bgColor' => 'bg-green-600'],
-        ];
-
-
-        $updates = [
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Oloye'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Balogun'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Kabiyesi'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Eleniyan'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Oloye'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Balogun'],
-        ];
-
-        return view('admin.updates', compact('metricCards','updates'));
-    }
 
     public function profile()
     {
@@ -145,6 +126,58 @@ class DashboardController extends Controller
 
     public function settings()
     {
-        return view('admin.settings');
+        return view('admin.setting');
+    }
+
+    public function uploads()
+    {
+        // Data for the four statistics cards at the top
+        $statsData = [
+            ['id' => 1, 'title' => "Post Pending Approval/Point", 'value' => "120", 'bgColor' => "bg-dashboard-purple"],
+            ['id' => 2, 'title' => "Published Posts", 'value' => "393", 'bgColor' => "bg-dashboard-green"],
+            ['id' => 3, 'title' => "Total Allocated Points", 'value' => "600,000", 'bgColor' => "bg-dashboard-green"],
+            ['id' => 4, 'title' => "Uploads", 'value' => "69,088", 'bgColor' => "bg-dashboard-green"],
+        ];
+
+        // Data for the grid of upload cards
+        $uploadCards = [
+            [
+                'id' => 1,
+                'user' => ['name' => "Evan Yates", 'email' => "evanyates@gmail.com", 'avatar' => "https://api.builder.io/api/v1/image/assets/TEMP/0fcfed01b329364edf2a0ca0848dd16a0a5886dc?width=100"],
+                'image' => "https://api.builder.io/api/v1/image/assets/TEMP/0fcfed01b329364edf2a0ca0848dd16a0a5886dc?width=300",
+                'impressions' => "12k", 'bonusPoints' => 25, 'status' => "Approved",
+                'content' => "hortinigeria_program We all love our stews and jollof, but have you ever wondered why sometimes a basket of tomatoes in Nigeria costs next to...",
+                'hasVideo' => false, 'hasCarousel' => false,
+            ],
+            [
+                'id' => 2,
+                'user' => ['name' => "Evan Yates", 'email' => "evates@gmail.com", 'avatar' => "https://api.builder.io/api/v1/image/assets/TEMP/f2a594ecbf08800879bf571fa87f3490f4e75896?width=100"],
+                'image' => "https://api.builder.io/api/v1/image/assets/TEMP/f2a594ecbf08800879bf571fa87f3490f4e75896?width=300",
+                'impressions' => "12k", 'bonusPoints' => 25, 'status' => "Approved",
+                'content' => "hortinigeria_program We all love our stews and jollof, but have you ever wondered why sometimes a basket of tomatoes in Nigeria costs next to...",
+                'hasVideo' => true, 'hasCarousel' => false,
+            ],
+            [
+                'id' => 4,
+                'user' => ['name' => "Evan Yates", 'email' => "enyates@gmail.com", 'avatar' => "https://api.builder.io/api/v1/image/assets/TEMP/98a432b31fe6c3070dfb68bab5b3d7b53437fa41?width=100"],
+                'image' => "https://api.builder.io/api/v1/image/assets/TEMP/98a432b31fe6c3070dfb68bab5b3d7b53437fa41?width=300",
+                'impressions' => "12k", 'bonusPoints' => 25, 'status' => "Approved",
+                'content' => "hortinigeria_program We all love our stews and jollof, but have you ever wondered why sometimes a basket of tomatoes in Nigeria costs next to...",
+                'hasVideo' => false, 'hasCarousel' => true,
+            ],
+            // Add other card data here...
+        ];
+
+        // Data for the user requests table
+        $tableData = [
+            ['id' => 1, 'sn' => '01', 'name' => 'Sodiq Tajudeen', 'postId' => 'FY25278U83', 'bonusPoint' => 'Nil', 'dateCreated' => '20-02-2025 | 09:33pm', 'status' => 'pending'],
+            ['id' => 2, 'sn' => '02', 'name' => 'Sodiq Tajudeen', 'postId' => 'FY25278U83', 'bonusPoint' => 'Nil', 'dateCreated' => '20-02-2025 | 09:33pm', 'status' => 'approved'],
+            ['id' => 3, 'sn' => '03', 'name' => 'Sodiq Tajudeen', 'postId' => 'FY25278U83', 'bonusPoint' => 'Nil', 'dateCreated' => '20-02-2025 | 09:33pm', 'status' => 'pending'],
+            ['id' => 4, 'sn' => '04', 'name' => 'Sodiq Tajudeen', 'postId' => 'FY25278U83', 'bonusPoint' => '89', 'dateCreated' => '20-02-2025 | 09:33pm', 'status' => 'approved'],
+            ['id' => 5, 'sn' => '05', 'name' => 'Sodiq Tajudeen', 'postId' => 'FY25278U83', 'bonusPoint' => 'Nil', 'dateCreated' => '20-02-2025 | 09:33pm', 'status' => 'declined'],
+            ['id' => 6, 'sn' => '06', 'name' => 'Sodiq Tajudeen', 'postId' => 'FY25278U83', 'bonusPoint' => 'Nil', 'dateCreated' => '20-02-2025 | 09:33pm', 'status' => 'pending'],
+        ];
+
+        return view('dashboard.index', compact('statsData', 'uploadCards', 'tableData'));
     }
 }
