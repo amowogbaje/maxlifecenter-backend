@@ -1,7 +1,7 @@
 @extends('admin.layouts.app') {{-- Or your master layout file --}}
 
 @section('content')
-<main class="p-4 lg:p-8" x-data="dashboard()">
+<main class="p-4 lg:p-8" x-data="uploads()">
     <div class="mb-6 lg:mb-8">
         {{-- You can get the authenticated user's name dynamically --}}
         <h1 class="text-xl lg:text-2xl font-bold text-dashboard-dark mb-2">Hi, {{ Auth::user()->name ?? 'Kemi Wale' }}</h1>
@@ -53,13 +53,13 @@
         <div x-show="activeTab === 'uploads'" style="display: none;" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 lg:gap-4">
             @foreach($uploadCards as $card)
                 <div class="upload-card relative">
-                    @include('dashboard.partials.upload-card', ['card' => $card])
+                    @include('admin.partials.upload-card', ['card' => $card])
                 </div>
             @endforeach
         </div>
 
         <div x-show="activeTab === 'requests'" style="display: none;" class="data-table shadow-sm">
-            @include('dashboard.partials.requests-table', ['tableData' => $tableData])
+            @include('admin.partials.requests-table', ['tableData' => $tableData])
         </div>
     </div>
 </main>
@@ -67,7 +67,7 @@
 
 @push('scripts')
 <script>
-    function dashboard() {
+    function uploads() {
         return {
             activeTab: 'uploads', // Default active tab
             todayDate: '',

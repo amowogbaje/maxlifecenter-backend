@@ -178,6 +178,6 @@ class DashboardController extends Controller
             ['id' => 6, 'sn' => '06', 'name' => 'Sodiq Tajudeen', 'postId' => 'FY25278U83', 'bonusPoint' => 'Nil', 'dateCreated' => '20-02-2025 | 09:33pm', 'status' => 'pending'],
         ];
 
-        return view('dashboard.index', compact('statsData', 'uploadCards', 'tableData'));
+        return view('admin.uploads', compact('statsData', 'uploadCards', 'tableData'));
     }
 }
