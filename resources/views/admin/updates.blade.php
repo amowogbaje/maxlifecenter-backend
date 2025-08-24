@@ -38,59 +38,68 @@
         @endforeach
     </div>
 
-    
+
 
     <div class="space-y-4">
-        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-            <h2 class="text-xl lg:text-2xl font-bold text-foreground">Updates</h2>
-            <div class="flex items-center gap-4 w-full lg:w-auto">
-                <div class="relative flex-1 lg:w-[412px]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-dark">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.3-4.3" /></svg>
-                    <input type="text" placeholder="Search" class="w-full h-12 pl-14 pr-4 bg-white rounded-[14px] shadow-sm border-0 text-text-gray" />
-                </div>
-                <!-- Filter Dropdown -->
-                <div x-data="{ open: false }" class="relative inline-block text-left">
-                    <!-- Filter Button -->
-                    <button @click="open = !open" class="w-12 h-12 bg-white rounded-[14px] shadow-sm flex items-center justify-center 
+        <div class="mb-6 lg:mb-8 overflow-x-auto">
+            <div class="bg-blue-100 rounded-3xl p-0 inline-flex min-w-max">
+                <a href="{{ route('admin.updates') }}" class="bg-yellow-400 text-dashboard-white px-4 lg:px-8 py-2 lg:py-3 rounded-2xl font-bold text-sm lg:text-base transition-all whitespace-nowrap">
+                    Updates
+                </a>
+                <a href="#" class="text-dark hover:bg-dashboard-white/50 px-4 lg:px-8 py-2 lg:py-3 rounded-2xl font-bold text-sm lg:text-base transition-all whitespace-nowrap">
+                    Campaigns
+                </a>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center gap-4 w-full lg:w-auto">
+            <div class="relative my-3 flex lg:w-[412px]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-dark">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input type="text" placeholder="Search" class="w-full h-12 pl-14 pr-4 bg-white rounded-[14px] shadow-sm border-0 text-text-gray" />
+            </div>
+            <!-- Filter Dropdown -->
+            <div x-data="{ open: false }" class="relative inline-block text-left">
+                <!-- Filter Button -->
+                <button @click="open = !open" class="w-12 h-12 bg-white rounded-[14px] shadow-sm flex items-center justify-center 
                hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 transition" aria-label="Open filters">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                        </svg>
-                    </button>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                </button>
 
-                    <!-- Dropdown Panel -->
-                    <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                        <div class="p-4 space-y-3">
-                            <h3 class="text-sm font-semibold text-gray-700">Filters</h3>
+                <!-- Dropdown Panel -->
+                <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-sm font-semibold text-gray-700">Filters</h3>
 
-                            <!-- Category Filter -->
-                            <label class="block">
-                                <span class="text-xs text-gray-500">Category</span>
-                                <select class="w-full mt-1 border rounded-md p-2 text-sm">
-                                    <option>All</option>
-                                    <option>Active</option>
-                                    <option>Completed</option>
-                                </select>
-                            </label>
+                        <!-- Category Filter -->
+                        <label class="block">
+                            <span class="text-xs text-gray-500">Category</span>
+                            <select class="w-full mt-1 border rounded-md p-2 text-sm">
+                                <option>All</option>
+                                <option>Active</option>
+                                <option>Completed</option>
+                            </select>
+                        </label>
 
-                            <!-- Date Filter -->
-                            <label class="block">
-                                <span class="text-xs text-gray-500">Date</span>
-                                <input type="date" class="w-full mt-1 border rounded-md p-2 text-sm" />
-                            </label>
+                        <!-- Date Filter -->
+                        <label class="block">
+                            <span class="text-xs text-gray-500">Date</span>
+                            <input type="date" class="w-full mt-1 border rounded-md p-2 text-sm" />
+                        </label>
 
-                            <!-- Actions -->
-                            <div class="flex justify-end space-x-2 pt-2">
-                                <button @click="open = false" class="text-xs text-gray-600 hover:text-gray-900">Reset</button>
-                                <button class="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700">Apply</button>
-                            </div>
+                        <!-- Actions -->
+                        <div class="flex justify-end space-x-2 pt-2">
+                            <button @click="open = false" class="text-xs text-gray-600 hover:text-gray-900">Reset</button>
+                            <button class="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700">Apply</button>
                         </div>
                     </div>
                 </div>
-
             </div>
+
         </div>
 
         <div class="space-y-3">
