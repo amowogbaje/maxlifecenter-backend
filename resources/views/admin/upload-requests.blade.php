@@ -28,13 +28,15 @@
     </div>
 
     <div class="mb-6 lg:mb-8 overflow-x-auto">
+    
         <div class="bg-dashboard-light-1 rounded-3xl p-2 inline-flex min-w-max">
-            <a href="{{ route('admin.uploads') }}" class="bg-yellow-400 text-dashboard-white px-4 lg:px-8 py-2 lg:py-3 rounded-2xl font-bold text-sm lg:text-base transition-all whitespace-nowrap">
+            <a href="{{ route('admin.uploads') }}" class="text-dark hover:bg-dashboard-white/50 px-4 lg:px-8 py-2 lg:py-3 rounded-2xl font-bold text-sm lg:text-base transition-all whitespace-nowrap">
                 Uploads
             </a>
-            <a href="{{ route('admin.upload-requests') }}" class="text-dark hover:bg-dashboard-white/50 px-4 lg:px-8 py-2 lg:py-3 rounded-2xl font-bold text-sm lg:text-base transition-all whitespace-nowrap">
+            <a href="{{ route('admin.upload-requests') }}" class="bg-yellow-400 text-dashboard-white px-4 lg:px-8 py-2 lg:py-3 rounded-2xl font-bold text-sm lg:text-base transition-all whitespace-nowrap">
                 User Upload Request
             </a>
+            
         </div>
     </div>
 
@@ -89,12 +91,8 @@
     </div>
 
     <div>
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 lg:gap-4">
-            @foreach($uploadCards as $card)
-            <div class="upload-card relative bg-white rounded-3xl p-4 lg:p-6">
-                @include('admin.partials.upload-card', ['card' => $card])
-            </div>
-            @endforeach
+        <div class="data-table shadow-sm">
+            @include('admin.partials.requests-table', ['tableData' => $tableData])
         </div>
     </div>
 </main>

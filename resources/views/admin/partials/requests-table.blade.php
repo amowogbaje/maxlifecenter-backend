@@ -1,7 +1,7 @@
 <div class="overflow-x-auto">
     <table class="w-full min-w-[1024px]">
         <thead>
-            <tr class="table-header rounded-t-lg">
+            <tr class="table-header rounded-t-lg h-16">
                 <th class="table-cell text-left font-bold text-dashboard-primary w-16">SN</th>
                 <th class="table-cell text-left font-bold text-dashboard-primary w-48">Name</th>
                 <th class="table-cell text-left font-bold text-dashboard-primary w-40">Post ID</th>
@@ -13,29 +13,27 @@
         </thead>
         <tbody>
             @forelse($tableData as $row)
-                <tr class="table-row">
+                <tr class="table-row border-t h-16">
                     <td class="table-cell">{{ $row['sn'] }}</td>
                     <td class="table-cell">{{ $row['name'] }}</td>
                     <td class="table-cell">{{ $row['postId'] }}</td>
                     <td class="table-cell text-center">{{ $row['bonusPoint'] }}</td>
                     <td class="table-cell text-center">{{ $row['dateCreated'] }}</td>
                     <td class="table-cell text-center">
-                        <span class="
+                        <span class="p-3 px-4 rounded-full text-xs font-semibold text-white
                             @switch($row['status'])
-                                @case('pending') status-pending @break
-                                @case('approved') status-approved @break
-                                @case('declined') status-declined @break
+                                @case('pending') bg-yellow-400 @break
+                                @case('approved') bg-green-400 @break
+                                @case('declined') bg-red-400 @break
                             @endswitch
                         ">
                             {{ ucfirst($row['status']) }}
                         </span>
                     </td>
                     <td class="table-cell">
-                        <div class="flex flex-wrap gap-4 text-sm">
-                            <button class="action-button action-danger">Change Status</button>
-                            <button class="action-button action-primary">View Upload</button>
-                            <button class="action-button action-primary">View Profile</button>
-                            <button class="action-button action-danger">Delete</button>
+                        <div class="flex flex-wrap text-sm">
+                            <button class="text-red-500">Change Status</button>
+                            <button class="text-green-500">View Details</button>
                         </div>
                     </td>
                 </tr>

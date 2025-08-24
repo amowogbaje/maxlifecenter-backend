@@ -12,6 +12,7 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/purchases', [DashboardController::class, 'purchases'])->name('purchases');
     Route::get('/rewards', [DashboardController::class, 'rewards'])->name('rewards');
     Route::get('/uploads', [DashboardController::class, 'uploads'])->name('uploads');
+    Route::get('/upload-requests', [DashboardController::class, 'uploadRequests'])->name('upload-requests');
     Route::get('/users', [DashboardController::class, 'users'])->name('users');
     Route::get('/updates', [DashboardController::class, 'updates'])->name('updates');
     Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
