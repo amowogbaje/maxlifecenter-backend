@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -29,7 +29,7 @@ class DashboardController extends Controller
             ['type' => 'Purchase', 'amount' => '₦230,0032', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => '484UEHSW22', 'status' => 'Pending', 'statusColor' => 'bg-warning'],
         ];
 
-        return view('admin.dashboard', compact('metricCards', 'activityLogs'));
+        return view('user.dashboard', compact('metricCards', 'activityLogs'));
     }
 
     public function purchases()
@@ -58,7 +58,7 @@ class DashboardController extends Controller
             ['amount' => '₦555,035', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => '484UEHSW22', 'status' => 'Pending', 'bonus_points' => 25, 'statusColor' => 'bg-warning'],
         ];
 
-        return view('admin.purchase', compact('metricCards', 'purchases'));
+        return view('user.purchase', compact('metricCards', 'purchases'));
     }
 
     public function showPurchase($id) {
@@ -74,7 +74,7 @@ class DashboardController extends Controller
             ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
             ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
         ];
-        return view('admin.purchase-details', compact('purchase', 'purchaseItems'));
+        return view('user.purchase-details', compact('purchase', 'purchaseItems'));
     }
 
     public function rewards()
@@ -93,7 +93,7 @@ class DashboardController extends Controller
             ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
         ];
 
-        return view('admin.reward', compact('metricCards', 'rewards'));
+        return view('user.reward', compact('metricCards', 'rewards'));
     }
 
     public function users()
@@ -110,7 +110,7 @@ class DashboardController extends Controller
             ['name' => 'Eves Yate', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'tier' => 'Balogun'],
         ];
 
-        return view('admin.user', compact('users'));
+        return view('user.user', compact('users'));
     }
 
     public function updates()
@@ -131,18 +131,18 @@ class DashboardController extends Controller
             ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Balogun'],
         ];
 
-        return view('admin.updates', compact('metricCards','updates'));
+        return view('user.updates', compact('metricCards','updates'));
     }
 
 
     public function profile()
     {
-        return view('admin.profile');
+        return view('user.profile');
     }
 
     public function settings()
     {
-        return view('admin.setting');
+        return view('user.setting');
     }
 
     public function uploads()
@@ -194,7 +194,7 @@ class DashboardController extends Controller
             ['id' => 6, 'sn' => '06', 'name' => 'Sodiq Tajudeen', 'postId' => 'FY25278U83', 'bonusPoint' => 'Nil', 'dateCreated' => '20-02-2025 | 09:33pm', 'status' => 'pending'],
         ];
 
-        return view('admin.uploads', compact('statsData', 'uploadCards', 'tableData'));
+        return view('user.uploads', compact('statsData', 'uploadCards', 'tableData'));
     }
 
     public function uploadRequests()
@@ -245,6 +245,6 @@ class DashboardController extends Controller
             ['id' => 6, 'sn' => '06', 'name' => 'Sodiq Tajudeen', 'postId' => 'FY25278U83', 'bonusPoint' => 'Nil', 'dateCreated' => '20-02-2025 | 09:33pm', 'status' => 'pending'],
         ];
 
-        return view('admin.upload-requests', compact('statsData', 'uploadCards', 'tableData'));
+        return view('user.upload-requests', compact('statsData', 'uploadCards', 'tableData'));
     }
 }
