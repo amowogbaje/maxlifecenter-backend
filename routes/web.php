@@ -21,5 +21,6 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/updates', [DashboardController::class, 'updates'])->name('updates');
     Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
     Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
+    Route::get('/campaign', [DashboardController::class, 'settings'])->name('settings');
 
 });
