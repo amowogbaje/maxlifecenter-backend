@@ -121,7 +121,7 @@
                                 <polyline points="22,6 12,13 2,6"></polyline>
                             </svg>
                         </div>
-                        <input type="email" value="someone@yourmail.com" class="w-full h-12 pl-12 pr-4 rounded-[14px] border border-gray-300 bg-white text-gray-700 text-sm shadow-sm focus:outline-none focus:border-blue-500" />
+                        <input type="email" readonly value="someone@yourmail.com" class="w-full h-12 pl-12 pr-4 rounded-[14px] border border-gray-300 bg-white text-gray-700 text-sm shadow-sm focus:outline-none focus:border-blue-500" />
                     </div>
                 </div>
 
