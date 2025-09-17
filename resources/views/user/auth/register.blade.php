@@ -103,7 +103,7 @@
                     <div class="flex items-center justify-between w-full mb-3">
                         <h3 class="text-[15px] font-bold text-[#0A1629]">Eleniyan</h3>
                         <div class="w-[45px] h-[45px] rounded-full bg-[#E5F3DD] flex items-center justify-center">
-                            <img src="{{asset('images/icons/eleniyan.png')}}" alt="Eleniyan Icon" class="w-7 h-7" />
+                            <img src="{{asset('images/eleniyan.png')}}" alt="Eleniyan Icon" class="w-7 h-7" />
                         </div>
                     </div>
                     <p class="text-[10px] text-[#0A1629] opacity-70 text-center mb-4 leading-relaxed">

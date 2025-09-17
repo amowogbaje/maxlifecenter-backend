@@ -18,10 +18,40 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'bonus_point', 'password'
     ];
+
+    // Tier mapping (points => tier)
+    protected static array $tiers = [
+        0   => 'Eleniyan',
+        20  => 'Oloye',
+        30  => 'Kabiyesi',
+        40  => 'Balogun',
+        50  => 'Oba',
+        60  => 'Aare',
+        70  => 'Olori',
+        // Add more tiers as needed
+    ];
+
+    // Computed full name
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    // Computed tier
+    public function getTierAttribute(): string
+    {
+        $tier = 'Eleniyan'; // default
+        foreach (self::$tiers as $points => $name) {
+            if ($this->bonus_point >= $points) {
+                $tier = $name;
+            } else {
+                break;
+            }
+        }
+        return $tier;
+    }
 
     /**
      * The attributes that should be hidden for serialization.
