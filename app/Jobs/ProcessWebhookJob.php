@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use App\Models\WebhookLog;
 
 class ProcessWebhookJob
 {
@@ -18,6 +19,11 @@ class ProcessWebhookJob
     {
         $log = WebhookLog::find($this->logId);
         if (! $log) return;
+
+         if (($log->attempts ?? 0) >= 5) {
+            $log->update(['status' => 'permanent_failed']);
+            return;
+        }
 
         $log->update(['status' => 'processing']);
 
@@ -52,7 +58,12 @@ class ProcessWebhookJob
             $log->update(['status' => 'processed', 'response' => 'OK']);
         } catch (\Exception $e) {
             \Log::error('ProcessWebhookJob failed: ' . $e->getMessage(), ['log_id' => $this->logId]);
-            $log->update(['status' => 'failed', 'response' => $e->getMessage()]);
+            $log->update([
+                'status'   => 'failed',
+                'response' => $e->getMessage(),
+                'retry_at' => now()->addMinutes(5), // retry after 5 minutes
+                'attempts' => ($log->attempts ?? 0) + 1,
+            ]);
         }
     }
 

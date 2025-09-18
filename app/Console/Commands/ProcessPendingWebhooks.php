@@ -13,7 +13,16 @@ class ProcessPendingWebhooks extends Command
 
     public function handle()
     {
-        $pendingLogs = WebhookLog::where('status', 'pending')->limit(20)->get();
+        $pendingLogs = WebhookLog::where(function ($q) {
+            $q->where('status', 'pending')
+                ->orWhere(function ($q2) {
+                    $q2->where('status', 'failed')
+                        ->where('retry_at', '<=', now());
+                });
+        })
+            ->orderBy('id')
+            ->limit(20)
+            ->get();
 
         if ($pendingLogs->isEmpty()) {
             $this->info('No pending webhooks.');

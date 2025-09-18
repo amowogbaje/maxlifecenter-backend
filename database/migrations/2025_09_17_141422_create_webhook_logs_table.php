@@ -18,6 +18,8 @@ class CreateWebhookLogsTable extends Migration
             $table->json('payload')->nullable();
             $table->string('status')->default('pending');     // pending/processing/processed/failed
             $table->text('response')->nullable();
+            $table->unsignedInteger('attempts')->default(0);
+            $table->timestamp('retry_at')->nullable();
             $table->timestamps();
 
             $table->index(['topic']);
