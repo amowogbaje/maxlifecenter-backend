@@ -23,7 +23,7 @@
 </head>
 <body 
   class="bg-background"
-  x-data="{ showInfoBanner: true, sidebarOpen: false, profileDropdownOpen: false }"
+  x-data="{ showInfoBanner: false, sidebarOpen: false, profileDropdownOpen: false }"
 >
     <div class="min-h-screen relative">
         <div 

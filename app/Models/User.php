@@ -18,7 +18,8 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'bonus_point', 'password'
+        'id', 'user_id', 'woo_id','first_name', 'last_name', 'email', 'phone', 'gender', 'bonus_point', 'password',
+        'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country'
     ];
 
     // Tier mapping (points => tier)
@@ -39,6 +40,8 @@ class User extends Authenticatable
         return "{$this->first_name} {$this->last_name}";
     }
 
+
+
     // Computed tier
     public function getTierAttribute(): string
     {
@@ -51,6 +54,19 @@ class User extends Authenticatable
             }
         }
         return $tier;
+    }
+
+    public function getNextTierAttribute(): ?string
+    {
+        $current = $this->tier; // uses accessor above
+        $tiers   = array_values(self::$tiers); // reindex: 0,1,2,...
+        $index   = array_search($current, $tiers, true);
+
+        if ($index !== false && isset($tiers[$index + 1])) {
+            return $tiers[$index + 1]; // the next tier name
+        }
+
+        return null; // already at last tier
     }
 
     /**
@@ -74,5 +90,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

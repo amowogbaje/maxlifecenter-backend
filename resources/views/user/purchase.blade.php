@@ -82,32 +82,43 @@
 
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[11px] sm:text-sm text-text-light">Purchase ID</span>
-                                <span class="text-xs sm:text-base text-text-dark truncate" title="{{ $purchase['id'] }}">{{ $purchase['id'] }}</span>
+                                <span class="text-xs sm:text-base text-text-dark truncate" title="{{ $purchase->woo_id }}">{{ $purchase->woo_id }}</span>
                             </div>
 
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[11px] sm:text-sm text-text-light">Amount</span>
-                                <span class="text-xs sm:text-base font-bold text-text-dark truncate" title="{{ $purchase['amount'] }}">{{ $purchase['amount'] }}</span>
+                                <span class="text-xs sm:text-base font-bold text-text-dark truncate" title="{{ $purchase->total }}">{{ '₦' . number_format($purchase->total, 2) }}</span>
                             </div>
 
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[11px] sm:text-sm text-text-light">Date</span>
-                                <span class="text-[10px] sm:text-xs lg:text-base text-text-dark truncate" title="{{ $purchase['date'] }}">{{ $purchase['date'] }}</span>
+                                <span class="text-[10px] sm:text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date  }}">{{ \Carbon\Carbon::parse($purchase['date'])->format('M d, Y H:i a') }}</span>
                             </div>
 
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[11px] sm:text-sm text-text-light">Points</span>
                                 <span class="text-xs sm:text-base font-bold text-text-dark truncate">
                                     <img src="{{ asset('images/icons/diamond.svg') }}" alt="Bonus Points" class="inline-block w-3 h-3 sm:w-4 sm:h-4 mr-1">
-                                    {{ $purchase['bonus_points'] }}
+                                    {{ $purchase->bonus_point }}
                                 </span>
                             </div>
 
-                            @if(!empty($purchase['status']))
+                            @if(!empty($purchase->reward_status))
                             <div class="flex flex-col min-w-0 col-span-2 sm:col-span-1">
                                 <span class="text-[11px] sm:text-sm text-text-light">Status</span>
-                                <div class="rounded-md px-2 py-[2px] sm:px-3 sm:py-1 w-fit {{ $purchase['statusColor'] }}">
-                                    <span class="text-[10px] sm:text-xs font-bold text-white truncate block">{{ $purchase['status'] }}</span>
+                                @php
+                                $statusColors = [
+                                'pending' => 'bg-warning',
+                                'approved' => 'bg-success',
+                                'rejected' => 'bg-danger',
+                                ];
+                                $statusColor = $statusColors[$purchase->reward_status] ?? 'bg-gray-500';
+                                @endphp
+
+                                <div class="rounded-md px-2 py-[2px] sm:px-3 sm:py-1 w-fit {{ $statusColor }}">
+                                    <span class="text-[10px] sm:text-xs font-bold text-white truncate block">
+                                        {{ ucfirst($purchase->reward_status) }}
+                                    </span>
                                 </div>
                             </div>
                             @endif
@@ -116,28 +127,48 @@
                     </div>
 
                     <!-- Action -->
-                    <div class="hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" sm:width="20" sm:height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="1" />
-                            <circle cx="12" cy="5" r="1" />
-                            <circle cx="12" cy="19" r="1" />
+                    <a href="{{ route('purchases.show', ['id' => $purchase->id])}}" class="hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                    </div>
+                    </a>
                 </div>
             </div>
             @endforeach
 
         </div>
 
-        <div class="flex justify-center lg:justify-end">
+        <div class="flex justify-center lg:justify-end mt-4">
             <div class="bg-white rounded-[14px] shadow-sm px-5 py-3 flex items-center gap-4">
-                <span class="text-base text-text-dark">1-8 of 28</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gray-400">
+                <span class="text-base text-text-dark">
+                    {{ $purchases->firstItem() }}-{{ $purchases->lastItem() }} of {{ $purchases->total() }}
+                </span>
+
+                {{-- Previous Page --}}
+                @if($purchases->onFirstPage())
+                <svg class="w-6 h-6 text-gray-300">
                     <path d="m15 18-6-6 6-6" /></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-500">
+                @else
+                <a href="{{ $purchases->previousPageUrl() }}">
+                    <svg class="w-6 h-6 text-blue-500">
+                        <path d="m15 18-6-6 6-6" /></svg>
+                </a>
+                @endif
+
+                {{-- Next Page --}}
+                @if($purchases->hasMorePages())
+                <a href="{{ $purchases->nextPageUrl() }}">
+                    <svg class="w-6 h-6 text-blue-500">
+                        <path d="m9 18 6-6-6-6" /></svg>
+                </a>
+                @else
+                <svg class="w-6 h-6 text-gray-300">
                     <path d="m9 18 6-6-6-6" /></svg>
+                @endif
             </div>
         </div>
+
     </div>
 </div>
 @endsection

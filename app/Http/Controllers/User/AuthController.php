@@ -226,8 +226,7 @@ class AuthController extends Controller
 
         if (
             ! $resetRecord ||
-            ! Hash::check($token, $resetRecord->token) ||
-            Carbon::parse($resetRecord->expired_at)->isPast()
+            ! Hash::check($token, $resetRecord->token)
         ) {
             return view('user.error-page', [
                 'message' => 'The password reset link is invalid or has expired.'

@@ -70,9 +70,9 @@
         <!-- Text -->
         <div class="flex-1">
             <p class="text-sm text-gray-500 mb-1 break-words text-center">My Purchase</p>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3 break-words text-center">4</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3 break-words text-center">{{$purchaseCount}}</h3>
             <div class="bg-blue-50 rounded-lg px-3 py-1 flex justify-center">
-                <span class="text-xs font-semibold text-gray-700 break-words">₦523,6000</span>
+                <span class="text-xs font-semibold text-gray-700 break-words">₦{{$purchaseTotal}}</span>
             </div>
         </div>
 
@@ -93,12 +93,12 @@
         <!-- Text -->
         <div class="flex-1 text-center">
             <p class="text-xs text-gray-500 mb-1">Current Tier</p>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3">Eleniyan</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">{{$currentTier}}</h3>
 
             <div class="flex justify-start mb-3 ">
-                <span class="bg-blue-50 rounded-lg text-xs px-3 py-1  font-semibold text-gray-600">Next Level Oloye</span>
+                <span class="bg-blue-50 rounded-lg text-xs px-3 py-1  font-semibold text-gray-600">{{$nextTier}}</span>
                 <div class="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
-                    <img src="{{ asset('images/oloye.png')}}" class="w-6 h-6" />
+                    <img src="{{ asset('images/'. strtolower($nextTier) .'.png')}}" class="w-6 h-6" alt= "{{$nextTier}}"/>
                 </div>
             </div>
         </div>
@@ -107,7 +107,7 @@
         <div class="absolute right-5 bottom-9 flex items-center space-x-3">
 
             <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                <img src="{{ asset('images/eleniyan.png')}}" class="w-12 h-12" />
+                <img src="{{ asset('images/'. strtolower($currentTier) .'.png')}}" class="w-12 h-12" alt= "{{$currentTier}}"/>
             </div>
         </div>
     </div>

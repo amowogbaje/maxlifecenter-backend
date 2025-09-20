@@ -14,10 +14,6 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->count(30)->create();
-        User::factory()->count(20)->create([
-            'password' => null
-        ]);
 
         // Example fixed user
         User::create([
