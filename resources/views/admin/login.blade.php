@@ -1,8 +1,6 @@
 @extends('admin.layouts.auth')
+
 @section('content')
-
-
-<!-- Main Content -->
 <div class="flex-1 flex items-center justify-center pt-[92px] px-5 py-10">
     <div class="w-full max-w-[900px] bg-white rounded-2xl overflow-hidden shadow-xl flex flex-col lg:flex-row">
 
@@ -22,7 +20,9 @@
                 </div>
 
                 <!-- Form -->
-                <form action="#" method="POST" class="space-y-6">
+                <form action="{{ route('admin.login.handle') }}" method="POST" class="space-y-6">
+                    @csrf
+
                     <!-- Email Field -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
@@ -30,8 +30,21 @@
                             <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                                 <img src="{{ asset('images/icons/User.svg') }}" alt="Login Icon" class="w-6 h-6" />
                             </div>
-                            <input type="email" placeholder="someone@yourmail.com" class="w-full pl-12 pr-3 py-3 border border-gray-300 rounded-lg text-sm text-gray-900 bg-white outline-none transition-colors focus:border-gray-400 focus:ring-0" required />
+                            <input 
+                                type="email" 
+                                name="email" 
+                                value="{{ old('email') }}"
+                                placeholder="someone@yourmail.com" 
+                                class="w-full pl-12 pr-3 py-3 border 
+                                       @error('email') border-red-500 @else border-gray-300 @enderror 
+                                       rounded-lg text-sm text-gray-900 bg-white outline-none transition-colors 
+                                       focus:border-gray-400 focus:ring-0" 
+                                required 
+                            />
                         </div>
+                        @error('email')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Password Field -->
@@ -41,12 +54,29 @@
                             <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                                 <img src="{{ asset('images/icons/Password.svg') }}" alt="Login Icon" class="w-6 h-6" />
                             </div>
-                            <input type="password" placeholder="••••••••" class="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg text-sm text-gray-900 bg-white outline-none transition-colors focus:border-gray-400 focus:ring-0" required />
+                            <input 
+                                type="password" 
+                                name="password"
+                                placeholder="••••••••" 
+                                class="w-full pl-12 pr-12 py-3 border 
+                                       @error('password') border-red-500 @else border-gray-300 @enderror 
+                                       rounded-lg text-sm text-gray-900 bg-white outline-none transition-colors 
+                                       focus:border-gray-400 focus:ring-0" 
+                                required 
+                            />
                             <button type="button" onclick="togglePassword(this)" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                                 <i class="ti ti-eye text-xl"></i>
                             </button>
                         </div>
+                        @error('password')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
+
+                    <!-- Global Error -->
+                    @if(session('error'))
+                        <div class="text-sm text-red-600">{{ session('error') }}</div>
+                    @endif
 
                     <!-- Login Button -->
                     <button type="submit" class="w-full bg-black text-white border-none rounded-lg py-[14px] px-4 text-base font-medium cursor-pointer flex items-center justify-center gap-2 transition-all hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
@@ -79,6 +109,5 @@
             icon.classList.add("ti-eye");
         }
     }
-
 </script>
 @endsection

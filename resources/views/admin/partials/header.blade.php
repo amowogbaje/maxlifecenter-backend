@@ -13,8 +13,8 @@
         <button @click="profileDropdownOpen = !profileDropdownOpen" class="flex items-center gap-3 lg:gap-5 w-full lg:w-auto justify-between lg:justify-end hover:bg-gray-50 p-2 rounded-lg transition-colors">
             <div class="w-[50px] h-[50px] bg-gray-300 rounded-full border-2 border-white"></div>
             <div class="flex flex-col flex-1 lg:flex-initial min-w-0 text-left">
-                <span class="font-bold text-base text-text-dark truncate">Kemi Wale</span>
-                <span class="text-sm text-text-light truncate">kemiwale@gmail.com</span>
+                <span class="font-bold text-base text-text-dark truncate">{{ auth('admin')->user()->full_name}}</span>
+                <span class="text-sm text-text-light truncate">{{ auth('admin')->user()->email}}</span>
             </div>
             <div class="w-7 h-7 bg-purple/20 rounded-full flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 transition-transform duration-200" :class="profileDropdownOpen ? 'rotate-180' : ''"><path d="m6 9 6 6 6-6"/></svg>
@@ -28,8 +28,8 @@
             style="display: none;"
         >
             <div class="px-4 py-3 border-b border-gray-100">
-                <p class="text-sm font-medium text-text-dark">Kemi Wale</p>
-                <p class="text-xs text-text-light truncate">kemiwale@gmail.com</p>
+                <p class="text-sm font-medium text-text-dark">{{ auth('admin')->user()->full_name}}</p>
+                <p class="text-xs text-text-light truncate">{{ auth('admin')->user()->email}}</p>
             </div>
             <div class="py-1">
                 <a href="#" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-text-dark hover:bg-gray-50 transition-colors">
@@ -42,10 +42,17 @@
                 </a>
             </div>
             <div class="border-t border-gray-100 py-1">
-                <a href="#" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                    <span>Log out</span>
-                </a>
+                <form method="POST" action="{{ route('admin.logout') }}" class="w-full">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" x2="9" y1="12" y2="12" />
+                        </svg>
+                        <span>Log out</span>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

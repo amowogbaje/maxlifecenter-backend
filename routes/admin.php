@@ -4,10 +4,15 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::group(['middleware' => 'guest'], function () {
+Route::middleware('guest:admin')->group(function () {
     Route::get('/', [AuthController::class, 'login'])->name('login');
     Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
+});
+
+Route::middleware(['auth:admin', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/purchases', [DashboardController::class, 'purchases'])->name('purchases');
     Route::get('/purchases/{id}', [DashboardController::class, 'showPurchase'])->name('purchases.show');

@@ -4,7 +4,7 @@
 <main class="p-4 lg:p-8">
     <div class="mb-6 lg:mb-8">
         {{-- You can get the authenticated user's name dynamically --}}
-        <h1 class="text-xl lg:text-2xl font-bold text-foreground">Hi, Kemi Wale</h1>
+        <h1 class="text-xl lg:text-2xl font-bold text-foreground">Hi, {{ auth('admin')->user()->full_name}}</h1>
         <p class="text-sm lg:text-base font-bold">
             <span class="text-muted-foreground">Take a look your overview </span>
             <span class="text-foreground">Today {{ date('M d, Y') }}</span>

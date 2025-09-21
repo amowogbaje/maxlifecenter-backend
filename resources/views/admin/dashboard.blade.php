@@ -3,7 +3,7 @@
 @section('content')
 <div class="p-4 lg:p-[32px] space-y-6 lg:space-y-8">
     <div class="flex flex-col">
-        <h1 class="text-xl lg:text-2xl font-bold text-foreground">Hi, Kemi Wale</h1>
+        <h1 class="text-xl lg:text-2xl font-bold text-foreground">Hi, {{ auth('admin')->user()->full_name}}</h1>
         <p class="text-sm lg:text-base font-bold">
             <span class="text-muted-foreground">Take a look your overview </span>
             <span class="text-foreground">Today {{ date('M d, Y') }}</span>
@@ -27,9 +27,11 @@
             <div class="flex-1">
                 <p class="text-sm text-gray-500 mb-1 break-words">{{ $card['subtitle'] }}</p>
                 <h3 class="text-2xl font-bold text-gray-900 mb-3 break-words">{{ $card['title'] }}</h3>
+                @if(isset($card['value']))
                 <div class="bg-blue-50 rounded-lg px-3 py-1 inline-block">
                     <span class="text-xs font-semibold text-gray-700 break-words">{{ $card['value'] }}</span>
                 </div>
+                @endif
             </div>
 
             <!-- Avatar -->

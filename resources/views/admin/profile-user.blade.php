@@ -55,14 +55,6 @@
                 </div>
             </div>
 
-            <!-- Edit button -->
-            <button class="bg-gray-200 rounded-[10px] p-3 hover:bg-gray-300 transition-colors">
-                <!-- Edit icon (replaced Lucide icon with SVG) -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 20h9"></path>
-                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                </svg>
-            </button>
         </div>
 
         <!-- Form fields -->
@@ -81,7 +73,7 @@
                         </div>
                         <input
                             type="text"
-                            value="{{ auth('admin')->user()->first_name}}"
+                            value="Cadabra"
                             class="w-full h-12 pl-12 pr-4 rounded-[14px] border border-gray-300 bg-white text-gray-700 text-sm shadow-sm focus:outline-none focus:border-blue-500"
                         />
                     </div>
@@ -99,7 +91,7 @@
                         </div>
                         <input
                             type="text"
-                            value="{{ auth('admin')->user()->first_name}}"
+                            value="Cadabra"
                             class="w-full h-12 pl-12 pr-4 rounded-[14px] border border-gray-300 bg-white text-gray-700 text-sm shadow-sm focus:outline-none focus:border-blue-500"
                         />
                     </div>
@@ -109,7 +101,7 @@
                     <label class="text-gray-700 text-sm font-bold">Mobile Number</label>
                     <input
                         type="tel"
-                        value="{{ auth('admin')->user()->phone}}"
+                        value="+1 675 346 23-10"
                         class="w-full h-12 px-4 rounded-[14px] border border-gray-300 bg-white text-gray-700 text-sm shadow-sm focus:outline-none focus:border-blue-500"
                     />
                 </div>
@@ -128,8 +120,7 @@
                     </div>
                     <input
                         type="email"
-                        readonly
-                        value="{{ auth('admin')->user()->email}}"
+                        value="someone@yourmail.com"
                         class="w-full h-12 pl-12 pr-4 rounded-[14px] border border-gray-300 bg-white text-gray-700 text-sm shadow-sm focus:outline-none focus:border-blue-500"
                     />
                 </div>

@@ -3,7 +3,7 @@
 @section('content')
 <div class="p-4 lg:p-[32px] space-y-6 lg:space-y-8">
     <div class="flex flex-col">
-        <h1 class="text-xl lg:text-2xl font-bold text-foreground">Hi, Kemi Wale</h1>
+        <h1 class="text-xl lg:text-2xl font-bold text-foreground">Hi, {{ auth('admin')->user()->full_name}}</h1>
         <p class="text-sm lg:text-base font-bold">
             <span class="text-muted-foreground">Take a look your overview </span>
             <span class="text-foreground">Today {{ date('M d, Y') }}</span>

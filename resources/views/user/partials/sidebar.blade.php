@@ -61,7 +61,7 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Purchase History</span>
         </a>
-        <a href="{{ route('uploads') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors   {{ menuClass(['uploads','upload-requests']) }}">
+        {{-- <a href="{{ route('uploads') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors   {{ menuClass(['uploads','upload-requests']) }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('uploads') }}" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg">
                     <mask id="mask0_791_5247" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="23" height="20">
@@ -73,7 +73,7 @@ return request()->routeIs($routes)
                 </svg>
             </div>
             <span class="font-bold text-base truncate">All Uploads</span>
-        </a>
+        </a> --}}
         <a href="{{ route('rewards') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('rewards') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('rewards') }}" viewBox="0 0 27 24" xmlns="http://www.w3.org/2000/svg">

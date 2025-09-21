@@ -22,9 +22,9 @@ function svgClass($routes) {
 
     <div class="flex flex-col items-center pt-[70px] lg:pt-[70px] pb-8">
         <div class="w-[74px] h-[74px] bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-            <span class="text-2xl font-bold text-success">K</span>
+            <span class="text-2xl font-bold text-success">{{ Str::substr(auth('admin')->user()->first_name, 0, 1) }}</span>
         </div>
-        <h2 class="text-2xl font-bold text-foreground">Welcome, Kemi</h2>
+        <h2 class="text-2xl font-bold text-foreground">Welcome, {{ auth('admin')->user()->first_name}}</h2>
     </div>
 
     <div class="flex-1 px-5 space-y-5 overflow-y-auto">
@@ -61,7 +61,7 @@ function svgClass($routes) {
             </div>
             <span class="font-bold text-base truncate">Purchase Management</span>
         </a>
-        <a href="{{ route('admin.uploads') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors   {{ menuClass(['admin.uploads','admin.upload-requests']) }}">
+        {{-- <a href="{{ route('admin.uploads') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors   {{ menuClass(['admin.uploads','admin.upload-requests']) }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('admin.uploads') }}" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg">
                     <mask id="mask0_791_5247" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="23" height="20">
@@ -73,7 +73,7 @@ function svgClass($routes) {
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Uploads Management</span>
-        </a>
+        </a> --}}
         <a href="{{ route('admin.rewards') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.rewards') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('admin.rewards') }}" viewBox="0 0 27 24" xmlns="http://www.w3.org/2000/svg">
@@ -127,12 +127,17 @@ function svgClass($routes) {
     </div>
 
     <div class="p-5 border-t border-gray-100">
-        <a href="#" class="flex items-center gap-3 text-foreground hover:text-gray-600 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" x2="9" y1="12" y2="12" /></svg>
-            <span class="font-bold text-sm">Log out Account</span>
-        </a>
+        <form method="POST" action="{{ route('admin.logout') }}">
+            @csrf
+            <button type="submit" class="flex items-center gap-3 text-foreground hover:text-gray-600 transition-colors w-full text-left">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" x2="9" y1="12" y2="12" />
+                </svg>
+                <span class="font-bold text-sm">Log out Account</span>
+            </button>
+        </form>
+
     </div>
 </div>

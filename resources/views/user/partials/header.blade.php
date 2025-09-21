@@ -58,7 +58,6 @@
                         <span>Log out</span>
                     </button>
                 </form>
-
             </div>
         </div>
     </div>
