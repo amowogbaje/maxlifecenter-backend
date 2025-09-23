@@ -31,7 +31,7 @@
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <img src="{{ asset('images/icons/Password.svg') }}" alt="OTP Icon" class="w-5 h-5" />
                         </div>
-                        <input type="text" name="otp" placeholder="Enter your code" 
+                        <input type="number" name="otp" placeholder="Enter your code" 
                                class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg 
                                focus:outline-none focus:ring-2 focus:ring-[#FFBE00] text-gray-600" />
                     </div>

@@ -3,7 +3,7 @@
 @section('content')
 <div class="p-4 lg:p-[32px] space-y-6 lg:space-y-8">
     <div class="flex flex-col">
-        <h1 class="text-xl lg:text-2xl font-bold text-foreground">Hi, Kemi Wale</h1>
+        <h1 class="text-xl lg:text-2xl font-bold text-foreground">Hi, {{auth()->user()->full_name}}</h1>
         <p class="text-sm lg:text-base font-bold">
             <span class="text-muted-foreground">Take a look your overview </span>
             <span class="text-foreground">Today {{ date('M d, Y') }}</span>
@@ -69,7 +69,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left: Purchase Items -->
-            <div class="lg:col-span-3 bg-white rounded-3xl shadow-sm p-6">
+            <div class="lg:col-span-2 bg-white rounded-3xl shadow-sm p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-lg font-semibold text-gray-800">Purchase Items</h2>
                     <div class="relative w-64">
@@ -94,7 +94,97 @@
                 </div>
             </div>
 
-            
+            <!-- Right: User Detail -->
+            <!-- Right: User Detail (corrected) -->
+            <div class="relative lg:pl-8 lg:border-l lg:border-gray-200 lg:col-span-1">
+                <!-- Top action -->
+                <button class="absolute -top-4 right-0 px-4 py-2 rounded-xl bg-black text-white text-sm font-semibold
+                    shadow-[0_10px_20px_rgba(0,0,0,0.18)] flex items-center gap-2">
+                    Change Status
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white">
+                        <path d="m22 2-7 20-4-9-9-4Z"></path>
+                        <path d="M22 2 11 13"></path>
+                    </svg>
+                </button>
+
+                <!-- Dotted card -->
+                <div class="bg-white rounded-3xl border-2 border-dashed border-gray-300 p-6">
+                    <!-- Profile -->
+                    <div class="flex justify-center items-center gap-3 mb-6">
+                        <img src="https://i.pravatar.cc/80?img=5" alt="avatar" class="w-12 h-12 rounded-full">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <p class="font-semibold text-gray-900">Evan Yates</p>
+                                <span class="inline-flex w-5 h-5 rounded-full bg-green-100 items-center justify-center">
+                                    <img src="{{asset('images/icons/check.svg')}}" class="h-5 h-5" />
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500">evanyates@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <!-- Bonus & Value -->
+                    <div class="rounded-2xl bg-[#F6FBEF] p-4 mb-6 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-9 h-9 rounded-full bg-yellow-200/70 flex items-center justify-center">
+                                <i data-lucide="medal" class="w-4 h-4 text-yellow-700"></i>
+                            </span>
+                            <div>
+                                <p class="text-xs text-gray-600">Bonus Point</p>
+                                <p class="font-semibold text-gray-800">Nil</p>
+                            </div>
+                        </div>
+
+                        <div class="h-10 w-px bg-gray-200 rounded"></div>
+
+                        <div class="flex items-center gap-3">
+                            <span class="w-9 h-9 rounded-full bg-emerald-200/70 flex items-center justify-center">
+                                <i data-lucide="banknote" class="w-4 h-4 text-emerald-700"></i>
+                            </span>
+                            <div>
+                                <p class="text-xs text-gray-600">Value Amount</p>
+                                <p class="font-semibold text-emerald-700">₦230,0032</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="px-4 flex-1">
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-3">
+                            <div>
+                                <p class="text-sm text-brand-light-gray mb-1">Type</p>
+                                <p class="text-base text-brand-dark">Purchase</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-brand-light-gray mb-1">Amount</p>
+                                <p class="text-base font-bold text-brand-dark">₦230,0032</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-brand-light-gray mb-1">Date</p>
+                                <p class="text-base text-brand-dark">Apr 12, 1995 23:06 pm</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-brand-light-gray mb-1">User ID</p>
+                                <p class="text-base text-brand-dark">AD2383JSSUA</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-brand-light-gray mb-1">Status</p>
+                                <div class="inline-flex items-center justify-center w-[75px] h-[30px] bg-yellow-400 rounded-[10px]"><span class="text-xs font-bold text-white">Pending</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 mt-auto">
+                        <button class="w-full flex items-center justify-center h-12 px-6 bg-black rounded-[14px] shadow-lg hover:bg-gray-800 transition-colors">
+                            <span class="text-white font-bold text-base mr-3">Assign Point</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white">
+                                <path d="m22 2-7 20-4-9-9-4Z"></path>
+                                <path d="M22 2 11 13"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
         </div>
 

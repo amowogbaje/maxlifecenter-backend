@@ -22,52 +22,6 @@ class User extends Authenticatable
         'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country'
     ];
 
-    // Tier mapping (points => tier)
-    protected static array $tiers = [
-        0   => 'Eleniyan',
-        20  => 'Oloye',
-        30  => 'Kabiyesi',
-        40  => 'Balogun',
-        50  => 'Oba',
-        60  => 'Aare',
-        70  => 'Olori',
-        // Add more tiers as needed
-    ];
-
-    // Computed full name
-    public function getFullNameAttribute(): string
-    {
-        return "{$this->first_name} {$this->last_name}";
-    }
-
-
-
-    // Computed tier
-    public function getTierAttribute(): string
-    {
-        $tier = 'Eleniyan'; // default
-        foreach (self::$tiers as $points => $name) {
-            if ($this->bonus_point >= $points) {
-                $tier = $name;
-            } else {
-                break;
-            }
-        }
-        return $tier;
-    }
-
-    public function getNextTierAttribute(): ?string
-    {
-        $current = $this->tier; // uses accessor above
-        $tiers   = array_values(self::$tiers); // reindex: 0,1,2,...
-        $index   = array_search($current, $tiers, true);
-
-        if ($index !== false && isset($tiers[$index + 1])) {
-            return $tiers[$index + 1]; // the next tier name
-        }
-
-        return null; // already at last tier
-    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -96,4 +50,78 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+    /**
+     * Calculate how far the user is from the next tier.
+     *
+     * @return array|null
+     *   [
+     *      'next_tier' => Reward,
+     *      'points_remaining' => int,
+     *      'purchases_remaining' => int,
+     *      'progress_percent' => float
+     *   ]
+     */
+
+    public function progressToNextTier()
+    {
+        $next = $this->nextTier();
+        if (!$next) {
+            return null;
+        }
+
+        $points = $this->orders()->sum('total_points');
+        $purchases = $this->orders()->sum('product_count');
+
+        $pointsRemaining = max(0, $next->required_points - $points);
+        $purchasesRemaining = max(0, $next->required_purchases - $purchases);
+
+        $pointsProgress = $next->required_points > 0 ? min(1, $points / $next->required_points) : 1;
+        $purchasesProgress = $next->required_purchases > 0 ? min(1, $purchases / $next->required_purchases) : 1;
+
+        $progressPercent = round(($pointsProgress + $purchasesProgress) / 2 * 100, 2);
+
+        return [
+            'next_tier' => $next,
+            'points_remaining' => $pointsRemaining,
+            'purchases_remaining' => $purchasesRemaining,
+            'progress_percent' => $progressPercent,
+        ];
+    }
+
+    
+    public function rewards()
+    {
+        return $this->belongsToMany(Reward::class, 'user_rewards')
+                    ->withPivot('achieved_at')
+                    ->withTimestamps();
+    }
+
+    public function allRewards()
+    {
+        return $this->rewards()->orderByPivot('achieved_at', 'asc')->get();
+    }
+
+    // public function latestReward()
+    // {
+    //     return $this->rewards()->orderByPivot('achieved_at', 'desc')->first();
+    // }
+
+    public function tier()
+    {
+        return $this->rewards()->orderByDesc('priority')->first();
+    }
+
+    public function nextTier()
+    {
+        $currentTier = $this->tier();
+        if (!$currentTier) {
+            return Reward::orderBy('priority')->first();
+        }
+
+        return Reward::where('priority', '>', $currentTier->priority)
+                    ->orderBy('priority')
+                    ->first();
+    }
+
+    
 }

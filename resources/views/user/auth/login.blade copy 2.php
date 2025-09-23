@@ -39,10 +39,10 @@
                     <label class="block text-sm font-medium text-[#0A1629] mb-2">Enter your royal access code
                         here</label>
                     <div class="flex gap-3 justify-center">
-                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
-                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
-                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
-                        <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
+                        <input type="number" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
+                        <input type="number" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
+                        <input type="number" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
+                        <input type="number" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
                     </div>
                     <div class="text-center mt-2">
                         <button class="text-sm text-[#91929E] hover:text-[#0A1629] transition-colors">Forgot Access

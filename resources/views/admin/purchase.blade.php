@@ -131,7 +131,7 @@
 
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[11px] sm:text-sm text-text-light">Date</span>
-                                <span class="text-[10px] sm:text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date  }}">{{ \Carbon\Carbon::parse($purchase['date'])->format('M d, Y H:i a') }}</span>
+                                <span class="text-[10px] sm:text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date_created  }}">{{ \Carbon\Carbon::parse($purchase['date'])->format('M d, Y H:i a') }}</span>
                             </div>
 
                             <div class="flex flex-col min-w-0">
@@ -166,7 +166,7 @@
                     </div>
 
                     <!-- Action -->
-                    <a href="{{ route('purchases.show', ['id' => $purchase->id])}}" class="hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
+                    <a href="{{ route('admin.purchases.show', ['id' => $purchase->id])}}" class="hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
