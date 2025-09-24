@@ -70,17 +70,9 @@ class WooCommerceService
  */
     protected function syncOrder(array $orderData): ?Order
     {
-        if (empty($orderData['customer_id']) || $orderData['customer_id'] == 0) {
-            Log::warning("Skipping guest order", [
-                'woo_order_id' => $orderData['id'] ?? null,
-            ]);
-            return null;
-        }
-
         $user = User::updateOrCreate(
             [
-                // 'woo_id' => $orderData['customer_id'],
-                'email'  => $orderData['billing']['email'],
+                'email' => $orderData['billing']['email'],
             ],
             [
                 'woo_id'     => $orderData['customer_id'],
@@ -105,7 +97,7 @@ class WooCommerceService
                 'status'               => $orderData['status'] ?? 'pending',
                 'currency'             => $orderData['currency'] ?? null,
                 'total'                => $orderData['total'] ?? 0,
-                'bonus_point'          => $orderData['total'] ? $orderData['total']/1000 : 0,
+                'bonus_point'          => $orderData['total'] ? $orderData['total'] / 1000 : 0,
                 'discount_total'       => $orderData['discount_total'] ?? 0,
                 'shipping_total'       => $orderData['shipping_total'] ?? 0,
                 'payment_method'       => $orderData['payment_method'] ?? null,
@@ -146,8 +138,41 @@ class WooCommerceService
             }
         }
 
+        // 🔥 After syncing order, recalc user rewards
+        $this->syncUserRewards($user);
+
         return $order;
     }
+
+    /**
+     * Sync user rewards based on points and purchases
+     */
+    protected function syncUserRewards(User $user): void
+    {
+        $totalPoints    = $user->orders()->sum('bonus_point');
+        $totalPurchases = $user->orders()->withSum('items', 'quantity')->get()->sum('items_sum_quantity');
+
+        $eligibleRewards = Reward::where('required_points', '<=', $totalPoints)
+            ->where('required_purchases', '<=', $totalPurchases)
+            ->orderBy('priority')
+            ->get();
+
+        if ($eligibleRewards->isNotEmpty()) {
+            foreach ($eligibleRewards as $reward) {
+                $user->rewards()->syncWithoutDetaching([
+                    $reward->id => [
+                        'achieved_at' => now(),
+                        'mail_sent'   => false,
+                        'status'      => 'unclaimed',
+                    ],
+                ]);
+            }
+
+            // set current_reward_id to highest priority reward
+            $user->update(['current_reward_id' => $eligibleRewards->last()->id]);
+        }
+    }
+
 
 
 

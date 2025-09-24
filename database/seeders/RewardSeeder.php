@@ -18,7 +18,7 @@ class RewardSeeder extends Seeder
                 'required_purchases' => 1,
                 'priority' => 1,
                 'img_src' => 'images/rewards/eleniyan.png',
-                'reward_benefit' => 'Welcome badge, access to entry-level perks',
+                'reward_benefit' => 'Cap',
             ],
             [
                 'title' => 'Oloye',
@@ -27,7 +27,7 @@ class RewardSeeder extends Seeder
                 'required_purchases' => 3,
                 'priority' => 2,
                 'img_src' => 'images/rewards/oloye.png',
-                'reward_benefit' => 'Discount vouchers, exclusive member offers',
+                'reward_benefit' => 'Afro centric beads',
             ],
             [
                 'title' => 'Balogun',
@@ -36,7 +36,7 @@ class RewardSeeder extends Seeder
                 'required_purchases' => 7,
                 'priority' => 3,
                 'img_src' => 'images/rewards/balogun.png',
-                'reward_benefit' => 'Premium gifts, VIP event access',
+                'reward_benefit' => 'Kaftan',
             ],
             [
                 'title' => 'Kabiyesi',
@@ -45,7 +45,7 @@ class RewardSeeder extends Seeder
                 'required_purchases' => 14,
                 'priority' => 4,
                 'img_src' => 'images/rewards/kabiyesi.png',
-                'reward_benefit' => 'Royal treatment perks, lifetime membership benefits',
+                'reward_benefit' => 'Gift box',
             ],
         ];
 

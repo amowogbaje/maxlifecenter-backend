@@ -17,7 +17,7 @@ class Reward extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'user_rewards')
-                    ->withPivot('achieved_at')
+                    ->withPivot(['achieved_at', 'mail_sent', 'status'])
                     ->withTimestamps();
     }
 }
