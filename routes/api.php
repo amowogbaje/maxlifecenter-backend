@@ -20,3 +20,5 @@ Route::post('/webhooks/woocommerce', [WebhookController::class, 'handle'])
 
 Route::post('/rewards/{id}/claim', [UserDashboardController::class, 'claimReward'])
     ->name('rewards.claim');
+
+Route::post('/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');

@@ -19,7 +19,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'id', 'user_id', 'woo_id','first_name', 'last_name', 'email', 'phone', 'gender', 'bonus_point', 'password',
-        'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country', 'is_admin', 'current_reward_id'
+        'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country', 'is_admin', 'current_reward_id',
+        'bio', 'location', 'birthday',
     ];
 
 
@@ -74,8 +75,13 @@ class User extends Authenticatable
             return null;
         }
 
-        $points = $this->orders()->sum('total_points');
-        $purchases = $this->orders()->sum('product_count');
+        $points = $this->orders()->sum('bonus_point');
+        // $purchases = OrderItem::whereHas('order', function ($q) {
+        //                 $q->where('user_id', $this->id);
+        //             })->count();
+        $purchases = OrderItem::whereHas('order', function ($q) {
+                            $q->where('user_id', $this->id);
+                        })->count();
 
         $pointsRemaining = max(0, $next->required_points - $points);
         $purchasesRemaining = max(0, $next->required_purchases - $purchases);

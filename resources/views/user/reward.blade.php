@@ -92,18 +92,100 @@
 
         <!-- Right Column: User Summary -->
         <div>
-            <div class="bg-white rounded-xl p-6 shadow-sm flex flex-col items-center">
-                {{-- <img src="{{ asset('images/profile.jpg')}}" alt="User Avatar" class="w-16 h-16 rounded-full border-4 border-yellow-400 mb-4"> --}}
-                <div class="w-full bg-yellow-50 rounded-lg p-4">
-                    <div class="flex justify-between text-sm text-gray-500 mb-2">
-                        <span>Bonus Point</span>
-                        <span>Value Amount</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-bold text-gray-900">{{$user->bonus_point}}</span>
-                        <span class="text-lg font-bold text-green-600">₦{{number_format($user->total_spent,2)}}</span>
+            <div class="bg-white rounded-3xl border-2 border-dashed border-gray-300 p-6">
+                <!-- Profile -->
+                <div class="flex justify-center items-center gap-3 mb-6">
+                    <img src="https://i.pravatar.cc/80?img=5" alt="avatar" class="w-12 h-12 rounded-full">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <p class="font-semibold text-gray-900">{{$user->full_name}}</p>
+                            <span class="inline-flex w-5 h-5 rounded-full bg-green-100 items-center justify-center">
+                                <img src="{{asset('images/icons/check.svg')}}" class="h-5 h-5" />
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-500">{{$user->email}}</p>
                     </div>
                 </div>
+
+                <!-- Bonus & Value -->
+                <div class="rounded-2xl bg-[#F6FBEF] p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+                    <!-- Bonus Point -->
+                    <div class="flex items-center gap-3 flex-1 min-w-[150px]">
+                        <img class="w-9 h-9 rounded-full" src="{{asset('images/icons/bonus_cocoa.png')}}" />
+                        <div>
+                            <p class="text-xs text-gray-600">Bonus Point</p>
+                            <p class="font-semibold text-gray-800">{{ $user->bonus_point }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Divider (hidden on wrap) -->
+                    <div class="hidden sm:block h-10 w-px bg-gray-200 rounded"></div>
+
+                    <!-- Value Amount -->
+                    <div class="flex items-center gap-3 flex-1 min-w-[150px]">
+                        <img class="w-9 h-9 rounded-full" src="{{asset('images/icons/money.png')}}" />
+                        <div>
+                            <p class="text-xs text-gray-600">Value Amount</p>
+                            <p class="font-semibold text-emerald-700">₦{{ number_format($user->total_spent, 2) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Details -->
+                <div class="px-4 flex-1">
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-3">
+                        <!-- Current Tier -->
+                        <div>
+                            <p class="text-sm text-brand-light-gray mb-1">Current Tier</p>
+                            <p class="text-base font-bold text-brand-dark">
+                                {{ $user->tier()->title ?? 'No Tier' }}
+                            </p>
+                        </div>
+
+                        <!-- Next Tier -->
+                        <div>
+                            <p class="text-sm text-brand-light-gray mb-1">Next Tier</p>
+                            <p class="text-base text-brand-dark">
+                                {{ $user->progressToNextTier()['next_tier']->title ?? 'Max Tier' }}
+                            </p>
+                        </div>
+
+                        <!-- Points Progress -->
+                        <div class="col-span-2">
+                            <p class="text-sm text-brand-light-gray mb-1">
+                                {{ $user->progressToNextTier()['points_remaining'] ?? 0 }} points away from next tier
+                            </p>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $user->progressToNextTier()['progress_percent'] ?? 0 }}%">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Purchases Progress -->
+                        <div class="col-span-2">
+                            <p class="text-sm text-brand-light-gray mb-1">
+                                {{ $user->progressToNextTier()['purchases_remaining'] ?? 0 }} purchases away from next tier
+                            </p>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: {{ $user->progressToNextTier()['progress_percent'] ?? 0 }}%">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Overall Progress -->
+                        <div class="col-span-2 mt-2">
+                            <p class="text-xs text-brand-light-gray">
+                                Overall Progress: <span class="font-semibold">
+                                    {{ $user->progressToNextTier()['progress_percent'] ?? 0 }}%
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+
             </div>
         </div>
 
