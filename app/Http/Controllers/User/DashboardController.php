@@ -5,6 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\User;
+use App\Models\UserReward;
 
 class DashboardController extends Controller
 {
@@ -15,7 +17,7 @@ class DashboardController extends Controller
         $purchaseCount = Order::where('user_id', auth()->id())->count();
         $purchaseTotal = Order::where('user_id', auth()->id())->sum('total');
         $currentTier = auth()->user()->approvedTier->title;
-        $nextTier = 'Oloye';
+        $nextTier = auth()->user()->nextToBeApprovedTier->title;
         $metricCards = [
             ['title' => '120', 'subtitle' => 'Earnings', 'value' => '₦2,6500', 'bgColor' => 'bg-purple', 'icon' => $rewardIcon, 'hasAvatar' => false],
             ['title' => '4', 'subtitle' => 'New Users Today', 'value' => '₦23,6500', 'bgColor' => 'bg-success', 'icon' => $usersIcon, 'hasAvatar' => false],
@@ -49,38 +51,56 @@ class DashboardController extends Controller
 
     public function showPurchase($id) {
         $purchase = Order::with(['items.product'])->find($id);
-        $purchaseItems = [
-            ['name'=> "Rotary Regent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg'],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-        ];
-        return view('user.purchase-details', compact('purchase', 'purchaseItems'));
+        $user = auth()->user();
+        return view('user.purchase-details', compact('purchase', 'user'));
     }
 
     public function rewards()
     {
+        $user = User::find(auth()->user()->id);
+        $rewards = $user->rewards()
+        ->withPivot(['id','status', 'mail_sent']) // include pivot fields
+        ->orderBy('user_rewards.created_at', 'desc')
+        ->get([
+            'rewards.id',
+            'rewards.code',        // PN0001265
+            'rewards.title',       // Reward Title
+            'rewards.description', // Description text
+            'rewards.created_at',
+        ]);
 
-        $metricCards = [
-            ['title' => '600,000', 'subtitle' => 'Rewards Pending Approval', 'bgColor' => 'bg-green-600'],
-            ['title' => '393', 'subtitle' => 'Total Rewards Sent',  'bgColor' => 'bg-green-600'],
-        ];
+        // return $rewards;
 
-        $rewards = [
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-        ];
-
-        return view('user.reward', compact('metricCards', 'rewards'));
+        return view('user.reward', compact('user','rewards'));
     }
+
+    public function claimReward($id)
+    {
+        try {
+            $userReward = UserReward::findOrFail($id);
+
+            if ($userReward->status !== 'unclaimed') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Reward already claimed or processed.'
+                ], 400);
+            }
+
+            $userReward->update(['status' => 'pending']);
+
+            return response()->json([
+                'success' => true,
+                'status'  => 'pending',
+                'message' => 'Reward moved to pending approval.'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
 
     public function users()
     {

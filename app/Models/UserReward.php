@@ -9,6 +9,8 @@ class UserReward extends Model
     protected $fillable = [
         'user_id',
         'reward_id',
+        'status',
+        'mail_sent',
         'achieved_at',
     ];
 

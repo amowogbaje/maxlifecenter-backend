@@ -144,13 +144,12 @@ class User extends Authenticatable
     {
         if (!$this->current_reward_id) {
             // If user has no reward yet, return the first reward
-            return Reward::orderBy('priority')->first();
+            return Reward::find(1);
         }
 
         $current = $this->currentReward;
 
-        return Reward::where('priority', '>', $current->priority)
-                     ->orderBy('priority')
+        return Reward::where('id', '>', $current->id)
                      ->first();
     }
 

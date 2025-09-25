@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('description')->nullable();
+            $table->string('code');
             $table->string('img_src');
             $table->unsignedInteger('required_points')->default(0);
             $table->unsignedInteger('required_purchases')->default(0);

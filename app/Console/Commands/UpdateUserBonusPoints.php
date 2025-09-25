@@ -18,9 +18,14 @@ class UpdateUserBonusPoints extends Command
         // OPTION 1: Bulk single-query update (fastest)
         DB::table('users')->update([
             'bonus_point' => DB::raw('
-                (SELECT COALESCE(SUM(orders.bonus_point), 0) 
-                 FROM orders 
-                 WHERE orders.user_id = users.id)
+            (SELECT COALESCE(SUM(o.bonus_point), 0) 
+                FROM orders o
+                WHERE o.user_id = users.id)
+            '),
+            'total_spent' => DB::raw('
+            (SELECT COALESCE(SUM(o.total), 0)
+                FROM orders o
+                WHERE o.user_id = users.id)
             ')
         ]);
 
@@ -31,7 +36,8 @@ class UpdateUserBonusPoints extends Command
         User::chunkById(500, function ($users) {
             foreach ($users as $user) {
                 $totalBonusPoints = $user->orders()->sum('bonus_point');
-                $user->update(['bonus_point' => $totalBonusPoints]);
+                $totalAmount = $user->orders()->sum('total');
+                $user->update(['bonus_point' => $totalBonusPoints, 'total_spent' => $totalAmount]);
                 $this->output->progressAdvance();
             }
         });

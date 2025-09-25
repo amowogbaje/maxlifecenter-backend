@@ -20,6 +20,7 @@
           theme: { extend: { colors: { background: '#F9F9F9', foreground: '#1C1C1C', 'light-blue': '#E9F0FD', purple: '#7E57C2', success: '#00D097', warning: '#FDC748', 'text-dark': '#333333', 'text-light': '#888888', 'text-gray': '#A0AEC0', 'gray-border': '#E2E8F0', muted: '#F1F5F9', 'muted-foreground': '#64748B' } } }
         };
     </script>
+    @stack('style')
 </head>
 <body 
   class="bg-background"
@@ -61,5 +62,6 @@
             </main>
         </div>
     </div>
+    @stack('script')
 </body>
 </html>

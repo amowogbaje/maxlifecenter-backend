@@ -95,7 +95,7 @@
 
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[11px] sm:text-sm text-text-light">Date</span>
-                                <span class="text-[10px] sm:text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date  }}">{{ \Carbon\Carbon::parse($purchase['date'])->format('M d, Y H:i a') }}</span>
+                                <span class="text-[10px] sm:text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date_created  }}">{{ \Carbon\Carbon::parse($purchase->date_created)->format('M d, Y H:i a') }}</span>
                             </div>
 
                             <div class="flex flex-col min-w-0">
@@ -112,15 +112,15 @@
                                 @php
                                 $statusColors = [
                                 'pending' => 'bg-warning',
-                                'approved' => 'bg-success',
+                                'completed' => 'bg-success',
                                 'rejected' => 'bg-danger',
                                 ];
-                                $statusColor = $statusColors[$purchase->reward_status] ?? 'bg-gray-500';
+                                $statusColor = $statusColors[$purchase->status] ?? 'bg-gray-500';
                                 @endphp
 
                                 <div class="rounded-md px-2 py-[2px] sm:px-3 sm:py-1 w-fit {{ $statusColor }}">
                                     <span class="text-[10px] sm:text-xs font-bold text-white truncate block">
-                                        {{ ucfirst($purchase->reward_status) }}
+                                        {{ ucfirst($purchase->status) }}
                                     </span>
                                 </div>
                             </div>

@@ -49,15 +49,15 @@
                             @php
                             $statusColors = [
                             'pending' => 'bg-warning',
-                            'approved' => 'bg-success',
+                            'completed' => 'bg-success',
                             'rejected' => 'bg-danger',
                             ];
-                            $statusColor = $statusColors[$purchase->reward_status] ?? 'bg-gray-500';
+                            $statusColor = $statusColors[$purchase->status] ?? 'bg-gray-500';
                             @endphp
 
                             <div class="rounded-md px-2 py-[2px] sm:px-3 sm:py-1 w-fit {{ $statusColor }}">
                                 <span class="text-[10px] sm:text-xs font-bold text-white truncate block">
-                                    {{ ucfirst($purchase->reward_status) }}
+                                    {{ ucfirst($purchase->status) }}
                                 </span>
                             </div>
                         </div>
@@ -98,14 +98,14 @@
             <!-- Right: User Detail (corrected) -->
             <div class="relative lg:pl-8 lg:border-l lg:border-gray-200 lg:col-span-1">
                 <!-- Top action -->
-                <button class="absolute -top-4 right-0 px-4 py-2 rounded-xl bg-black text-white text-sm font-semibold
+                {{-- <button class="absolute -top-4 right-0 px-4 py-2 rounded-xl bg-black text-white text-sm font-semibold
                     shadow-[0_10px_20px_rgba(0,0,0,0.18)] flex items-center gap-2">
                     Change Status
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white">
                         <path d="m22 2-7 20-4-9-9-4Z"></path>
                         <path d="M22 2 11 13"></path>
                     </svg>
-                </button>
+                </button> --}}
 
                 <!-- Dotted card -->
                 <div class="bg-white rounded-3xl border-2 border-dashed border-gray-300 p-6">
@@ -114,39 +114,39 @@
                         <img src="https://i.pravatar.cc/80?img=5" alt="avatar" class="w-12 h-12 rounded-full">
                         <div>
                             <div class="flex items-center gap-2">
-                                <p class="font-semibold text-gray-900">Evan Yates</p>
+                                <p class="font-semibold text-gray-900">{{$user->full_name}}</p>
                                 <span class="inline-flex w-5 h-5 rounded-full bg-green-100 items-center justify-center">
                                     <img src="{{asset('images/icons/check.svg')}}" class="h-5 h-5" />
                                 </span>
                             </div>
-                            <p class="text-sm text-gray-500">evanyates@gmail.com</p>
+                            <p class="text-sm text-gray-500">{{$user->email}}</p>
                         </div>
                     </div>
 
                     <!-- Bonus & Value -->
-                    <div class="rounded-2xl bg-[#F6FBEF] p-4 mb-6 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <span class="w-9 h-9 rounded-full bg-yellow-200/70 flex items-center justify-center">
-                                <i data-lucide="medal" class="w-4 h-4 text-yellow-700"></i>
-                            </span>
+                    <div class="rounded-2xl bg-[#F6FBEF] p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+                        <!-- Bonus Point -->
+                        <div class="flex items-center gap-3 flex-1 min-w-[150px]">
+                            <img class="w-9 h-9 rounded-full" src="{{asset('images/icons/bonus_cocoa.png')}}"/>
                             <div>
                                 <p class="text-xs text-gray-600">Bonus Point</p>
-                                <p class="font-semibold text-gray-800">Nil</p>
+                                <p class="font-semibold text-gray-800">{{ $user->bonus_point }}</p>
                             </div>
                         </div>
 
-                        <div class="h-10 w-px bg-gray-200 rounded"></div>
+                        <!-- Divider (hidden on wrap) -->
+                        <div class="hidden sm:block h-10 w-px bg-gray-200 rounded"></div>
 
-                        <div class="flex items-center gap-3">
-                            <span class="w-9 h-9 rounded-full bg-emerald-200/70 flex items-center justify-center">
-                                <i data-lucide="banknote" class="w-4 h-4 text-emerald-700"></i>
-                            </span>
+                        <!-- Value Amount -->
+                        <div class="flex items-center gap-3 flex-1 min-w-[150px]">
+                            <img class="w-9 h-9 rounded-full" src="{{asset('images/icons/money.png')}}"/>
                             <div>
                                 <p class="text-xs text-gray-600">Value Amount</p>
-                                <p class="font-semibold text-emerald-700">₦230,0032</p>
+                                <p class="font-semibold text-emerald-700">₦{{ number_format($user->total_spent, 2) }}</p>
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Details -->
                     <div class="px-4 flex-1">
@@ -157,24 +157,24 @@
                             </div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">Amount</p>
-                                <p class="text-base font-bold text-brand-dark">₦230,0032</p>
+                                <p class="text-base font-bold text-brand-dark">₦{{number_format($purchase->total,2)}}</p>
                             </div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">Date</p>
-                                <p class="text-base text-brand-dark">Apr 12, 1995 23:06 pm</p>
+                                <p class="text-base text-brand-dark">{{ \Carbon\Carbon::parse($purchase->date_created)->format('M d, Y H:i a') }}</p>
                             </div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">User ID</p>
-                                <p class="text-base text-brand-dark">AD2383JSSUA</p>
+                                <p class="text-base text-brand-dark">{{$user->woo_id ?? 'No Shop ID'}}</p>
                             </div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">Status</p>
-                                <div class="inline-flex items-center justify-center w-[75px] h-[30px] bg-yellow-400 rounded-[10px]"><span class="text-xs font-bold text-white">Pending</span></div>
+                                <div class="inline-flex items-center justify-center w-[75px] h-[30px] bg-success rounded-[10px]"><span class="text-xs font-bold text-white">Complete</span></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="p-4 mt-auto">
+                    {{-- <div class="p-4 mt-auto">
                         <button class="w-full flex items-center justify-center h-12 px-6 bg-black rounded-[14px] shadow-lg hover:bg-gray-800 transition-colors">
                             <span class="text-white font-bold text-base mr-3">Assign Point</span>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white">
@@ -182,7 +182,7 @@
                                 <path d="M22 2 11 13"></path>
                             </svg>
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 

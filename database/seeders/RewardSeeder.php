@@ -13,6 +13,7 @@ class RewardSeeder extends Seeder
         $rewards = [
             [
                 'title' => 'Eleniyan',
+                'code' => 'PN00001',
                 'description' => 'Tier 1 - Entry low-rank chief. Entry point: Purchase 1 item.',
                 'required_points' => 0,
                 'required_purchases' => 1,
@@ -22,6 +23,7 @@ class RewardSeeder extends Seeder
             ],
             [
                 'title' => 'Oloye',
+                'code' => 'PN00002',
                 'description' => 'Tier 2 - Intermediate high-rank chief. Entry point: Purchase 3 items OR 500 points (₦500,000 spend).',
                 'required_points' => 500,
                 'required_purchases' => 3,
@@ -31,6 +33,7 @@ class RewardSeeder extends Seeder
             ],
             [
                 'title' => 'Balogun',
+                'code' => 'PN00003',
                 'description' => 'Tier 3 - Advanced high-rank chief. Entry point: Purchase 7 items AND 1500 points (₦1.5m spend).',
                 'required_points' => 1500,
                 'required_purchases' => 7,
@@ -40,6 +43,7 @@ class RewardSeeder extends Seeder
             ],
             [
                 'title' => 'Kabiyesi',
+                'code' => 'PN00004',
                 'description' => 'Tier 4 - Elite: King. Entry point: Purchase 14 items AND 3000 points (₦3m spend).',
                 'required_points' => 3000,
                 'required_purchases' => 14,
