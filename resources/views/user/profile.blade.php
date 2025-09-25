@@ -55,7 +55,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-500 text-sm font-normal">Current Tier</p>
-                                <p class="text-gray-800 font-bold text-base">{{ Auth::user()->tier ?? 'N/A' }}</p>
+                                <p class="text-gray-800 font-bold text-base">{{ Auth::user()->approvedTier->title ?? 'N/A' }}</p>
                             </div>
                         </div>
                     </div>

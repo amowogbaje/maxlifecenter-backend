@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Reward;
+use App\Models\UserReward;
 
 class DashboardController extends Controller
 {
@@ -17,13 +19,22 @@ class DashboardController extends Controller
         $purchaseCount = $purchases->count();
         $purchaseTotal = $purchases->sum('total');
         $totalUsersCount = User::count();
+        $eleniyan = Reward::withCount('activeUsers')->where('title', 'Eleniyan')->first();
+        $oloye    = Reward::withCount('activeUsers')->where('title', 'Oloye')->first();
+        $balogun  = Reward::withCount('activeUsers')->where('title', 'Balogun')->first();
+        $kabiyesi = Reward::withCount('activeUsers')->where('title', 'Kabiyesi')->first();
+        // $tiers = Reward::withCount('users')->orderBy('priority')->get();
+        // return $kabiyesi;
+
+        
+
         $metricCards = [
             ['title' => $purchaseCount, 'subtitle' => 'Earnings', 'value' => '₦' . number_format($purchaseTotal), 'bgColor' => 'bg-purple', 'icon' => $rewardIcon, 'hasAvatar' => false],
             ['title' => $totalUsersCount, 'subtitle' => 'Users',  'bgColor' => 'bg-success', 'icon' => $usersIcon, 'hasAvatar' => false],
-            ['title' => '29', 'subtitle' => 'Total Count - ELENIYAN', 'value' => '₦23,6500,693', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/eleniyan.png'],
-            ['title' => '29', 'subtitle' => 'Total Count - BALOGUN', 'value' => '₦23,6500,693', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/balogun.png'],
-            ['title' => '29', 'subtitle' => 'Total Count - KABIYESI', 'value' => '₦23,6500,693', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/kabiyesi.png'],
-            ['title' => '29', 'subtitle' => 'Total Count - OLOYE', 'value' => '₦23,6500,693', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/oloye.png'],
+            ['title' => $eleniyan->active_users_count, 'subtitle' => 'Total Count - ELENIYAN', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/eleniyan.png'],
+            ['title' => $oloye->active_users_count, 'subtitle' => 'Total Count - BALOGUN', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/balogun.png'],
+            ['title' => $balogun->active_users_count, 'subtitle' => 'Total Count - KABIYESI', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/kabiyesi.png'],
+            ['title' => $kabiyesi->active_users_count, 'subtitle' => 'Total Count - OLOYE', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/oloye.png'],
         ];
 
         $activityLogs = [
@@ -80,10 +91,14 @@ class DashboardController extends Controller
 
     public function rewards()
     {
+        $totalApprovedRewards = UserReward::where('status', 'approved')->where('mail_sent', true)->count();
+        $pendingRewards = UserReward::where('status', 'pending')->count();
+        $unclaimedRewards = UserReward::where('status', 'unclaimed')->count();
 
         $metricCards = [
-            ['title' => '600,000', 'subtitle' => 'Rewards Pending Approval', 'bgColor' => 'bg-green-600'],
-            ['title' => '393', 'subtitle' => 'Total Rewards Sent',  'bgColor' => 'bg-green-600'],
+            ['title' => $unclaimedRewards, 'subtitle' => 'Rewards Unclaimed', 'bgColor' => 'bg-green-600'],
+            ['title' => $pendingRewards, 'subtitle' => 'Rewards Pending Approval', 'bgColor' => 'bg-green-600'],
+            ['title' => $totalApprovedRewards, 'subtitle' => 'Total Rewards Sent',  'bgColor' => 'bg-green-600'],
         ];
 
         $rewards = [
@@ -99,19 +114,12 @@ class DashboardController extends Controller
 
     public function users()
     {
+        $users = User::where('is_admin', false)->paginate(10);
 
 
 
-        $users = [
-            ['name' => 'Eves Yate', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'tier' => 'Oloye'],
-            ['name' => 'Eves Yate', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'tier' => 'Balogun'],
-            ['name' => 'Eves Yate', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'tier' => 'Kabiyesi'],
-            ['name' => 'Eves Yate', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'tier' => 'Eleniyan'],
-            ['name' => 'Eves Yate', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'tier' => 'Oloye'],
-            ['name' => 'Eves Yate', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'tier' => 'Balogun'],
-        ];
 
-        return view('admin.user', compact('users'));
+        return view('admin.user', compact('users', 'users'));
     }
 
     public function updates()

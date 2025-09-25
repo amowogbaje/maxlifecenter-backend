@@ -11,3 +11,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('woo:sync-orders')->everyTenSeconds()->withoutOverlapping();
+Schedule::command('users:update-bonus-points')->daily();

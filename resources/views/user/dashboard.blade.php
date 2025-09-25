@@ -182,7 +182,7 @@
 
     <!-- TIMEX Banner -->
     <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-2xl relative overflow-hidden flex-1 max-w-full">
-        <img src="http://koc.test/images/timex.png" alt="TIMEX banner" class="w-full h-full object-cover">
+        <img src="{{asset('images/timex.png')}}" alt="TIMEX banner" class="w-full h-full object-cover">
     </div>
 </div>
 

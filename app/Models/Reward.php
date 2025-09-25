@@ -20,4 +20,9 @@ class Reward extends Model
                     ->withPivot(['achieved_at', 'mail_sent', 'status'])
                     ->withTimestamps();
     }
+
+    public function activeUsers()
+    {
+        return $this->hasMany(User::class, 'current_reward_id');
+    }
 }

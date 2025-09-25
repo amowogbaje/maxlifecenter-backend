@@ -80,15 +80,15 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light truncate">Name</span>
-                                <span class="text-base font-bold text-text-dark truncate" title="{{ $user['name'] }}">{{ $user['name'] }}</span>
+                                <span class="text-base font-bold text-text-dark truncate" title="{{ $user->full_name }}">{{ $user->full_name }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light truncate">Point</span>
-                                <span class="text-base font-bold text-text-dark truncate" title="{{ $user['bonus_point'] }}"><img src="{{ asset('images/icons/diamond.svg') }}" alt="Rewards" class="inline-block w-4 h-4 mr-1">{{ $user['bonus_point'] }}</span>
+                                <span class="text-base font-bold text-text-dark truncate" title="{{ $user->bonus_point }}"><img src="{{ asset('images/icons/diamond.svg') }}" alt="Rewards" class="inline-block w-4 h-4 mr-1">{{ $user->bonus_point }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
                                 <span class="text-sm text-text-light">Date</span>
-                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $user['date'] }}">{{ $user['date'] }}</span>
+                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $user->created_at }}">{{ $user->created_at }}</span>
                             </div>
                             @if(!empty($user['id']))
                             <div class="flex flex-col gap-1 min-w-0">
@@ -98,7 +98,7 @@
                             @endif
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light">Tier</span>
-                                <span class="text-base text-text-dark truncate" title="{{ $user['tier'] }}">{{ $user['tier'] }}</span>
+                                <span class="text-base text-text-dark truncate" title="{{ $user->approvedTier->title }}">{{ $user->approvedTier->title }}</span>
                             </div>
                         </div>
                     </div>
@@ -113,13 +113,31 @@
             @endforeach
         </div>
 
-        <div class="flex justify-center lg:justify-end">
+        <div class="flex justify-center lg:justify-end mt-4">
             <div class="bg-white rounded-[14px] shadow-sm px-5 py-3 flex items-center gap-4">
-                <span class="text-base text-text-dark">1-8 of 28</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gray-400">
+                <span class="text-base text-text-dark">
+                    {{ $users->firstItem() }}-{{ $users->lastItem() }} of {{ $users->total() }}
+                </span>
+
+                @if($users->onFirstPage())
+                <svg class="w-6 h-6 text-gray-300">
                     <path d="m15 18-6-6 6-6" /></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-500">
+                @else
+                <a href="{{ $users->previousPageUrl() }}">
+                    <svg class="w-6 h-6 text-blue-500">
+                        <path d="m15 18-6-6 6-6" /></svg>
+                </a>
+                @endif
+
+                @if($users->hasMorePages())
+                <a href="{{ $users->nextPageUrl() }}">
+                    <svg class="w-6 h-6 text-blue-500">
+                        <path d="m9 18 6-6-6-6" /></svg>
+                </a>
+                @else
+                <svg class="w-6 h-6 text-gray-300">
                     <path d="m9 18 6-6-6-6" /></svg>
+                @endif
             </div>
         </div>
     </div>

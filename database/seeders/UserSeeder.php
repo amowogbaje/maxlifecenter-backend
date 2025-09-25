@@ -19,10 +19,12 @@ class UserSeeder extends Seeder
         User::create([
             'first_name' => 'Gid',
             'last_name' => 'Watcher',
-            'email' => 'gideon@watchlocker.biz',
+            'email' => 'hello@watchlocker.biz',
             'phone' => '08012345678',
             'password'=> Hash::make('4545'),
             'gender' => 'male',
+            'is_admin' => true,
+            'current_reward_id' = 1,
             'bonus_point' => 30,
         ]);
     }

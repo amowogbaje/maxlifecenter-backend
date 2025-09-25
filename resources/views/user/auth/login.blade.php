@@ -41,10 +41,10 @@
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-[#0A1629] mb-2">Enter your royal access code here</label>
                         <div class="flex gap-3 justify-center">
-                            <input type="password" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 @error('password') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
-                            <input type="password" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 @error('password') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
-                            <input type="password" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 @error('password') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
-                            <input type="password" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 @error('password') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
+                            <input type="password" inputmode="numeric" pattern="\d*" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 @error('password') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
+                            <input type="password" inputmode="numeric" pattern="\d*" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 @error('password') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
+                            <input type="password" inputmode="numeric" pattern="\d*" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 @error('password') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
+                            <input type="password" inputmode="numeric" pattern="\d*" maxlength="1" class="otp-input w-12 h-12 text-center text-xl font-bold border-2 @error('password') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-2 focus:ring-[#FFBE00]" />
                         </div>
                         <div class="text-center mt-2">
                             <a href="{{ route('forgot-password') }}" class="text-sm text-[#91929E] hover:text-[#0A1629] transition-colors">Forgot Access Code?</a>

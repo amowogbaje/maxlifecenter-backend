@@ -19,7 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'id', 'user_id', 'woo_id','first_name', 'last_name', 'email', 'phone', 'gender', 'bonus_point', 'password',
-        'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country'
+        'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country', 'is_admin', 'current_reward_id'
     ];
 
 
@@ -44,6 +44,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
     }
 
     public function orders()
@@ -121,6 +126,32 @@ class User extends Authenticatable
         return Reward::where('priority', '>', $currentTier->priority)
                     ->orderBy('priority')
                     ->first();
+    }
+
+    public function currentReward()
+    {
+        return $this->belongsTo(Reward::class, 'current_reward_id');
+    }
+
+    // Accessor: $user->approvedTier
+    public function getApprovedTierAttribute()
+    {
+        return $this->currentReward;
+    }
+
+    // Accessor: $user->nextTobeApprovedTier
+    public function getNextTobeApprovedTierAttribute()
+    {
+        if (!$this->current_reward_id) {
+            // If user has no reward yet, return the first reward
+            return Reward::orderBy('priority')->first();
+        }
+
+        $current = $this->currentReward;
+
+        return Reward::where('priority', '>', $current->priority)
+                     ->orderBy('priority')
+                     ->first();
     }
 
     

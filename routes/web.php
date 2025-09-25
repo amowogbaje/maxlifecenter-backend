@@ -36,6 +36,7 @@ require __DIR__.'/auth.php';
 Route::group(['middleware' => 'guest'], function () {
     // Route::get('/', [AuthController::class, 'login'])->name('login');
     Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::get('/login2', [AuthController::class, 'login2'])->name('login2');
     Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
 
     Route::get('/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify');

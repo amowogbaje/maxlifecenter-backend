@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\Reward;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -86,6 +87,7 @@ class WooCommerceService
                 'state'      => $orderData['billing']['state'] ?? null,
                 'postcode'   => $orderData['billing']['postcode'] ?? null,
                 'country'    => $orderData['billing']['country'] ?? null,
+                'current_reward_id' => 1,
             ]
         );
 
@@ -169,7 +171,7 @@ class WooCommerceService
             }
 
             // set current_reward_id to highest priority reward
-            $user->update(['current_reward_id' => $eligibleRewards->last()->id]);
+            // $user->update(['current_reward_id' => $eligibleRewards->last()->id]);
         }
     }
 
