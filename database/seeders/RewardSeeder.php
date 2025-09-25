@@ -51,7 +51,7 @@ class RewardSeeder extends Seeder
 
         foreach ($rewards as $reward) {
             Reward::updateOrCreate(
-                ['priority' => $reward['priority']], // ensure tier uniqueness
+                ['priority' => $reward['priority']],
                 $reward
             );
         }
