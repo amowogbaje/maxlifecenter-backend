@@ -51,13 +51,13 @@ class ProcessWebhookJob
                     break;
 
                 default:
-                    \Log::info("Unhandled WooCommerce webhook topic: {$topic}", $payload);
+                    \Log::channel('webhook')->info("Unhandled WooCommerce webhook topic: {$topic}", $payload);
                     break;
             }
 
             $log->update(['status' => 'processed', 'response' => 'OK']);
         } catch (\Exception $e) {
-            \Log::error('ProcessWebhookJob failed: ' . $e->getMessage(), ['log_id' => $this->logId]);
+            \Log::channel('webhook')->error('ProcessWebhookJob failed: ' . $e->getMessage(), ['log_id' => $this->logId]);
             $log->update([
                 'status'   => 'failed',
                 'response' => $e->getMessage(),
@@ -69,16 +69,16 @@ class ProcessWebhookJob
 
     protected function handleOrder(string $topic, array $payload)
     {
-        \Log::info("handleOrder: {$topic}", ['id' => $payload['id'] ?? null]);
+        \Log::channel('webhook')->info("handleOrder: {$topic}", ['id' => $payload['id'] ?? null]);
     }
 
     protected function handleProduct(string $topic, array $payload)
     {
-        \Log::info("handleProduct: {$topic}", ['id' => $payload['id'] ?? null]);
+        \Log::channel('webhook')->info("handleProduct: {$topic}", ['id' => $payload['id'] ?? null]);
     }
 
     protected function handleCustomer(string $topic, array $payload)
     {
-        \Log::info("handleCustomer: {$topic}", ['id' => $payload['id'] ?? null]);
+        \Log::channel('webhook')->info("handleCustomer: {$topic}", ['id' => $payload['id'] ?? null]);
     }
 }

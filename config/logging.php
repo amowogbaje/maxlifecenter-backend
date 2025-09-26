@@ -73,6 +73,20 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'webhook' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/webhook_logs/laravel.log'),
+            'level' => 'debug',
+            'days' => 20,
+        ],
+
+        'woocommerce' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/woosyncing/laravel.log'),
+            'level' => 'debug',
+            'days' => 20,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

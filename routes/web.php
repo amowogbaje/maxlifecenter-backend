@@ -38,6 +38,8 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::get('/login2', [AuthController::class, 'login2'])->name('login2');
     Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
+    Route::post('/login/new', [AuthController::class, 'newHandleLogin']);
+
 
     Route::get('/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify');
     Route::post('/verify-otp', [AuthController::class, 'handleOtp'])->name('otp.verify.submit');

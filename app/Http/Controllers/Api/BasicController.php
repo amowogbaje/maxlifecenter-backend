@@ -63,44 +63,5 @@ class BasicController extends Controller
         ]);
     }
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'nullable|string',
-            'otp'      => 'nullable|string',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return response()->json(['message' => 'No account found'], 404);
-        }
-
-        // Password login
-        if (!is_null($user->password)) {
-            if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
-                $request->session()->regenerate();
-                return response()->json(['message' => 'Login successful'], 200);
-            }
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        // OTP login
-        if ($request->otp) {
-            $otpKey = 'otp_' . $user->id;
-            if (Cache::get($otpKey) === $request->otp) {
-                Auth::login($user);
-                $request->session()->regenerate();
-
-                // Clear OTP
-                Cache::forget($otpKey);
-                Cache::forget('otp_for_' . $request->otp);
-
-                return response()->json(['message' => 'OTP login successful'], 200);
-            }
-            return response()->json(['message' => 'Invalid or expired OTP'], 401);
-        }
-
-        return response()->json(['message' => 'Password or OTP required'], 400);
-    }
+    
 }

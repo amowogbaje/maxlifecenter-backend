@@ -18,7 +18,6 @@ Route::post('password', [AuthController::class, 'updatePassword'])->name('passwo
 
 Route::post('/check-email', [BasicController::class, 'checkEmail']);
 Route::post('/send-otp', [BasicController::class, 'sendOtp']);
-Route::post('/login', [BasicController::class, 'login']);
 
 Route::post('/webhooks/woocommerce', [WebhookController::class, 'handle'])
     ->name('webhooks.woocommerce')

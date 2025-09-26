@@ -18,13 +18,13 @@ class SyncWooOrders extends Command
         try {
             $woocommerceService = new WooCommerceService();
 
-            Log::info('Starting WooCommerce orders sync');
+            Log::channel('woocommerce')->info('Starting WooCommerce orders sync');
 
             $cursor = SyncCursor::firstOrCreate([], ['last_date' => '2025-01-01T00:00:00Z']);
             $orders = $woocommerceService->fetchOrders($cursor->last_date);
 
             if (empty($orders)) {
-                Log::info('No new orders found.');
+                Log::channel('woocommerce')->info('No new orders found.');
                 $this->info('No new orders to sync.');
 
                 SyncLog::create([
@@ -51,13 +51,13 @@ class SyncWooOrders extends Command
                     'status'    => 'success',
                 ]);
 
-                Log::info('Orders synced successfully', [
+                Log::channel('woocommerce')->info('Orders synced successfully', [
                     'last_date' => $newDate,
                 ]);
 
                 $this->info('Batch sync completed successfully.');
             } else {
-                Log::warning('Cursor date did not advance, stopping to avoid reprocessing.', [
+                Log::channel('woocommerce')->warning('Cursor date did not advance, stopping to avoid reprocessing.', [
                     'last_date' => $cursor->last_date,
                 ]);
 
@@ -73,7 +73,7 @@ class SyncWooOrders extends Command
             return Command::SUCCESS;
 
         } catch (\Throwable $e) {
-            Log::error('WooCommerce sync failed', [
+            Log::channel('woocommerce')->error('WooCommerce sync failed', [
                 'last_date' => $cursor->last_date,
                 'message' => $e->getMessage(),
                 'trace'   => $e->getTraceAsString(),

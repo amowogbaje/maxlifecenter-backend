@@ -207,7 +207,7 @@
                 }
 
                 try {
-                    let response = await fetch('/api/login', {
+                    let response = await fetch('/login/new', {
                         method: 'POST'
                         , headers: {
                             'Content-Type': 'application/json'
