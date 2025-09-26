@@ -131,7 +131,7 @@
 
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[11px] sm:text-sm text-text-light">Date</span>
-                                <span class="text-[10px] sm:text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date_created  }}">{{ \Carbon\Carbon::parse($purchase['date'])->format('M d, Y H:i a') }}</span>
+                                <span class="text-[10px] sm:text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date_created  }}">{{ \Carbon\Carbon::parse($purchase->date_created)->format('M d, Y H:i a') }}</span>
                             </div>
 
                             <div class="flex flex-col min-w-0">

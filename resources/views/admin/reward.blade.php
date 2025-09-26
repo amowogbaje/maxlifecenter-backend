@@ -93,7 +93,7 @@
         </div>
 
         <div class="space-y-3">
-            @foreach($rewards as $reward)
+            @foreach($userRewards as $userReward)
             <div class="bg-white rounded-[24px] shadow-sm p-4 lg:p-5 overflow-hidden">
                 <div class="flex items-center gap-4 lg:gap-6 min-w-0">
                     <div class="w-[50px] h-[50px] bg-gray-300 rounded-full border-2 border-white relative flex-shrink-0 flex items-center justify-center">
@@ -109,59 +109,117 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light">Type</span>
-                                <span class="text-base text-text-dark truncate" title="{{ $reward['type'] }}">{{ $reward['type'] }}</span>
+                                <span class="text-base text-text-dark truncate" title="{{ $userReward->reward->title }}"><img src="{{ asset('images/icons/diamond.svg') }}" alt="Rewards" class="inline-block w-4 h-4 mr-1">{{ $userReward->reward->title }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light truncate">
-                                    @if($reward['type'] === 'Reward') Point
-                                    @elseif($reward['type'] === 'Tier Update') Name
-                                    @elseif($reward['type'] === 'Campaign') ID
-                                    @else Amount @endif
-                                </span>
-                                <span class="text-base font-bold text-text-dark truncate" title="{{ $reward['amount'] }}"><img src="{{ asset('images/icons/diamond.svg') }}" alt="Rewards" class="inline-block w-4 h-4 mr-1">{{ $reward['amount'] }}</span>
+                                <span class="text-sm text-text-light truncate">Name</span>
+                                <span class="text-base font-bold text-text-dark truncate" title="{{ $userReward->user->full_name }}">{{ $userReward->user->full_name }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
                                 <span class="text-sm text-text-light">Date</span>
-                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $reward['date'] }}">{{ $reward['date'] }}</span>
+                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $userReward->updated_at }}">{{ \Carbon\Carbon::parse($userReward->updated_at)->format('M d, Y H:i a') }}</span>
                             </div>
-                            @if(!empty($reward['id']))
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light truncate">
-                                    {{ $reward['type'] === 'Tier Update' ? 'Previous' : 'ID' }}
+                                    Reward perks
                                 </span>
-                                <span class="text-base text-text-dark truncate" title="{{ $reward['id'] }}">{{ $reward['id'] }}</span>
+                                <span class="text-base text-text-dark truncate" title="{{ $userReward->reward->reward_benefit }}">{{ $userReward->reward->reward_benefit }}</span>
                             </div>
-                            @endif
-                            @if(!empty($reward['status']))
-                            <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light">Status</span>
-                                <div class="rounded-[10px] px-3 py-1 w-fit max-w-full {{ $reward['statusColor'] }}">
-                                    <span class="text-xs font-bold text-white truncate block">{{ $reward['status'] }}</span>
-                                </div>
-                            </div>
-                            @endif
+                            {{-- <div class="flex flex-col gap-1 min-w-0">
+                                <span class="text-sm text-text-light truncate">
+                                    Reward perks
+                                </span>
+                                <span class="text-base text-text-dark truncate" title="{{ $userReward->reward->reward_benefit }}">{{ $userReward->reward->reward_benefit }}</span>
+                            </div> --}}
                         </div>
                     </div>
-                    <div class="w-11 h-11 bg-light-blue rounded-[14px] flex items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="1" />
-                            <circle cx="12" cy="5" r="1" />
-                            <circle cx="12" cy="19" r="1" /></svg>
+                    <div class="md:ml-4">
+                        @if ($userReward->status === 'pending')
+                        <button type="button" class="approve-btn w-full md:w-auto bg-black text-white text-sm font-semibold px-4 py-2 rounded-lg" data-id="{{ $userReward->id }}">
+                            Approve Reward
+                        </button>
+                        @elseif ($userReward->status === 'approved')
+                        <button disabled class="w-full md:w-auto bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg opacity-70 cursor-not-allowed">
+                            Approved
+                        </button>
+                        @endif
                     </div>
                 </div>
             </div>
             @endforeach
         </div>
 
-        <div class="flex justify-center lg:justify-end">
+        <div class="flex justify-center lg:justify-end mt-4">
             <div class="bg-white rounded-[14px] shadow-sm px-5 py-3 flex items-center gap-4">
-                <span class="text-base text-text-dark">1-8 of 28</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gray-400">
+                <span class="text-base text-text-dark">
+                    {{ $userRewards->firstItem() }}-{{ $userRewards->lastItem() }} of {{ $userRewards->total() }}
+                </span>
+
+                @if($userRewards->onFirstPage())
+                <svg class="w-6 h-6 text-gray-300">
                     <path d="m15 18-6-6 6-6" /></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-500">
+                @else
+                <a href="{{ $userRewards->previousPageUrl() }}">
+                    <svg class="w-6 h-6 text-blue-500">
+                        <path d="m15 18-6-6 6-6" /></svg>
+                </a>
+                @endif
+
+                @if($userRewards->hasMorePages())
+                <a href="{{ $userRewards->nextPageUrl() }}">
+                    <svg class="w-6 h-6 text-blue-500">
+                        <path d="m9 18 6-6-6-6" /></svg>
+                </a>
+                @else
+                <svg class="w-6 h-6 text-gray-300">
                     <path d="m9 18 6-6-6-6" /></svg>
+                @endif
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('script')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.approve-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                let rewardId = this.dataset.id;
+                let btn = this;
+
+                btn.disabled = true;
+                btn.textContent = 'Processing...';
+
+                fetch(`/api/rewards/${rewardId}/approve`, {
+                        method: 'POST'
+                        , headers: {
+                            'Content-Type': 'application/json'
+                            , 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            btn.classList.remove('bg-black');
+                            btn.classList.add('bg-success', 'opacity-70', 'cursor-not-allowed');
+                            btn.textContent = 'Approved';
+                        } else {
+                            btn.disabled = false;
+                            btn.textContent = 'Approve Reward';
+                            alert(data.message);
+                        }
+                    })
+                    .catch(err => {
+                        btn.disabled = false;
+                        btn.textContent = 'Approve Reward';
+                        console.error(err);
+                        alert('Something went wrong. Try again.');
+                    });
+            });
+        });
+    });
+
+</script>
+
+@endpush

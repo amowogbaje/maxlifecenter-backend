@@ -238,6 +238,7 @@
             </div>
         </div>
 
+
         <!-- Product Grid -->
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
             @forelse($recentProducts as $product)

@@ -1,4 +1,4 @@
-@extends('user.layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 <div class="p-4 lg:p-[32px] space-y-6 lg:space-y-8">

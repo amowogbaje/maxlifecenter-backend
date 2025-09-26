@@ -145,6 +145,11 @@ class User extends Authenticatable
         return $this->currentReward;
     }
 
+    public function userRewards()
+    {
+        return $this->hasMany(UserReward::class);
+    }
+
     // Accessor: $user->nextTobeApprovedTier
     public function getNextTobeApprovedTierAttribute()
     {

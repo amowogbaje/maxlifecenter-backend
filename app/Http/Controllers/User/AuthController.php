@@ -45,6 +45,9 @@ class AuthController extends Controller
         return view('user.auth.forgot-password');
     }
 
+    
+
+
     public function sendResetLinkEmail(Request $request)
     {
         $validated = $request->validate(['email' => 'required|email|exists:users,email']);

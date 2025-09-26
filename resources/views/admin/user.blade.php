@@ -88,7 +88,7 @@
                             </div>
                             <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
                                 <span class="text-sm text-text-light">Date</span>
-                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $user->created_at }}">{{ $user->created_at }}</span>
+                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $user->created_at }}">{{ \Carbon\Carbon::parse($user->created_at)->format('M d, Y H:i a') }}</span>
                             </div>
                             @if(!empty($user['id']))
                             <div class="flex flex-col gap-1 min-w-0">
@@ -102,12 +102,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="w-11 h-11 bg-light-blue rounded-[14px] flex items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="1" />
-                            <circle cx="12" cy="5" r="1" />
-                            <circle cx="12" cy="19" r="1" /></svg>
-                    </div>
+                    <a href="{{ route('admin.users.show', ['id' => $user->id])}}" class="hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </a>
                 </div>
             </div>
             @endforeach

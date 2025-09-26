@@ -74,19 +74,9 @@ class DashboardController extends Controller
     }
 
     public function showPurchase($id) {
-        $purchase = ['amount' => '₦230,003', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'AD2383JSSUA', 'status' => 'Pending', 'bonus_points' => 25, 'statusColor' => 'bg-warning'];
-        $purchaseItems = [
-            ['name'=> "Rotary Regent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg'],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-            ['name'=> "Rotary Agent", 'id' => "GB05450/65", 'amount' => '₦50,003', 'image_url' => 'images/watch.jpg' ],
-        ];
-        return view('admin.purchase-details', compact('purchase', 'purchaseItems'));
+        $purchase = Order::with(['items.product'])->find($id);
+        $user = User::find($purchase->user_id);
+        return view('admin.purchase-details', compact('purchase', 'user'));
     }
 
     public function rewards()
@@ -101,25 +91,56 @@ class DashboardController extends Controller
             ['title' => $totalApprovedRewards, 'subtitle' => 'Total Rewards Sent',  'bgColor' => 'bg-green-600'],
         ];
 
-        $rewards = [
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-        ];
+        $userRewards = UserReward::with(['user', 'reward'])
+            ->join('rewards', 'user_rewards.reward_id', '=', 'rewards.id')
+            ->select('user_rewards.*')
+            ->where('user_rewards.status', '!=', 'unclaimed')
+            ->orderByRaw("FIELD(user_rewards.status, 'pending', 'approved')")
+            ->orderBy('rewards.priority', 'asc')
+            ->paginate(10);
 
-        return view('admin.reward', compact('metricCards', 'rewards'));
+
+        return view('admin.reward', compact('metricCards', 'userRewards'));
+    }
+
+    public function approveReward($id)
+    {
+        try {
+            $userReward = UserReward::findOrFail($id);
+
+            if ($userReward->status !== 'pending') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Reward not yet claimed.'
+                ], 400);
+            }
+
+            $userReward->update(['status' => 'approved']);
+
+            return response()->json([
+                'success' => true,
+                'status'  => 'approved',
+                'message' => 'Reward Approved.'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
     public function users()
     {
         $users = User::where('is_admin', false)->paginate(10);
 
-
-
-
         return view('admin.user', compact('users', 'users'));
+    }
+
+    public function showUser($id)
+    {
+        $user = User::find($id);
+        return view('admin.profile-user', compact('user'));
     }
 
     public function updates()

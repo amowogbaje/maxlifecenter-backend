@@ -25,4 +25,9 @@ class Reward extends Model
     {
         return $this->hasMany(User::class, 'current_reward_id');
     }
+
+    public function userRewards()
+    {
+        return $this->hasMany(UserReward::class);
+    }
 }

@@ -1,4 +1,4 @@
-@extends('user.layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 <div class="p-4 lg:p-[32px] space-y-6 lg:space-y-8">
@@ -163,9 +163,10 @@
                                 <p class="text-sm text-brand-light-gray mb-1">Date</p>
                                 <p class="text-base text-brand-dark">{{ \Carbon\Carbon::parse($purchase->date_created)->format('M d, Y H:i a') }}</p>
                             </div>
+                            <div></div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">User ID</p>
-                                <p class="text-base text-brand-dark">{{$user->woo_id ?? 'No Shop ID'}}</p>
+                                <p class="text-base text-brand-dark">{{$user->woo_id > 0 ? $user->woo_id : 'No Shop ID'}}</p>
                             </div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">Status</p>

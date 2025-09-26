@@ -33,15 +33,27 @@
                     </div>
 
                     <!-- Step 2: Password / OTP -->
+                    <!-- Step 2: Password / OTP -->
                     <div x-show="step === 2" x-transition class="space-y-4">
                         <template x-if="hasPassword">
                             <div>
                                 <h2 class="text-xl font-bold text-gray-700">Enter Password</h2>
+
+                                <!-- OTP-like password input -->
                                 <div class="flex gap-2 justify-center mt-3">
                                     <template x-for="i in 4" :key="i">
-                                        <input type="password" maxlength="1" class="w-12 h-12 text-center text-xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400" inputmode="numeric" pattern="\d*">
+                                        <input type="password" maxlength="1" class="otp-input w-12 h-12 text-center text-xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400" inputmode="numeric" pattern="\d*" @input="handleInput($event, i)" @keydown.backspace="handleBackspace($event, i)">
                                     </template>
                                 </div>
+
+                                <div class="flex justify-between mt-3">
+                                    <button @click="step = 1" class="text-gray-500 hover:underline">← Back</button>
+                                    <button @click="submitPassword()" class="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">
+                                        Login
+                                    </button>
+                                </div>
+
+                                <a href="/forgot-password" class="text-sm text-yellow-600 hover:underline mt-2 block">Forgot password?</a>
                             </div>
                         </template>
 
@@ -51,60 +63,9 @@
                                 <p class="text-gray-500 text-sm">We’ve sent you a one-time passcode to login.</p>
                             </div>
                         </template>
-
-                        <div class="flex justify-between mt-3">
-                            <button @click="step = 1" class="text-gray-500 hover:underline">← Back</button>
-                            <button type="submit" class="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">
-                                Login
-                            </button>
-                        </div>
                     </div>
 
                 </div>
-
-                <script>
-                    function loginWizard() {
-                        return {
-                            step: 1
-                            , email: ''
-                            , hasPassword: false,
-
-                            async checkEmail() {
-                                if (!this.email) {
-                                    alert("Please enter an email");
-                                    return;
-                                }
-
-                                try {
-                                    let response = await fetch('/check-email', {
-                                        method: 'POST'
-                                        , headers: {
-                                            'Content-Type': 'application/json'
-                                            , 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        }
-                                        , body: JSON.stringify({
-                                            email: this.email
-                                        })
-                                    });
-
-                                    let data = await response.json();
-
-                                    if (data.exists) {
-                                        this.hasPassword = data.hasPassword;
-                                        this.step = 2;
-                                    } else {
-                                        alert("Email not registered");
-                                    }
-                                } catch (e) {
-                                    console.error(e);
-                                    alert("Something went wrong. Please try again.");
-                                }
-                            }
-                        }
-                    }
-
-                </script>
-
 
                 <p class="text-center text-sm text-[#91929E] mt-4">Step into your treasure trove</p>
             </div>
@@ -164,3 +125,116 @@
 
 </script>
 @endsection
+@push('style')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+@endpush
+
+@push('script')
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+    function showToast(message, type = 'error') {
+        Toastify({
+            text: message
+            , duration: 3000
+            , gravity: "top"
+            , position: "right"
+            , backgroundColor: type === 'success' ? "#4caf50" : "#f44336"
+        , }).showToast();
+    }
+
+    function loginWizard() {
+        return {
+            step: 1
+            , email: ''
+            , hasPassword: false
+            , passwordDigits: ['', '', '', ''], // for 4 digits
+
+            async checkEmail() {
+                if (!this.email) {
+                    showToast("Please enter an email");
+                    return;
+                }
+
+                try {
+                    let response = await fetch('/api/check-email', {
+                        method: 'POST'
+                        , headers: {
+                            'Content-Type': 'application/json'
+                            , 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                        , body: JSON.stringify({
+                            email: this.email
+                        })
+                    });
+
+                    let data = await response.json();
+
+                    if (!response.ok) {
+                        showToast(data.message || "Email not registered");
+                        return;
+                    }
+
+                    if (data.exists && data.hasPassword) {
+                        this.hasPassword = true;
+                        this.step = 2;
+                    } else if (data.exists && data.redirectToOtp) {
+                        window.location.href = "/verify-otp?email=" + encodeURIComponent(this.email);
+                    }
+                } catch (e) {
+                    console.error(e);
+                    showToast("Something went wrong. Please try again.");
+                }
+            },
+
+            handleInput(e, index) {
+                this.passwordDigits[index - 1] = e.target.value;
+                if (e.target.value && index < this.passwordDigits.length) {
+                    e.target.closest('div').querySelectorAll('.otp-input')[index].focus();
+                }
+            },
+
+            handleBackspace(e, index) {
+                if (!e.target.value && index > 1) {
+                    e.target.closest('div').querySelectorAll('.otp-input')[index - 2].focus();
+                }
+            },
+
+            async submitPassword() {
+                let password = this.passwordDigits.join('');
+                if (password.length < 4) {
+                    showToast("Enter all 4 digits");
+                    return;
+                }
+
+                try {
+                    let response = await fetch('/api/login', {
+                        method: 'POST'
+                        , headers: {
+                            'Content-Type': 'application/json'
+                            , 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                        , body: JSON.stringify({
+                            email: this.email
+                            , password: password
+                        })
+                    });
+
+                    let data = await response.json();
+
+                    if (!response.ok) {
+                        showToast("Incorrect credentials. Forgot password?", "error");
+                        return;
+                    }
+
+                    showToast("Login successful!", "success");
+                    window.location.href = "/dashboard";
+                } catch (e) {
+                    console.error(e);
+                    showToast("Something went wrong during login.");
+                }
+            }
+        }
+    }
+
+</script>
+@endpush
