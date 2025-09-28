@@ -12,3 +12,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('woo:sync-orders')->everyTenSeconds()->withoutOverlapping();
 Schedule::command('users:update-bonus-points')->daily();
+Schedule::command('log:five-minutes')->everyFiveMinutes();

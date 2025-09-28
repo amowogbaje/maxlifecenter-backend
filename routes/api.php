@@ -21,7 +21,7 @@ Route::post('/send-otp', [BasicController::class, 'sendOtp']);
 
 Route::post('/webhooks/woocommerce', [WebhookController::class, 'handle'])
     ->name('webhooks.woocommerce')
-    ->middleware(['wc.signed', 'throttle:60,1']);
+    ->middleware(['wc.signed', 'throttle:300,1']);
 
 Route::post('/rewards/{id}/claim', [UserDashboardController::class, 'claimReward'])
     ->name('rewards.claim');

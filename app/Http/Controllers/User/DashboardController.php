@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $purchaseCount = Order::where('user_id', $user->id)->count();
         $purchaseTotal = Order::where('user_id', $user->id)->sum('total');
         $currentTier = $user->approvedTier->title;
-        $nextTier = $user->nextToBeApprovedTier->title;
+        $nextTier = $user->nextToBeApprovedTier?->title ?? null;
         $recentProducts = Product::whereHas('orderItems.order', function ($q) use ($user) {
                 $q->where('user_id', $user->id);
             })

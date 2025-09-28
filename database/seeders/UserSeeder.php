@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'password'=> Hash::make('4545'),
             'gender' => 'male',
             'is_admin' => true,
-            'current_reward_id' = 1,
+            'current_reward_id' => 1,
             'bonus_point' => 30,
         ]);
     }

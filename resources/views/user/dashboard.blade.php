@@ -93,12 +93,14 @@
             <p class="text-xs text-gray-500 mb-1">Current Tier</p>
             <h3 class="text-2xl font-bold text-gray-900 mb-3">{{$currentTier}}</h3>
 
+            @if($nextTier)
             <div class="flex justify-center mb-3 ">
                 <span class="bg-blue-50 rounded-lg text-xs px-3 py-1  font-semibold text-gray-600">{{$nextTier}}</span>
                 <div class="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
                     <img src="{{ asset('images/'. strtolower($nextTier) .'.png')}}" class="w-6 h-6" alt="{{$nextTier}}" />
                 </div>
             </div>
+            @endif
         </div>
 
 

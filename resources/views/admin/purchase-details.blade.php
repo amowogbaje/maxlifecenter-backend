@@ -163,11 +163,6 @@
                                 <p class="text-sm text-brand-light-gray mb-1">Date</p>
                                 <p class="text-base text-brand-dark">{{ \Carbon\Carbon::parse($purchase->date_created)->format('M d, Y H:i a') }}</p>
                             </div>
-                            <div></div>
-                            <div>
-                                <p class="text-sm text-brand-light-gray mb-1">User ID</p>
-                                <p class="text-base text-brand-dark">{{$user->woo_id > 0 ? $user->woo_id : 'No Shop ID'}}</p>
-                            </div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">Status</p>
                                 <div class="inline-flex items-center justify-center w-[75px] h-[30px] bg-success rounded-[10px]"><span class="text-xs font-bold text-white">Complete</span></div>

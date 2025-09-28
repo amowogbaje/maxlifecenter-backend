@@ -87,7 +87,6 @@ class WooCommerceService
                 'state'      => $orderData['billing']['state'] ?? null,
                 'postcode'   => $orderData['billing']['postcode'] ?? null,
                 'country'    => $orderData['billing']['country'] ?? null,
-                'current_reward_id' => 1,
             ]
         );
 
@@ -152,7 +151,8 @@ class WooCommerceService
     protected function syncUserRewards(User $user): void
     {
         $totalPoints    = $user->orders()->sum('bonus_point');
-        $totalPurchases = $user->orders()->withSum('items', 'quantity')->get()->sum('items_sum_quantity');
+        $totalSpent    = $user->orders()->sum('total');
+        $totalPurchases = $user->orders()->withCount('items')->get()->sum('items_count');
 
         $eligibleRewards = Reward::where('required_points', '<=', $totalPoints)
             ->where('required_purchases', '<=', $totalPurchases)
@@ -171,7 +171,12 @@ class WooCommerceService
             }
 
             // set current_reward_id to highest priority reward
-            // $user->update(['current_reward_id' => $eligibleRewards->last()->id]);
+            $user->update([
+                'bonus_point' => $totalPoints,
+                'total_spent' => $totalSpent,
+                'purchases' => $totalPurchases,
+                'current_reward_id' => $eligibleRewards->last()->id
+            ]);
         }
     }
 

@@ -31,10 +31,10 @@ class DashboardController extends Controller
         $metricCards = [
             ['title' => $purchaseCount, 'subtitle' => 'Earnings', 'value' => '₦' . number_format($purchaseTotal), 'bgColor' => 'bg-purple', 'icon' => $rewardIcon, 'hasAvatar' => false],
             ['title' => $totalUsersCount, 'subtitle' => 'Users',  'bgColor' => 'bg-success', 'icon' => $usersIcon, 'hasAvatar' => false],
-            ['title' => $eleniyan->active_users_count, 'subtitle' => 'Total Count - ELENIYAN', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/eleniyan.png'],
-            ['title' => $kabiyesi->active_users_count, 'subtitle' => 'Total Count - OLOYE', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/oloye.png'],
-            ['title' => $oloye->active_users_count, 'subtitle' => 'Total Count - BALOGUN', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/balogun.png'],
-            ['title' => $balogun->active_users_count, 'subtitle' => 'Total Count - KABIYESI', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/kabiyesi.png'],
+            ['title' => $eleniyan->active_users_count, 'subtitle' => 'Total Count - ELENIYAN', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/eleniyan.png'],
+            ['title' => $kabiyesi->active_users_count, 'subtitle' => 'Total Count - OLOYE', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/oloye.png'],
+            ['title' => $oloye->active_users_count, 'subtitle' => 'Total Count - BALOGUN', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/balogun.png'],
+            ['title' => $balogun->active_users_count, 'subtitle' => 'Total Count - KABIYESI', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/kabiyesi.png'],
         ];
 
         $activityLogs = [
@@ -58,11 +58,11 @@ class DashboardController extends Controller
         $purchases = Order::where('status', 'completed');
         $purchaseCount = $purchases->count();
         $purchaseTotal = $purchases->sum('total');
-        $bonusPointTotal = $purchases->where('reward_status', 'pending')->count();
+        $bonusPointTotal = $purchases->where('reward_status', 'pending')->sum('bonus_point');
         $totalUsersCount = User::count();
 
         $metricCards = [
-            ['title' => $bonusPointTotal, 'subtitle' => 'Bonus Point Pending Approval', 'bgColor' => 'bg-purple', 'icon' => $rewardIcon, 'hasAvatar' => false],
+            ['title' => number_format($bonusPointTotal), 'subtitle' => 'Bonus Point Pending Approval', 'bgColor' => 'bg-purple', 'icon' => $rewardIcon, 'hasAvatar' => false],
             ['title' => $purchaseCount, 'subtitle' => 'Total No. of Purchases', 'bgColor' => 'bg-success', 'icon' => $usersIcon, 'hasAvatar' => false],
             ['title' => '₦' . number_format($purchaseTotal), 'subtitle' => 'Total Amount Spent', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => false],
             ['title' => $totalUsersCount, 'subtitle' => 'Purchasing Users', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => false],
@@ -81,7 +81,7 @@ class DashboardController extends Controller
 
     public function rewards()
     {
-        $totalApprovedRewards = UserReward::where('status', 'approved')->where('mail_sent', true)->count();
+        $totalApprovedRewards = UserReward::where('status', 'approved')->count();
         $pendingRewards = UserReward::where('status', 'pending')->count();
         $unclaimedRewards = UserReward::where('status', 'unclaimed')->count();
 

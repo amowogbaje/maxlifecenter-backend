@@ -87,13 +87,12 @@
                                 <span class="text-base font-bold text-text-dark truncate" title="{{ $user->bonus_point }}"><img src="{{ asset('images/icons/diamond.svg') }}" alt="Rewards" class="inline-block w-4 h-4 mr-1">{{ $user->bonus_point }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
-                                <span class="text-sm text-text-light">Date</span>
-                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $user->created_at }}">{{ \Carbon\Carbon::parse($user->created_at)->format('M d, Y H:i a') }}</span>
+                                <span class="text-sm text-text-light">Email</span>
+                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $user->email }}">{{ \Carbon\Carbon::parse($user->created_at)->format('M d, Y H:i a') }}</span>
                             </div>
-                            @if(!empty($user['id']))
                             <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light truncate">ID</span>
-                                <span class="text-base text-text-dark truncate" title="{{ $user['id'] }}">{{ $user['id'] }}</span>
+                                <span class="text-sm text-text-light truncate">Total Spent</span>
+                                <span class="text-base text-text-dark truncate" title="{{ $user->total_spent }}">{{ '₦' .number_format($user->total_spent) }}</span>
                             </div>
                             @endif
                             <div class="flex flex-col gap-1 min-w-0">

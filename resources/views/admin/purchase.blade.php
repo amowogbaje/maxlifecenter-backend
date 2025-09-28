@@ -142,21 +142,21 @@
                                 </span>
                             </div>
 
-                            @if(!empty($purchase->reward_status))
+                            @if(!empty($purchase->status))
                             <div class="flex flex-col min-w-0 col-span-2 sm:col-span-1">
                                 <span class="text-[11px] sm:text-sm text-text-light">Status</span>
                                 @php
                                 $statusColors = [
                                 'pending' => 'bg-warning',
-                                'approved' => 'bg-success',
+                                'completed' => 'bg-success',
                                 'rejected' => 'bg-danger',
                                 ];
-                                $statusColor = $statusColors[$purchase->reward_status] ?? 'bg-gray-500';
+                                $statusColor = $statusColors[$purchase->status] ?? 'bg-gray-500';
                                 @endphp
 
                                 <div class="rounded-md px-2 py-[2px] sm:px-3 sm:py-1 w-fit {{ $statusColor }}">
                                     <span class="text-[10px] sm:text-xs font-bold text-white truncate block">
-                                        {{ ucfirst($purchase->reward_status) }}
+                                        {{ ucfirst($purchase->status) }}
                                     </span>
                                 </div>
                             </div>

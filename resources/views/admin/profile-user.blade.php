@@ -43,57 +43,35 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="space-y-2">
                             <label class="text-gray-700 text-sm font-bold">First Name</label>
-                            <input type="text" name="first_name" value="{{ $user->first_name }}"
+                            <input type="text" name="first_name" value="{{ $user->first_name }}" readonly
                                 class="w-full h-12 px-4 rounded-[14px] border border-gray-300 text-gray-700 text-sm shadow-sm focus:outline-none">
                         </div>
 
                         <div class="space-y-2">
                             <label class="text-gray-700 text-sm font-bold">Last Name</label>
-                            <input type="text" name="last_name" value="{{ $user->last_name }}"
+                            <input type="text" name="last_name" value="{{ $user->last_name }}" readonly
                                 class="w-full h-12 px-4 rounded-[14px] border border-gray-300 text-gray-700 text-sm shadow-sm focus:outline-none">
                         </div>
 
                         <div class="space-y-2">
                             <label class="text-gray-700 text-sm font-bold">Mobile Number</label>
-                            <input type="tel" name="phone" value="{{ $user->phone ?? '' }}"
+                            <input type="tel" name="phone" value="{{ $user->phone ?? '' }}" readonly
                                 class="w-full h-12 px-4 rounded-[14px] border border-gray-300 text-gray-700 text-sm shadow-sm focus:outline-none">
                         </div>
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-gray-700 text-sm font-bold">Email Address</label>
-                        <input type="email" readonly value="{{ $user->email }}"
+                        <input readonly type="email" readonly value="{{ $user->email }}"
                             class="w-full h-12 px-4 rounded-[14px] border border-gray-300 text-gray-500 bg-gray-100 text-sm shadow-sm cursor-not-allowed">
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-gray-700 text-sm font-bold">Location</label>
-                            <input type="text" name="location" value="{{ $user->location ?? '' }}"
-                                class="w-full h-12 px-4 rounded-[14px] border border-gray-300 text-gray-700 text-sm shadow-sm focus:outline-none">
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="text-gray-700 text-sm font-bold">Birthday Date</label>
-                            <input type="text" id="birthday" name="birthday"
-                                value="{{ $user->birthday ? \Carbon\Carbon::parse($user->birthday)->format('Y-m-d') : '' }}"
-                                class="datepicker w-full h-12 px-4 rounded-[14px] border border-gray-300 text-gray-700 text-sm shadow-sm focus:outline-none">
-                        </div>
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-gray-700 text-sm font-bold">Bio</label>
-                        <textarea name="bio" rows="4"
+                        <textarea name="bio" rows="4" readonly
                             class="w-full p-4 rounded-[14px] border border-gray-300 text-gray-700 text-sm shadow-sm resize-none focus:outline-none">{{ $user->bio ?? '' }}</textarea>
                     </div>
 
-                    <!-- Submit -->
-                    <div class="pt-4">
-                        <button type="submit"
-                            class="bg-black text-white px-6 py-3 rounded-lg text-sm font-semibold hover:bg-gray-800">
-                            Update Profile
-                        </button>
-                    </div>
                 </div>
             </form>
         </div>

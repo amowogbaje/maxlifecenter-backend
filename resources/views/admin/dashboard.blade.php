@@ -14,6 +14,13 @@
         @foreach($metricCards as $card)
         <div class="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between hover:shadow-md transition">
 
+            @if($card['hasAvatar'])
+            <div class="flex items-center justify-start mb-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center {{ $card['bgColor'] }}">
+                    <img src="{{asset($card['avatarIcon'])}}" alt="Eleniyan Icon" class="w-8 h-8" />
+                </div>
+            </div>
+            @else
             <!-- Icon -->
             <div class="flex items-center justify-start mb-3">
                 <div class="w-8 h-8 rounded-full flex items-center justify-center {{ $card['bgColor'] }}">
@@ -22,6 +29,7 @@
                     </svg>
                 </div>
             </div>
+            @endif
 
             <!-- Text -->
             <div class="flex-1">
@@ -35,11 +43,7 @@
             </div>
 
             <!-- Avatar -->
-            @if($card['hasAvatar'])
-            <div class="absolute top-4 right-4 w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center">
-                <img src="{{asset($card['avatarIcon'])}}" alt="Eleniyan Icon" class="w-16 h-16" />
-            </div>
-            @endif
+            
         </div>
         @endforeach
     </div>

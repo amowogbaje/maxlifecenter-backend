@@ -147,17 +147,21 @@
                         <div>
                             <p class="text-sm text-brand-light-gray mb-1">Next Tier</p>
                             <p class="text-base text-brand-dark">
-                                {{ $user->progressToNextTier()['next_tier']->title ?? 'Max Tier' }}
+                                {{ $user->progressToNextTier()['next_tier']->title ?? '🎉 Max Tier Achieved' }}
                             </p>
                         </div>
 
                         <!-- Points Progress -->
                         <div class="col-span-2">
                             <p class="text-sm text-brand-light-gray mb-1">
-                                {{ $user->progressToNextTier()['points_remaining'] ?? 0 }} points away from next tier
+                                @if ($user->progressToNextTier()['next_tier'])
+                                {{ $user->progressToNextTier()['points_remaining'] }} points away from next tier
+                                @else
+                                You’ve earned all available points 🚀
+                                @endif
                             </p>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $user->progressToNextTier()['progress_percent'] ?? 0 }}%">
+                                <div class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: {{ $user->progressToNextTier()['progress_percent'] }}%">
                                 </div>
                             </div>
                         </div>
@@ -165,10 +169,14 @@
                         <!-- Purchases Progress -->
                         <div class="col-span-2">
                             <p class="text-sm text-brand-light-gray mb-1">
-                                {{ $user->progressToNextTier()['purchases_remaining'] ?? 0 }} purchases away from next tier
+                                @if ($user->progressToNextTier()['next_tier'])
+                                {{ $user->progressToNextTier()['purchases_remaining'] }} purchases away from next tier
+                                @else
+                                You’ve unlocked all tiers with your purchases 👑
+                                @endif
                             </p>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" style="width: {{ $user->progressToNextTier()['progress_percent'] ?? 0 }}%">
+                                <div class="bg-green-500 h-2 rounded-full transition-all duration-500" style="width: {{ $user->progressToNextTier()['progress_percent'] }}%">
                                 </div>
                             </div>
                         </div>
@@ -177,10 +185,11 @@
                         <div class="col-span-2 mt-2">
                             <p class="text-xs text-brand-light-gray">
                                 Overall Progress: <span class="font-semibold">
-                                    {{ $user->progressToNextTier()['progress_percent'] ?? 0 }}%
+                                    {{ $user->progressToNextTier()['progress_percent'] }}%
                                 </span>
                             </p>
                         </div>
+
                     </div>
                 </div>
 

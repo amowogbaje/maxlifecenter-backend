@@ -18,9 +18,29 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'id', 'user_id', 'woo_id','first_name', 'last_name', 'email', 'phone', 'gender', 'bonus_point', 'password',
-        'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country', 'is_admin', 'current_reward_id',
-        'bio', 'location', 'birthday',
+        'id',
+        'user_id',
+        'woo_id',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'gender',
+        'bonus_point',
+        'password',
+        'company',
+        'address_1',
+        'address_2',
+        'city',
+        'state',
+        'postcode',
+        'country',
+        'is_admin',
+        'current_reward_id',
+        'bio',
+        'location',
+        'birthday',
+        'purchases',
     ];
 
 
@@ -71,25 +91,24 @@ class User extends Authenticatable
     public function progressToNextTier()
     {
         $next = $this->nextTier();
-        if (!$next) {
-            return null;
+
+        $points = $this->bonus_point;
+        $purchases = $this->purchases;
+
+        if ($next) {
+            $pointsRemaining = max(0, $next->required_points - $points);
+            $purchasesRemaining = max(0, $next->required_purchases - $purchases);
+
+            $pointsProgress = $next->required_points > 0 ? min(1, $points / $next->required_points) : 1;
+            $purchasesProgress = $next->required_purchases > 0 ? min(1, $purchases / $next->required_purchases) : 1;
+
+            $progressPercent = round(($pointsProgress + $purchasesProgress) / 2 * 100, 2);
+        } else {
+            // Already at max tier
+            $pointsRemaining = 0;
+            $purchasesRemaining = 0;
+            $progressPercent = 100;
         }
-
-        $points = $this->orders()->sum('bonus_point');
-        // $purchases = OrderItem::whereHas('order', function ($q) {
-        //                 $q->where('user_id', $this->id);
-        //             })->count();
-        $purchases = OrderItem::whereHas('order', function ($q) {
-                            $q->where('user_id', $this->id);
-                        })->count();
-
-        $pointsRemaining = max(0, $next->required_points - $points);
-        $purchasesRemaining = max(0, $next->required_purchases - $purchases);
-
-        $pointsProgress = $next->required_points > 0 ? min(1, $points / $next->required_points) : 1;
-        $purchasesProgress = $next->required_purchases > 0 ? min(1, $purchases / $next->required_purchases) : 1;
-
-        $progressPercent = round(($pointsProgress + $purchasesProgress) / 2 * 100, 2);
 
         return [
             'next_tier' => $next,
@@ -99,12 +118,13 @@ class User extends Authenticatable
         ];
     }
 
-    
+
+
     public function rewards()
     {
         return $this->belongsToMany(Reward::class, 'user_rewards')
-                    ->withPivot(['achieved_at', 'mail_sent', 'status'])
-                    ->withTimestamps();
+            ->withPivot(['achieved_at', 'mail_sent', 'status'])
+            ->withTimestamps();
     }
 
     public function allRewards()
@@ -130,8 +150,8 @@ class User extends Authenticatable
         }
 
         return Reward::where('priority', '>', $currentTier->priority)
-                    ->orderBy('priority')
-                    ->first();
+            ->orderBy('priority')
+            ->first();
     }
 
     public function currentReward()
@@ -155,14 +175,15 @@ class User extends Authenticatable
     {
         if (!$this->current_reward_id) {
             // If user has no reward yet, return the first reward
-            return Reward::find(1);
+            return Reward::orderBy('id')->first();
         }
 
         $current = $this->currentReward;
 
-        return Reward::where('id', '>', $current->id)
-                     ->first();
-    }
+        $next = Reward::where('id', '>', $current->id)
+            ->orderBy('id')
+            ->first();
 
-    
+        return $next ?: null;
+    }
 }
