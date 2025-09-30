@@ -94,7 +94,6 @@
                                 <span class="text-sm text-text-light truncate">Total Spent</span>
                                 <span class="text-base text-text-dark truncate" title="{{ $user->total_spent }}">{{ '₦' .number_format($user->total_spent) }}</span>
                             </div>
-                            @endif
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light">Tier</span>
                                 <span class="text-base text-text-dark truncate" title="{{ $user->approvedTier->title }}">{{ $user->approvedTier->title }}</span>

@@ -3,10 +3,22 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\EmailPreviewController;
 use App\Http\Controllers\User\DashboardController;
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/migrate', function () {
+    Artisan::call('migrate', ['--force' => true]);
+
+    return response()->json([
+        'message' => 'Migrations have been run successfully.',
+        'output'  => Artisan::output(),
+    ]);
+});
 
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/about-us', [AuthController::class, 'login'])->name('about-us');
 
 
 Route::middleware('auth')->group(function () {
@@ -54,5 +66,12 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
     Route::get('/confirm-password-reset-otp', [AuthController::class, 'confirmPasswordResetOTP'])->name('confirm-password-reset-otp');
     
-
+    Route::prefix('emails')->name('emails.')->group(function () {
+        Route::get('/', [EmailPreviewController::class, 'index']);
+        Route::get('/password', [EmailPreviewController::class, 'password'])->name('password');
+        Route::get('/unlocked', [EmailPreviewController::class, 'unlocked'])->name('unlocked');
+        Route::get('/reminder', [EmailPreviewController::class, 'reminder'])->name('reminder');
+        Route::get('/approved', [EmailPreviewController::class, 'approved'])->name('approved');
+        // Route::get('/weekly-report', [EmailPreviewController::class, 'weeklyReport']);
+    });
 });

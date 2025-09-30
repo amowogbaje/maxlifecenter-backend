@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MessagesController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -24,4 +25,12 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
     Route::get('/updates', [DashboardController::class, 'updates'])->name('updates');
     Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
     Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
+    Route::prefix('messages')->name('messages.')->group(function () {
+        Route::get('/', [MessagesController::class, 'index'])->name('index');
+        Route::get('/create', [MessagesController::class, 'create'])->name('create');
+        Route::post('/store', [MessagesController::class, 'store'])->name('store');
+        Route::get('/{message}/preview', [MessagesController::class, 'preview'])->name('preview');
+        Route::post('/{message}/send', [MessagesController::class, 'send'])->name('send');
+        Route::post('/{message}/test', [MessagesController::class, 'test'])->name('test');
+    });
 });

@@ -10,6 +10,9 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('woo:sync-orders')->everyTenSeconds()->withoutOverlapping();
-Schedule::command('users:update-bonus-points')->daily();
-Schedule::command('log:five-minutes')->everyFiveMinutes();
+// Schedule::command('woo:sync-orders')->everyTenSeconds()->withoutOverlapping();
+// Schedule::command('users:update-bonus-points')->daily();
+// Schedule::command('log:five-minutes')->everyFiveMinutes();
+// Schedule::command('reward:send-initial-emails')->daily();
+// Schedule::command('reward:send-reminders')->twiceMonthly(1, 15);
+// Schedule::command('reward:send-approval-emails')->daily();

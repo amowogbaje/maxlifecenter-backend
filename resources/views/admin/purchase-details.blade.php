@@ -165,7 +165,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">Status</p>
-                                <div class="inline-flex items-center justify-center w-[75px] h-[30px] bg-success rounded-[10px]"><span class="text-xs font-bold text-white">Complete</span></div>
+                                <div class="inline-flex items-center justify-center w-[75px] h-[30px] bg-success rounded-[10px]"><span class="text-xs font-bold text-white">Completed</span></div>
                             </div>
                         </div>
                     </div>

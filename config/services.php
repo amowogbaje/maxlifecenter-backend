@@ -38,5 +38,9 @@ return [
     'woocommerce' => [
         'webhook_secret' => env('WOOCOMMERCE_WEBHOOK_SECRET'),
     ],
+    'rewards' => [
+        'mail_sending_limit' => env('MAIL_SENDING_LIMIT', null),
+    ],
+
 
 ];

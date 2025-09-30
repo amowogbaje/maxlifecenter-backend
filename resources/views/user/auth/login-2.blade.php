@@ -178,8 +178,28 @@
                         this.hasPassword = true;
                         this.step = 2;
                     } else if (data.exists && data.redirectToOtp) {
-                        window.location.href = "/verify-otp?email=" + encodeURIComponent(this.email);
+                        fetch('/api/send-otp', {
+                                method: 'POST'
+                                , headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                                , body: JSON.stringify({
+                                    email: this.email
+                                })
+                            })
+                            .then(response => {
+                                if (!response.ok) throw new Error('Failed to send OTP');
+                                return response.json();
+                            })
+                            .then(() => {
+                                window.location.href = "/verify-otp?email=" + encodeURIComponent(this.email);
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                alert('Something went wrong while sending OTP.');
+                            });
                     }
+
                 } catch (e) {
                     console.error(e);
                     showToast("Something went wrong. Please try again.");
