@@ -87,17 +87,13 @@
                         </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-gray-700 text-sm font-bold">Email Address</label>
-                        <input type="email" readonly value="{{ Auth::user()->email }}"
-                            class="w-full h-12 px-4 rounded-[14px] border border-gray-300 text-gray-500 bg-gray-100 text-sm shadow-sm cursor-not-allowed">
-                    </div>
+                    
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="text-gray-700 text-sm font-bold">Location</label>
-                            <input type="text" name="location" value="{{ Auth::user()->location ?? '' }}"
-                                class="w-full h-12 px-4 rounded-[14px] border border-gray-300 text-gray-700 text-sm shadow-sm focus:outline-none">
+                            <label class="text-gray-700 text-sm font-bold">Email Address</label>
+                            <input type="email" readonly value="{{ Auth::user()->email }}"
+                                class="w-full h-12 px-4 rounded-[14px] border border-gray-300 text-gray-500 bg-gray-100 text-sm shadow-sm cursor-not-allowed">
                         </div>
 
                         <div class="space-y-2">

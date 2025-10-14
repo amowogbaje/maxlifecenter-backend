@@ -16,26 +16,38 @@ use DB;
 class BasicController extends Controller
 {
 
-    public function checkEmail(Request $request)
+    public function checkIdentifier(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
-        $user = User::where('email', $request->email)->first();
+        $request->validate(['identifier' => 'required|string']);
+
+        $identifier = $request->identifier;
+
+        // Check if identifier is email or phone
+        $user = filter_var($identifier, FILTER_VALIDATE_EMAIL)
+            ? User::where('email', $identifier)->first()
+            : User::where('phone', $identifier)->first();
 
         if (!$user) {
-            return response()->json(['message' => 'Email not registered'], 404);
+            return response()->json(['message' => 'Account not registered'], 404);
         }
 
         return response()->json([
-            'exists'      => true,
-            'hasPassword' => !is_null($user->password),
+            'exists'       => true,
+            'hasPassword'  => !is_null($user->password),
             'redirectToOtp' => is_null($user->password),
         ]);
     }
 
+
     public function sendOtp(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
-        $user = User::where('email', $request->email)->first();
+        $request->validate(['identifier' => 'required|string']);
+
+        $identifier = $request->identifier;
+
+        $user = filter_var($identifier, FILTER_VALIDATE_EMAIL)
+            ? User::where('email', $identifier)->first()
+            : User::where('phone', $identifier)->first();
 
         if (!$user) {
             return response()->json(['message' => 'No account found'], 404);
@@ -50,18 +62,31 @@ class BasicController extends Controller
 
         Cache::put('otp_' . $user->id, $otp, $expiresAt);
         Cache::put('otp_for_' . $otp, $user->id, $expiresAt);
-
         session(['otp_user_id' => $user->id]);
 
-        Mail::to($user->email)->send(
-            new EmailVerificationRequestMailable($user, $otp, 10)
-        );
+        // Determine delivery channel (Email or SMS)
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            Mail::to($user->email)->send(
+                new EmailVerificationRequestMailable($user, $otp, 10)
+            );
+        } else {
+            // Assuming you have an SmsService that sends messages
+            // app(\App\Services\SmsService::class)->send(
+            //     $user->phone,
+            //     "Your verification code is {$otp}. It expires in 10 minutes."
+            // );
+
+            Mail::to($user->email)->send(
+                new EmailVerificationRequestMailable($user, $otp, 10)
+            );
+        }
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'OTP sent to your email',
+            'status'  => 'success',
+            'message' => 'OTP sent successfully',
         ]);
     }
+
 
     
 }

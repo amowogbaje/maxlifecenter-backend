@@ -24,10 +24,17 @@
 
                     <!-- Step 1: Enter Email -->
                     <div x-show="step === 1" x-transition class="space-y-4">
-                        <h2 class="text-xl font-bold text-gray-700">Welcome back 👋</h2>
-                        <input type="email" id="email" x-model="email" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-yellow-400" placeholder="Enter your email" required>
-
-                        <button @click="checkEmail()" class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600">
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-[#0A1629] mb-2">Email Address/Phone No.</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <img src="{{ asset('images/icons/User-alt.svg') }}" alt="User Icon" class="w-5 h-5" />
+                                </div>
+                                <input type="identifier" x-model="identifier" value="{{ old('identifier') }}" required placeholder="email or phone" class="w-full pl-10 pr-3 py-3 border @error('identifier') border-red-500 @else border-gray-300 @enderror rounded-lg 
+                                focus:outline-none focus:ring-2 focus:ring-[#FFBE00] text-gray-600" />
+                            </div>
+                        </div>
+                        <button @click="checkIdentifier()" class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600">
                             Next →
                         </button>
                     </div>
@@ -59,8 +66,8 @@
 
                         <template x-if="!hasPassword">
                             <div>
-                                <h2 class="text-xl font-bold text-gray-700">Check your email 📩</h2>
-                                <p class="text-gray-500 text-sm">We’ve sent you a one-time passcode to login.</p>
+                                <h2 class="text-xl font-bold text-gray-700">Check your email/phone</h2>
+                                <p class="text-gray-500 text-sm">We’ve sent you a one-time passcode to set your access code.</p>
                             </div>
                         </template>
                     </div>
@@ -145,32 +152,32 @@
     function loginWizard() {
         return {
             step: 1
-            , email: ''
+            , identifier: ''
             , hasPassword: false
             , passwordDigits: ['', '', '', ''], // for 4 digits
 
-            async checkEmail() {
-                if (!this.email) {
-                    showToast("Please enter an email");
+            async checkIdentifier() {
+                if (!this.identifier) {
+                    showToast("Please enter an email or a phone number");
                     return;
                 }
 
                 try {
-                    let response = await fetch('/api/check-email', {
+                    let response = await fetch('/api/check-identifier', {
                         method: 'POST'
                         , headers: {
                             'Content-Type': 'application/json'
                             , 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         }
                         , body: JSON.stringify({
-                            email: this.email
+                            identifier: this.identifier
                         })
                     });
 
                     let data = await response.json();
 
                     if (!response.ok) {
-                        showToast(data.message || "Email not registered");
+                        showToast(data.message || "Email or Phone not registered");
                         return;
                     }
 
@@ -184,7 +191,7 @@
                                     'Content-Type': 'application/json'
                                 }
                                 , body: JSON.stringify({
-                                    email: this.email
+                                    identifier: this.identifier
                                 })
                             })
                             .then(response => {
@@ -192,7 +199,7 @@
                                 return response.json();
                             })
                             .then(() => {
-                                window.location.href = "/verify-otp?email=" + encodeURIComponent(this.email);
+                                window.location.href = "/verify-otp?identifier=" + encodeURIComponent(this.identifier);
                             })
                             .catch(error => {
                                 console.error(error);
@@ -234,7 +241,7 @@
                             , 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         }
                         , body: JSON.stringify({
-                            email: this.email
+                            identifier: this.identifier
                             , password: password
                         })
                     });

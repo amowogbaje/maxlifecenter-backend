@@ -95,13 +95,14 @@
             <div class="bg-white rounded-3xl border-2 border-dashed border-gray-300 p-6">
                 <!-- Profile -->
                 <div class="flex justify-center items-center gap-3 mb-6">
-                    <img src="https://i.pravatar.cc/80?img=5" alt="avatar" class="w-12 h-12 rounded-full">
+                    
                     <div>
                         <div class="flex items-center gap-2">
                             <p class="font-semibold text-gray-900">{{$user->full_name}}</p>
-                            <span class="inline-flex w-5 h-5 rounded-full bg-green-100 items-center justify-center">
-                                <img src="{{asset('images/icons/check.svg')}}" class="h-5 h-5" />
-                            </span>
+                            {{-- <img src="https://i.pravatar.cc/80?img=5" alt="avatar" class="w-12 h-12 rounded-full"> --}}
+                            <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl font-bold text-success">{{ Str::substr(auth()->user()->first_name, 0, 1) }}</span>
+                            </div>
                         </div>
                         <p class="text-sm text-gray-500">{{$user->email}}</p>
                     </div>

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Auth;
 use DB;
+use Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
@@ -142,43 +143,62 @@ class AuthController extends Controller
     public function newHandleLogin(Request $request)
     {
         $request->validate([
-            'email'    => 'required|email',
-            'password' => 'nullable|string',
-            'otp'      => 'nullable|string',
+            'identifier' => 'required|string',
+            'password'   => 'nullable|string',
+            'otp'        => 'nullable|string',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $identifier = $request->identifier;
+        $field = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
+        Log::info('Login attempt received', [
+            'identifier' => $identifier,
+            'field_used' => $field,
+            'ip'         => $request->ip(),
+            'time'       => now()->toDateTimeString(),
+        ]);
+
+        $user = User::where($field, $identifier)->first();
+
         if (!$user) {
+            Log::warning('Login failed — user not found', [
+                'identifier' => $identifier,
+                'ip'         => $request->ip(),
+            ]);
             return response()->json(['message' => 'No account found'], 404);
         }
 
-        // Password login
+        // Handle password login
         if (!is_null($user->password)) {
-            if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            if (Auth::attempt([$field => $identifier, 'password' => $request->password], $request->filled('remember'))) {
                 $request->session()->regenerate();
+
+                Log::info('Login successful', [
+                    'user_id' => $user->id,
+                    'identifier' => $identifier,
+                    'ip' => $request->ip(),
+                    'agent' => $request->header('User-Agent'),
+                ]);
+
                 return response()->json(['message' => 'Login successful'], 200);
             }
+
+            Log::warning('Invalid credentials', [
+                'identifier' => $identifier,
+                'ip'         => $request->ip(),
+            ]);
+
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        // OTP login
-        if ($request->otp) {
-            $otpKey = 'otp_' . $user->id;
-            if (Cache::get($otpKey) === $request->otp) {
-                Auth::login($user);
-                $request->session()->regenerate();
+        Log::notice('Login attempt without password', [
+            'identifier' => $identifier,
+            'ip'         => $request->ip(),
+        ]);
 
-                // Clear OTP
-                Cache::forget($otpKey);
-                Cache::forget('otp_for_' . $request->otp);
-
-                return response()->json(['message' => 'OTP login successful'], 200);
-            }
-            return response()->json(['message' => 'Invalid or expired OTP'], 401);
-        }
-
-        return response()->json(['message' => 'Password or OTP required'], 400);
+        return response()->json(['message' => 'Password required'], 400);
     }
+
 
 
 

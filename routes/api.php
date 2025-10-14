@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BasicController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\WebhookController;
 
 
@@ -13,10 +14,11 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
 Route::post('password', [AuthController::class, 'updatePassword'])->name('password.update');
     // ->middleware('signed');
 
-Route::post('/check-email', [BasicController::class, 'checkEmail']);
+Route::post('/check-identifier', [BasicController::class, 'checkIdentifier']);
 Route::post('/send-otp', [BasicController::class, 'sendOtp']);
 
 Route::post('/webhooks/woocommerce', [WebhookController::class, 'handle'])
@@ -30,3 +32,4 @@ Route::post('/rewards/{id}/approve', [AdminDashboardController::class, 'approveR
     ->name('admin.rewards.approve');
 
 Route::post('/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
+Route::get('/users/search', [AdminUserController::class, 'search'])->name('admin.users.search');

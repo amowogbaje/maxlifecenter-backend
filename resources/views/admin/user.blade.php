@@ -88,7 +88,7 @@
                             </div>
                             <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
                                 <span class="text-sm text-text-light">Email</span>
-                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $user->email }}">{{ \Carbon\Carbon::parse($user->created_at)->format('M d, Y H:i a') }}</span>
+                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $user->email }}">{{ $user->email }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light truncate">Total Spent</span>

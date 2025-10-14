@@ -8,7 +8,9 @@ use Illuminate\Support\Str;
 use App\Models\Message;
 use App\Models\User;
 use App\Mail\GenericMessageMail;
+use App\Mail\GenericTestMessageMail;
 use App\Models\Reward;
+use Carbon\Carbon;
 
 class MessagesController extends Controller
 {
@@ -63,28 +65,71 @@ class MessagesController extends Controller
         return view('admin.messages.preview', compact('message', 'users', 'rewardLevel', 'rewardLevels'));
     }
 
-    public function send(Message $message, Request $request)
+    public function send(Request $request, Message $message)
     {
-        $rewardLevel = $request->input('reward_level');
+        $validated = $request->validate([
+            'recipient_type' => 'required|in:all,reward_level,individual',
+            'reward_level' => 'nullable|exists:rewards,id',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'users' => 'nullable|array',
+            'users.*' => 'exists:users,id',
+        ]);
 
-        $users = User::where('current_reward_id', $rewardLevel)->get();
+        $users = collect();
 
-        foreach ($users as $user) {
-            \Mail::to($user->email)->send(new GenericMessageMail($message, $user));
+        try {
+            switch ($validated['recipient_type']) {
+                case 'all':
+                    // Get all active users
+                    $users = User::query()
+                        ->where('is_admin', false)
+                        ->get();
+                    break;
+
+                case 'reward_level':
+                    $query = User::query()
+                        ->whereHas('rewards', function ($q) use ($validated) {
+                            $q->where('reward_id', $validated['reward_level']);
+                            if (!empty($validated['start_date']) && !empty($validated['end_date'])) {
+                                $q->whereBetween('user_rewards.created_at', [
+                                    $validated['start_date'],
+                                    Carbon::parse($validated['end_date'])->endOfDay()
+                                ]);
+                            }
+                        });
+                    $users = $query->get();
+                    break;
+
+                case 'individual':
+                    $users = User::whereIn('id', $validated['users'] ?? [])->get();
+                    break;
+            }
+
+            if ($users->isEmpty()) {
+                return back()->with('warning', 'No users found for the selected criteria.');
+            }
+
+            // Send message to users
+            foreach ($users as $user) {
+                // Example: you can queue or send immediately
+                // $user->notify(new SendAdminMessageNotification($message));
+                \Mail::to($user->email)->send(new GenericMessageMail($message, $user));
+            }
+
+            return back()->with('success', 'Message sent successfully to ' . $users->count() . ' users.');
+        } catch (\Exception $e) {
+            \Log::error('Error sending message: ' . $e->getMessage());
+            return back()->with('error', 'Something went wrong while sending the message.');
         }
-
-        return back()->with('success', 'Messages sent!');
     }
+
 
     public function test(Message $message, Request $request)
     {
-        $rewardLevel = $request->input('reward_level');
+            $email = $request->input('test_email');
 
-        $users = User::where('is_admin', true)->get();
-
-        foreach ($users as $user) {
-            \Mail::to($user->email)->send(new GenericMessageMail($message, $user));
-        }
+            \Mail::to($email)->send(new GenericTestMessageMail($message));
 
         return back()->with('success', 'Messages sent!');
     }

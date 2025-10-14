@@ -44,11 +44,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-
+Route::get('/sanctum/csrf-cookie', function () {
+    return response()->json(['csrf' => csrf_token()]);
+});
 Route::group(['middleware' => 'guest'], function () {
     // Route::get('/', [AuthController::class, 'login'])->name('login');
-    Route::get('/login', [AuthController::class, 'login'])->name('login');
-    Route::get('/login2', [AuthController::class, 'login2'])->name('login2');
+    Route::get('/login-old', [AuthController::class, 'login'])->name('login-old');
+    Route::get('/login', [AuthController::class, 'login2'])->name('login');
     Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
     Route::post('/login/new', [AuthController::class, 'newHandleLogin']);
 
