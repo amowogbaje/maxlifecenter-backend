@@ -115,12 +115,12 @@ class DashboardController extends Controller
                 ], 400);
             }
 
-            $userReward->update(['status' => 'approved']);
+            $userReward->update(['status' => 'claimed']);
 
             return response()->json([
                 'success' => true,
-                'status'  => 'approved',
-                'message' => 'Reward Approved.'
+                'status'  => 'claimed',
+                'message' => 'Reward Claimed.'
             ]);
         } catch (\Throwable $th) {
             return response()->json([

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('reward_id')->constrained()->onDelete('cascade');
             $table->boolean('mail_sent')->default(false);
-            $table->string('status')->default('unclaimed')->comment('unclaimed, pending, approved'); 
+            $table->string('status')->default('pending')->comment('unclaimed, pending, claimed'); 
             $table->timestamp('achieved_at')->nullable();
             $table->timestamps();
 

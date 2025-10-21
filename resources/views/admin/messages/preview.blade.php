@@ -30,7 +30,7 @@
                 <label for="recipient_type" class="block text-sm font-medium text-gray-700 mb-1">
                     Send Message To
                 </label>
-                <select name="recipient_type" id="recipient_type" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                <select name="recipient_type" id="recipient_type" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3" required>
                     <option value="">-- Select Recipient Type --</option>
                     <option value="all">All Users</option>
                     <option value="reward_level">Based on Reward Level</option>
@@ -43,7 +43,7 @@
                 <div>
                     <label for="reward_level" class="block text-sm font-medium text-gray-700 mb-1">Select Reward
                         Level</label>
-                    <select name="reward_level" id="reward_level" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <select name="reward_level" id="reward_level" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3">
                         <option value="">-- Select Reward Level --</option>
                         @foreach($rewardLevels as $level)
                         <option value="{{ $level->id }}">{{ $level->title }}</option>
@@ -66,7 +66,7 @@
             {{-- Individual Users Section --}}
             <div id="individualUserSection" class="hidden space-y-4">
                 <label for="users" class="block text-sm font-medium text-gray-700 mb-1">Select Users</label>
-                <select name="users[]" id="users" multiple class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"></select>
+                <select name="users[]" id="users" multiple class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3"></select>
                 <p class="text-xs text-gray-500 mt-1">Start typing name, email, or phone to search users.</p>
             </div>
 
