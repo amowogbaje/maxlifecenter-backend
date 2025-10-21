@@ -64,6 +64,7 @@ class DashboardController extends Controller
         $user = User::find(auth()->user()->id);
         $rewards = $user->rewards()
         ->withPivot(['id','status', 'mail_sent']) // include pivot fields
+        ->where('user_rewards.status', 'claimed')
         ->orderBy('user_rewards.created_at', 'desc')
         ->get([
             'rewards.id',

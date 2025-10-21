@@ -136,11 +136,11 @@
                     <div class="md:ml-4">
                         @if ($userReward->status === 'pending')
                         <button type="button" class="approve-btn w-full md:w-auto bg-black text-white text-sm font-semibold px-4 py-2 rounded-lg" data-id="{{ $userReward->id }}">
-                            Approve Reward
+                            Send Reward
                         </button>
-                        @elseif ($userReward->status === 'approved')
+                        @elseif ($userReward->status === 'claimed')
                         <button disabled class="w-full md:w-auto bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg opacity-70 cursor-not-allowed">
-                            Approved
+                            Claimed
                         </button>
                         @endif
                     </div>
@@ -203,16 +203,16 @@
                         if (data.success) {
                             btn.classList.remove('bg-black');
                             btn.classList.add('bg-success', 'opacity-70', 'cursor-not-allowed');
-                            btn.textContent = 'Approved';
+                            btn.textContent = 'Claimed';
                         } else {
                             btn.disabled = false;
-                            btn.textContent = 'Approve Reward';
+                            btn.textContent = 'Send Reward';
                             alert(data.message);
                         }
                     })
                     .catch(err => {
                         btn.disabled = false;
-                        btn.textContent = 'Approve Reward';
+                        btn.textContent = 'Send Reward';
                         console.error(err);
                         alert('Something went wrong. Try again.');
                     });
