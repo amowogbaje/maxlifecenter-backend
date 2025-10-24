@@ -10,7 +10,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Schedule::command('woo:sync-orders')->everyTenSeconds()->withoutOverlapping();
+Schedule::command('woo:sync-orders')->dailyAt('23:00');
 // Schedule::command('users:update-bonus-points')->daily();
 // Schedule::command('log:five-minutes')->everyFiveMinutes();
 // Schedule::command('reward:send-initial-emails')->daily();

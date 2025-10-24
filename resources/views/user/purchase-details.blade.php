@@ -39,10 +39,10 @@
                             <span class="text-sm text-text-light">Date</span>
                             <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date }}">{{ \Carbon\Carbon::parse($purchase['date'])->format('M d, Y H:i a') }}</span>
                         </div>
-                        <div class="flex flex-col gap-1 min-w-0">
+                        {{-- <div class="flex flex-col gap-1 min-w-0">
                             <span class="text-sm text-text-light truncate">Bonus Points</span>
                             <span class="text-base font-bold text-text-dark truncate" title="{{ $purchase->bonus_point }}"><img src="{{ asset('images/icons/diamond.svg') }}" alt="Bonus Points" class="inline-block w-4 h-4 mr-1">{{ $purchase->bonus_point }}</span>
-                        </div>
+                        </div> --}}
                         @if(!empty($purchase->reward_status))
                         <div class="flex flex-col min-w-0 col-span-2 sm:col-span-1">
                             <span class="text-[11px] sm:text-sm text-text-light">Status</span>
@@ -126,13 +126,13 @@
                     <!-- Bonus & Value -->
                     <div class="rounded-2xl bg-[#F6FBEF] p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
                         <!-- Bonus Point -->
-                        <div class="flex items-center gap-3 flex-1 min-w-[150px]">
+                        {{-- <div class="flex items-center gap-3 flex-1 min-w-[150px]">
                             <img class="w-9 h-9 rounded-full" src="{{asset('images/icons/bonus_cocoa.png')}}"/>
                             <div>
                                 <p class="text-xs text-gray-600">Bonus Point</p>
                                 <p class="font-semibold text-gray-800">{{ $user->bonus_point }}</p>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Divider (hidden on wrap) -->
                         <div class="hidden sm:block h-10 w-px bg-gray-200 rounded"></div>

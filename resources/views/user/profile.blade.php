@@ -33,7 +33,7 @@
                     </div>
 
                     <!-- Example stats -->
-                    <div class="bg-gray-100 rounded-[20px] px-6 py-4 flex items-center gap-8">
+                    {{-- <div class="bg-gray-100 rounded-[20px] px-6 py-4 flex items-center gap-8">
                         <div>
                             <p class="text-gray-500 text-sm font-normal">Point Allocated</p>
                             <p class="text-gray-800 font-bold text-base">{{ Auth::user()->bonus_points ?? 0 }}</p>
@@ -46,9 +46,9 @@
                                 <p class="text-gray-800 font-bold text-base">₦{{ number_format(Auth::user()->value_amount ?? 0) }}</p>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
-                    <div class="px-6 py-4 flex items-center gap-8">
+                    <div class="px-6 py-0 flex items-center">
                         <div class="flex items-center gap-3">
                             <div class="w-16 h-16 bg-green-400/20 rounded-full flex items-center justify-center mb-4">
                                 <img src="{{ asset( Auth::user()->approvedTier->img_src )}}" alt="Tier icon" class="w-10 h-10" />

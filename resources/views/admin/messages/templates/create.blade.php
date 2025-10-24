@@ -7,7 +7,7 @@
             Create Message Template
         </h1>
 
-        <form action="{{ route('admin.messages.store') }}" method="POST" class="space-y-8">
+        <form action="{{ route('admin.messages.templates.store') }}" method="POST" class="space-y-8">
             @csrf
 
             <!-- Title -->
@@ -39,7 +39,7 @@
 
             <!-- Actions -->
             <div class="flex items-center justify-end space-x-4 pt-4 border-t">
-                <a href="{{ route('admin.messages.index') }}" 
+                <a href="{{ route('admin.messages.templates.index') }}" 
                    class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100">
                     Cancel
                 </a>

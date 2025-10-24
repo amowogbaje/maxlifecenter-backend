@@ -1,28 +1,39 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<div class="max-w-6xl mx-auto py-8">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Message Templates</h1>
-        <a href="{{ route('admin.messages.create') }}" 
-           class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700">
-            + New Template
-        </a>
+<div class="max-w-6xl mx-auto py-8 px-4">
+    <div class="flex flex-col mb-8">
+        <h1 class="text-xl lg:text-2xl font-bold text-foreground">Hi, {{ auth('admin')->user()->full_name}}</h1>
+        <p class="text-sm lg:text-base font-bold">
+            <span class="text-muted-foreground">Take a look your overview </span>
+            <span class="text-foreground">Today {{ date('M d, Y') }}</span>
+        </p>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @forelse($messages as $message)
-            <div class="bg-white shadow rounded-xl p-5 hover:shadow-lg transition">
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">{{ $message->title }}</h2>
-                <p class="text-sm text-gray-500 truncate">{{ $message->subject }}</p>
-                <div class="mt-4 flex space-x-3">
-                    <a href="{{ route('admin.messages.preview', $message) }}" 
-                       class="text-indigo-600 hover:underline">Preview</a>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        @foreach($metricCards as $card)
+        <a href = "{{route($card['routeName'])}}">
+            <div class="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between hover:shadow-md transition">
+
+                <!-- Icon -->
+                <div class="flex items-center justify-start mb-3">
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center {{ $card['bgColor'] }}">
+                        {!! $card['svgIcon'] !!}
+                    </div>
                 </div>
+
+                <!-- Text -->
+                <div class="flex-1">
+                    <p class="text-sm text-gray-500 mb-1 break-words">{{ $card['subtitle'] }}</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3 break-words">{{ $card['title'] }}</h3>
+                </div>
+
             </div>
-        @empty
-            <p class="col-span-3 text-center text-gray-500">No message templates yet.</p>
-        @endforelse
+        </a>
+        @endforeach
     </div>
 </div>
 @endsection
+@push('style')
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css'>
+@endpush

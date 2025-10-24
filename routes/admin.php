@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MessagesController;
+use App\Http\Controllers\Admin\MessagesContactController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -27,10 +28,29 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
     Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
     Route::prefix('messages')->name('messages.')->group(function () {
         Route::get('/', [MessagesController::class, 'index'])->name('index');
-        Route::get('/create', [MessagesController::class, 'create'])->name('create');
-        Route::post('/store', [MessagesController::class, 'store'])->name('store');
-        Route::get('/{message}/preview', [MessagesController::class, 'preview'])->name('preview');
-        Route::post('/{message}/send', [MessagesController::class, 'send'])->name('send');
-        Route::post('/{message}/test', [MessagesController::class, 'test'])->name('test');
+        
+        Route::prefix('templates')->name('templates.')->group(function () {
+            Route::get('/', [MessagesController::class, 'templates'])->name('index');
+            Route::get('/create', [MessagesController::class, 'create'])->name('create');
+            Route::post('/store', [MessagesController::class, 'store'])->name('store');
+            Route::get('/{message}/preview', [MessagesController::class, 'preview'])->name('preview');
+            Route::get('/{message}/preview-old', [MessagesController::class, 'previewOld'])->name('preview-old');
+            Route::post('/{message}/send', [MessagesController::class, 'send'])->name('send');
+            Route::post('/{message}/test', [MessagesController::class, 'test'])->name('test');
+        });
+
+        Route::prefix('contacts')->name('contacts.')->group(function () {
+            Route::get('/', [MessagesContactController::class, 'contacts'])->name('index');
+            Route::get('/create', [MessagesContactController::class, 'create'])->name('create');
+            Route::post('/store', [MessagesContactController::class, 'store'])->name('store');
+            Route::get('/{contactId}/preview', [MessagesContactController::class, 'preview'])->name('preview');
+            Route::get('/{contactId}/show', [MessagesContactController::class, 'show'])->name('show');
+
+            Route::get('/{contactId}/edit', [MessagesContactController::class, 'edit'])->name('edit');
+            Route::put('/{contactId}/update', [MessagesContactController::class, 'update'])->name('update');
+            
+            Route::post('/{contactId}/send', [MessagesContactController::class, 'send'])->name('send');
+            Route::post('/{contactId}/test', [MessagesContactController::class, 'test'])->name('test');
+        });
     });
 });

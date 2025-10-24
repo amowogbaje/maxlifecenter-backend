@@ -5,7 +5,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Preview Message</h1>
-        <a href="{{ route('admin.messages.index') }}" class="text-sm text-blue-600 hover:underline">
+        <a href="{{ route('admin.messages.templates.index') }}" class="text-sm text-blue-600 hover:underline">
             ← Back to Messages
         </a>
     </div>
@@ -22,7 +22,7 @@
 
     <!-- Actions -->
     <div class="mt-8 bg-white shadow rounded-xl p-6 space-y-6">
-        <form method="POST" action="{{ route('admin.messages.send', $message) }}" class="space-y-5" id="messageForm">
+        <form method="POST" action="{{ route('admin.messages.templates.send', $message) }}" class="space-y-5" id="messageForm">
             @csrf
 
             {{-- Recipient Type --}}
@@ -86,7 +86,7 @@
         </div>
 
         <!-- Send Test -->
-        <form method="POST" action="{{ route('admin.messages.test', $message) }}" class="space-y-4">
+        <form method="POST" action="{{ route('admin.messages.templates.test', $message) }}" class="space-y-4">
             @csrf
             <div>
                 <label for="test_email" class="block text-sm font-medium text-gray-700 mb-1">Test Email Address</label>

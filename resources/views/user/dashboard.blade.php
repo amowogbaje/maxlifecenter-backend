@@ -16,50 +16,6 @@
 
         <!-- Icon -->
         <div class="flex items-center justify-center mb-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-[#D377F3]">
-                <svg class="w-4 h-4 text-white" viewBox="0 0 12 12" fill="currentColor">
-                    <path d="M2.25 1C1.56 1 1 1.56 1 2.25V3.412C1.00027 3.67934 1.07198 3.94175 1.20771 4.17207C1.34344 4.40239 1.53826 4.59225 1.772 4.722L4.648 6.321C4.0456 6.62512 3.56332 7.12345 3.27909 7.73549C2.99486 8.34752 2.92528 9.03751 3.08159 9.69398C3.2379 10.3504 3.61097 10.935 4.14052 11.3533C4.67008 11.7716 5.32518 11.9991 6 11.9991C6.67482 11.9991 7.32992 11.7716 7.85948 11.3533C8.38903 10.935 8.7621 10.3504 8.91841 9.69398C9.07472 9.03751 9.00514 8.34752 8.72091 7.73549C8.43668 7.12345 7.9544 6.62512 7.352 6.321L10.229 4.723C10.4627 4.59304 10.6574 4.40297 10.793 4.17246C10.9285 3.94196 11 3.67941 11 3.412V2.25C11 1.56 10.44 1 9.75 1H2.25ZM5 5.372V2H7V5.372L6 5.928L5 5.372ZM8 9C8 9.53043 7.78929 10.0391 7.41421 10.4142C7.03914 10.7893 6.53043 11 6 11C5.46957 11 4.96086 10.7893 4.58579 10.4142C4.21071 10.0391 4 9.53043 4 9C4 8.46957 4.21071 7.96086 4.58579 7.58579C4.96086 7.21071 5.46957 7 6 7C6.53043 7 7.03914 7.21071 7.41421 7.58579C7.78929 7.96086 8 8.46957 8 9Z"></path>
-                </svg>
-            </div>
-        </div>
-
-        <!-- Text -->
-        <div class="flex-1">
-            <p class="text-sm text-gray-500 mb-1 break-words text-center">Points Earned</p>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3 break-words text-center">120</h3>
-            <div class="bg-blue-50 rounded-lg px-3 py-1 flex justify-center">
-                <span class="text-xs font-semibold text-gray-700 break-words">₦2,6500</span>
-            </div>
-        </div>
-
-        <!-- Avatar -->
-    </div>
-    <div class="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between hover:shadow-md transition">
-
-        <!-- Icon -->
-        <div class="flex items-center justify-center mb-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-blue-900">
-                <svg width="14" height="13" viewBox="0 0 15 13" fill="white">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6.65346 7.8786L9.24384 11.8339C9.35717 12.0073 9.53425 12.0053 9.6058 11.9959L13.151 1.45193C13.2077 1.26993 13.1035 1.14593 13.0568 1.10193L1.74613 4.03126C1.53859 4.0886 1.49325 4.2526 1.48334 4.31993L5.90475 7.16926L9.66034 3.59726C9.86646 3.40126 10.4161 4.3006L6.65346 7.8786Z" fill="white"></path>
-                </svg>
-            </div>
-        </div>
-
-        <!-- Text -->
-        <div class="flex-1">
-            <p class="text-sm text-gray-500 mb-1 break-words text-center">My Uploads</p>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3 break-words text-center">120</h3>
-            <div class="bg-blue-50 rounded-lg px-3 py-1 flex justify-center">
-                <span class="text-xs font-semibold text-gray-700 break-words">13% Impressions</span>
-            </div>
-        </div>
-
-        <!-- Avatar -->
-    </div>
-    <div class="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between hover:shadow-md transition">
-
-        <!-- Icon -->
-        <div class="flex items-center justify-center mb-3">
             <div class="w-8 h-8 rounded-full flex items-center justify-center bg-green-600">
                 <svg width="15" height="14" viewBox="0 0 15 14" fill="white">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M3.95481 4.86937L4.33168 9.05303C4.35918 9.37503 4.64106 9.61653 4.98543 9.61653H11.8086C12.1342 9.61653 12.4123 9.3902 12.4586 9.08978L13.0523 5.2637C13.0661 5.1727 13.0417 5.0817 12.9823 5.0082L12.7398 4.87345L3.95481 4.86937Z" fill="white"></path>
@@ -93,18 +49,30 @@
             <p class="text-xs text-gray-500 mb-1">Current Tier</p>
             <h3 class="text-2xl font-bold text-gray-900 mb-3">{{$currentTier}}</h3>
 
-            @if($nextTier)
-            <div class="flex justify-center mb-3 ">
-                <span class="bg-blue-50 rounded-lg text-xs px-3 py-1  font-semibold text-gray-600">{{$nextTier}}</span>
-                <div class="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
-                    <img src="{{ asset('images/'. strtolower($nextTier) .'.png')}}" class="w-6 h-6" alt="{{$nextTier}}" />
-                </div>
-            </div>
-            @endif
         </div>
 
 
     </div>
+
+    @if($nextTier)
+    <div class="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between hover:shadow-md transition">
+
+        <!-- Icon -->
+        <div class="flex items-center justify-center mb-3">
+            <div class="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center">
+                <img src="{{ asset('images/'. strtolower($nextTier) .'.png')}}" class="w-7 h-7" alt="{{$nextTier}}" />
+            </div>
+        </div>
+
+        <!-- Text -->
+        <div class="flex-1 text-center">
+            <p class="text-xs text-gray-500 mb-1">Next Tier</p>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">{{$nextTier}}</h3>
+        </div>
+
+
+    </div>
+    @endif
 
 
 

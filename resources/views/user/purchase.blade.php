@@ -98,13 +98,13 @@
                                 <span class="text-[10px] sm:text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date_created  }}">{{ \Carbon\Carbon::parse($purchase->date_created)->format('M d, Y H:i a') }}</span>
                             </div>
 
-                            <div class="flex flex-col min-w-0">
+                            {{-- <div class="flex flex-col min-w-0">
                                 <span class="text-[11px] sm:text-sm text-text-light">Points</span>
                                 <span class="text-xs sm:text-base font-bold text-text-dark truncate">
                                     <img src="{{ asset('images/icons/diamond.svg') }}" alt="Bonus Points" class="inline-block w-3 h-3 sm:w-4 sm:h-4 mr-1">
                                     {{ $purchase->bonus_point }}
                                 </span>
-                            </div>
+                            </div> --}}
 
                             @if(!empty($purchase->reward_status))
                             <div class="flex flex-col min-w-0 col-span-2 sm:col-span-1">

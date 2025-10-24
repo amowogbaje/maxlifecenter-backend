@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Message;
+use App\Models\MessageContact;
 use App\Models\User;
 use App\Mail\GenericMessageMail;
 use App\Mail\GenericTestMessageMail;
@@ -16,13 +17,32 @@ class MessagesController extends Controller
 {
     public function index()
     {
+        $noOfContactList = Message::count();
+        $noOfMessageTemplates = Message::count();
+        $messageLogCount = Message::count();
+        
+
+        $metricCards = [
+            ['title' => $noOfMessageTemplates, 'subtitle' => 'Total Message Templates', 'bgColor' => 'bg-green-600', 'svgIcon' => '<i class="fi fi-tr-envelopes text-white"></i>', 'routeName' => 'admin.messages.templates.index'],
+            ['title' => $noOfContactList, 'subtitle' => 'Total Contact List',  'bgColor' => 'bg-green-600','svgIcon' => '<i class="fi fi-tr-address-book text-white"></i>', 'routeName' => 'admin.messages.contacts.index'],
+            ['title' => $messageLogCount, 'subtitle' => 'Total Messages Sent',  'bgColor' => 'bg-green-600','svgIcon' => '<i class="fi fi-tr-newsletter-subscribe text-white"></i>', 'routeName' => 'admin.messages.templates.index'],
+        ];
+
+        
+
+
+        return view('admin.messages.index', compact('metricCards'));
+    }
+
+    public function templates()
+    {
         $messages = Message::all();
-        return view('admin.messages.index', compact('messages'));
+        return view('admin.messages.templates.index', compact('messages'));
     }
 
     public function create()
     {
-        return view('admin.messages.create');
+        return view('admin.messages.templates.create');
     }
 
 
@@ -50,22 +70,62 @@ class MessagesController extends Controller
             'body'    => $request->body,
         ]);
 
-        return redirect()->route('admin.messages.index')
+        return redirect()->route('admin.messages.templates.index')
                         ->with('success', 'Message template created successfully.');
     }
 
 
     public function preview(Message $message, Request $request)
     {
+
+        $contactLists = MessageContact::select('id', 'title', 'user_ids')->orderBy('title')->get();
+
+
+        return view('admin.messages.templates.preview', compact('message', 'contactLists'));
+    }
+
+    public function previewOld(Message $message, Request $request)
+    {
         $rewardLevel = $request->input('reward_level');
         $rewardLevels = Reward::all();
 
         $users = User::where('current_reward_id', $rewardLevel)->get();
 
-        return view('admin.messages.preview', compact('message', 'users', 'rewardLevel', 'rewardLevels'));
+        return view('admin.messages.templates.preview-old', compact('message', 'users', 'rewardLevel', 'rewardLevels'));
     }
 
     public function send(Request $request, Message $message)
+    {
+        $validated = $request->validate([
+            'contact_list_id' => 'required|exists:message_contacts,id',
+        ]);
+
+         $contactList = MessageContact::findOrFail($validated['contact_list_id']);
+
+        $userIds = $contactList->user_ids ?? [];
+
+        if (empty($userIds)) {
+            return back()->with('error', 'The selected contact list has no users.');
+        }
+
+        $users = User::whereIn('id',$userIds)->get();
+
+        try {
+            
+            // Send message to users
+            foreach ($users as $user) {
+                // $user->notify(new SendAdminMessageNotification($message));
+                \Mail::to($user->email)->send(new GenericMessageMail($message, $user));
+            }
+
+            return back()->with('success', 'Message sent successfully to ' . $users->count() . ' users.');
+        } catch (\Exception $e) {
+            \Log::error('Error sending message: ' . $e->getMessage());
+            return back()->with('error', 'Something went wrong while sending the message.');
+        }
+    }
+
+    public function sendOld(Request $request, Message $message)
     {
         $validated = $request->validate([
             'recipient_type' => 'required|in:all,reward_level,individual',
