@@ -7,11 +7,18 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\ProductOnSale;
 use App\Models\UserReward;
+use App\Services\WooCommerceService;
 use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
 {
+    private WooCommerceService $wooCommerceService;
+
+    public function __construct(WooCommerceService $wooCommerceService) {
+        $this->wooCommerceService = $wooCommerceService;
+    }
     public function index()
     {
         $rewardIcon = '<svg class="w-4 h-4 text-white" viewBox="0 0 12 12" fill="currentColor"><path d="M2.25 1C1.56 1 1 1.56 1 2.25V3.412C1.00027 3.67934 1.07198 3.94175 1.20771 4.17207C1.34344 4.40239 1.53826 4.59225 1.772 4.722L4.648 6.321C4.0456 6.62512 3.56332 7.12345 3.27909 7.73549C2.99486 8.34752 2.92528 9.03751 3.08159 9.69398C3.2379 10.3504 3.61097 10.935 4.14052 11.3533C4.67008 11.7716 5.32518 11.9991 6 11.9991C6.67482 11.9991 7.32992 11.7716 7.85948 11.3533C8.38903 10.935 8.7621 10.3504 8.91841 9.69398C9.07472 9.03751 9.00514 8.34752 8.72091 7.73549C8.43668 7.12345 7.9544 6.62512 7.352 6.321L10.229 4.723C10.4627 4.59304 10.6574 4.40297 10.793 4.17246C10.9285 3.94196 11 3.67941 11 3.412V2.25C11 1.56 10.44 1 9.75 1H2.25ZM5 5.372V2H7V5.372L6 5.928L5 5.372ZM8 9C8 9.53043 7.78929 10.0391 7.41421 10.4142C7.03914 10.7893 6.53043 11 6 11C5.46957 11 4.96086 10.7893 4.58579 10.4142C4.21071 10.0391 4 9.53043 4 9C4 8.46957 4.21071 7.96086 4.58579 7.58579C4.96086 7.21071 5.46957 7 6 7C6.53043 7 7.03914 7.21071 7.41421 7.58579C7.78929 7.96086 8 8.46957 8 9Z"/></svg>';
@@ -21,26 +28,19 @@ class DashboardController extends Controller
         $purchaseTotal = Order::where('user_id', $user->id)->sum('total');
         $currentTier = $user->approvedTier->title;
         $nextTier = $user->nextToBeApprovedTier?->title ?? null;
-        $recentProducts = Product::whereHas('orderItems.order', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-            ->with(['orderItems.order' => function ($q) {
-                $q->latest(); // order by most recent orders
-            }])
-            ->orderByDesc(
-                \DB::raw('(SELECT MAX(orders.date_created) 
-                        FROM orders 
-                        JOIN order_items ON order_items.order_id = orders.id 
-                        WHERE order_items.product_id = products.id 
-                            AND orders.user_id = '.$user->id.')')
-            )
-            ->take(3)
-            ->get();
-
+        $recentProducts = ProductOnSale::latest()->take(6)->get();
         $data = compact('purchaseCount', 'purchaseTotal','currentTier', 'nextTier', 'recentProducts');
 
         return view('user.dashboard', $data);
     }
+
+    public function fetchSalesProducts()
+    {
+        $recentProducts = $this->wooCommerceService->fetchProductsOnSales();
+
+        return response()->json($recentProducts);
+    }
+
 
 
     public function purchases()

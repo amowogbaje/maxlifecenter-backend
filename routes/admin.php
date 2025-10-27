@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MessagesController;
+use App\Http\Controllers\Admin\MessageLogController;
 use App\Http\Controllers\Admin\MessagesContactController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,7 @@ Route::middleware('guest:admin')->group(function () {
 
 Route::middleware(['auth:admin', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/activity-log/{id}/show', [MessageLogController::class, 'showActivityLog'])->name('show-activity-log');
     Route::get('/purchases', [DashboardController::class, 'purchases'])->name('purchases');
     Route::get('/purchases/{id}', [DashboardController::class, 'showPurchase'])->name('purchases.show');
     Route::get('/rewards', [DashboardController::class, 'rewards'])->name('rewards');
@@ -36,7 +38,13 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
             Route::get('/{message}/preview', [MessagesController::class, 'preview'])->name('preview');
             Route::get('/{message}/preview-old', [MessagesController::class, 'previewOld'])->name('preview-old');
             Route::post('/{message}/send', [MessagesController::class, 'send'])->name('send');
+            Route::post('/{message}/send-old', [MessagesController::class, 'sendOld'])->name('send-old');
             Route::post('/{message}/test', [MessagesController::class, 'test'])->name('test');
+        });
+
+        Route::prefix('logs')->name('logs.')->group(function () {
+            Route::get('/', [MessageLogController::class, 'index'])->name('index');
+            Route::get('/{message}/show', [MessageLogController::class, 'show'])->name('show');
         });
 
         Route::prefix('contacts')->name('contacts.')->group(function () {

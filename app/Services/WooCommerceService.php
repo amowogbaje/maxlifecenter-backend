@@ -202,4 +202,21 @@ class WooCommerceService
     }
 
 
+    public function fetchProductsOnSales() {
+        $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
+            ->get($this->baseUrl . 'products', [
+                'per_page' => 10,
+                'orderby' => 'rating',
+                'on_sale'   => true,
+            ]);
+
+        if ($response->failed()) {
+            Log::error('WooCommerce API Error: ' . $response->body());
+            return [];
+        }
+
+        return $response->json();
+    }
+
+
 }

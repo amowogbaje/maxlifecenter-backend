@@ -116,62 +116,71 @@
                         </div>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 lg:gap-6">
                             <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light">Type</span>
-                                <span class="text-base text-text-dark truncate" title="{{ $log['type'] }}">{{ $log['type'] }}</span>
+                                <span class="text-sm text-text-light">User</span>
+                                <span class="text-base text-text-dark truncate" title="{{ $log->user->name ?? 'System' }}">{{ $log->user->name ?? 'System' }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light truncate">
-                                    @if($log['type'] === 'Reward') Point
-                                    @elseif($log['type'] === 'Tier Update') Name
-                                    @elseif($log['type'] === 'Campaign') ID
-                                    @else Amount @endif
-                                </span>
-                                <span class="text-base font-bold text-text-dark truncate" title="{{ $log['amount'] }}">{{ $log['amount'] }}</span>
+                                <span class="text-sm text-text-light truncate">Action</span>
+                                <span class="text-base font-bold text-text-dark truncate" title="{{ $log->action }}">{{ ucfirst(str_replace('_', ' ', $log->action)) }}{{ $log['amount'] }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
                                 <span class="text-sm text-text-light">Date</span>
-                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $log['date'] }}">{{ $log['date'] }}</span>
+                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $log->created_at->format('Y-m-d H:i') }}">{{ $log->created_at->format('Y-m-d H:i') }}</span>
                             </div>
-                            @if(!empty($log['id']))
-                            <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light truncate">
-                                    {{ $log['type'] === 'Tier Update' ? 'Previous' : 'ID' }}
-                                </span>
-                                <span class="text-base text-text-dark truncate" title="{{ $log['id'] }}">{{ $log['id'] }}</span>
-                            </div>
-                            @endif
-                            @if(!empty($log['status']))
-                            <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light">Status</span>
-                                <div class="rounded-[10px] px-3 py-1 w-fit max-w-full {{ $log['statusColor'] }}">
-                                    <span class="text-xs font-bold text-white truncate block">{{ $log['status'] }}</span>
-                                </div>
-                            </div>
-                            @endif
                         </div>
                     </div>
-                    <div class="w-11 h-11 bg-light-blue rounded-[14px] flex items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="1" />
-                            <circle cx="12" cy="5" r="1" />
-                            <circle cx="12" cy="19" r="1" /></svg>
-                    </div>
+                    <a href="{{ route('admin.messages.logs.show', $log->id) }}" class="hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </a>
                 </div>
             </div>
             @endforeach
         </div>
 
-        <div class="flex justify-center lg:justify-end">
-            <div class="bg-white rounded-[14px] shadow-sm px-5 py-3 flex items-center gap-4">
-                <span class="text-base text-text-dark">1-8 of 28</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gray-400">
-                    <path d="m15 18-6-6 6-6" /></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-500">
-                    <path d="m9 18 6-6-6-6" /></svg>
-            </div>
+        <!-- Pagination -->
+    @if($activityLogs->hasPages())
+    <div class="flex flex-col sm:flex-row justify-between items-center mt-8 gap-4">
+        <p class="text-gray-600 text-sm">
+            Showing <span class="font-medium">{{ $activityLogs->firstItem() }}</span>–<span class="font-medium">{{ $activityLogs->lastItem() }}</span> of 
+            <span class="font-semibold">{{ $activityLogs->total() }}</span>
+        </p>
+
+        <div class="flex items-center gap-2">
+            @if($activityLogs->onFirstPage())
+                <span class="text-gray-300 cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                </span>
+            @else
+                <a href="{{ $activityLogs->previousPageUrl() }}" class="text-indigo-600 hover:text-indigo-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                </a>
+            @endif
+
+            @if($activityLogs->hasMorePages())
+                <a href="{{ $activityLogs->nextPageUrl() }}" class="text-indigo-600 hover:text-indigo-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                </a>
+            @else
+                <span class="text-gray-300 cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                </span>
+            @endif
         </div>
+    </div>
+    @endif
     </div>
 </div>
 @endsection

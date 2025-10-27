@@ -12,7 +12,7 @@
 
     <div class="space-y-4">
         <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-            <h2 class="text-xl lg:text-2xl font-bold text-foreground">User List</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-foreground">Contact List</h2>
             <div class="flex items-center gap-4 w-full lg:w-auto">
                 <div class="relative flex-1 lg:w-[412px]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-dark">

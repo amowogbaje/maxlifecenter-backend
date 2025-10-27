@@ -10,11 +10,22 @@ use App\Models\MessageContact;
 use App\Models\User;
 use App\Mail\GenericMessageMail;
 use App\Mail\GenericTestMessageMail;
+use App\Services\AuditLogService;
+use Auth;
+
 use App\Models\Reward;
 use Carbon\Carbon;
 
 class MessagesContactController extends Controller
 {
+
+    private AuditLogService $auditLogService;
+
+    public function __construct(AuditLogService $auditLogService)
+    {
+        $this->auditLogService = $auditLogService;
+    }
+
     public function index()
     {
         $noOfContactList = Message::count();
@@ -65,11 +76,11 @@ class MessagesContactController extends Controller
                     $request->input('start_date'),
                     $request->input('end_date'),
                 ]);
-        });
-    }
+            });
+        }
     
 
-    $users = $query->paginate(10);
+        $users = $query->paginate(10);
         $rewards = Reward::all();
         return view('admin.messages.contacts.create');
     }
@@ -87,6 +98,14 @@ class MessagesContactController extends Controller
             'description' => $validated['description'],
             'user_ids' => [],
         ]);
+
+        $this->auditLogService->log(
+            'create_contact_list',
+            $contactList,
+            ['old'=>[], 'new' =>$contactList],
+            Auth::id(),
+            ['message' => 'Contact list created', 'data' => $validated]
+        );
 
         return redirect()->route('admin.messages.contacts.edit', $contactList->id)
                         ->with('success', 'Contact list created successfully! Add Users here');
@@ -153,11 +172,25 @@ class MessagesContactController extends Controller
 
         $contactList = MessageContact::findOrFail($id);
 
+        $oldData = $contactList->toArray();
+
         $contactList->update([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
             'user_ids' => array_unique($validatedData['user_ids'] ?? []),
         ]);
+
+        $this->auditLogService->log(
+            'update_contact_list',
+            $contactList,
+            ['old' => $oldData, 'new' => $contactList],
+            Auth::id(),
+            [
+                'message' => 'Contact list updated',
+                'before' => $oldData,
+                'after' => $contactList->toArray()
+            ]
+        );
 
         return redirect()
             ->route('admin.messages.contacts.index')
@@ -165,82 +198,7 @@ class MessagesContactController extends Controller
     }
 
 
-    public function preview(Message $message, Request $request)
-    {
-        $rewardLevel = $request->input('reward_level');
-        $rewardLevels = Reward::all();
-
-        $users = User::where('current_reward_id', $rewardLevel)->get();
-
-        return view('admin.messages.templates.preview', compact('message', 'users', 'rewardLevel', 'rewardLevels'));
-    }
-
-    public function send(Request $request, Message $message)
-    {
-        $validated = $request->validate([
-            'recipient_type' => 'required|in:all,reward_level,individual',
-            'reward_level' => 'nullable|exists:rewards,id',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'users' => 'nullable|array',
-            'users.*' => 'exists:users,id',
-        ]);
-
-        $users = collect();
-
-        try {
-            switch ($validated['recipient_type']) {
-                case 'all':
-                    // Get all active users
-                    $users = User::query()
-                        ->where('is_admin', false)
-                        ->get();
-                    break;
-
-                case 'reward_level':
-                    $query = User::query()
-                        ->whereHas('rewards', function ($q) use ($validated) {
-                            $q->where('reward_id', $validated['reward_level']);
-                            if (!empty($validated['start_date']) && !empty($validated['end_date'])) {
-                                $q->whereBetween('user_rewards.created_at', [
-                                    $validated['start_date'],
-                                    Carbon::parse($validated['end_date'])->endOfDay()
-                                ]);
-                            }
-                        });
-                    $users = $query->get();
-                    break;
-
-                case 'individual':
-                    $users = User::whereIn('id', $validated['users'] ?? [])->get();
-                    break;
-            }
-
-            if ($users->isEmpty()) {
-                return back()->with('warning', 'No users found for the selected criteria.');
-            }
-
-            // Send message to users
-            foreach ($users as $user) {
-                // Example: you can queue or send immediately
-                // $user->notify(new SendAdminMessageNotification($message));
-                \Mail::to($user->email)->send(new GenericMessageMail($message, $user));
-            }
-
-            return back()->with('success', 'Message sent successfully to ' . $users->count() . ' users.');
-        } catch (\Exception $e) {
-            \Log::error('Error sending message: ' . $e->getMessage());
-            return back()->with('error', 'Something went wrong while sending the message.');
-        }
-    }
 
 
-    public function test(Message $message, Request $request)
-    {
-            $email = $request->input('test_email');
 
-            \Mail::to($email)->send(new GenericTestMessageMail($message));
-
-        return back()->with('success', 'Messages sent!');
-    }
 }

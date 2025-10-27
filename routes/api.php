@@ -28,6 +28,9 @@ Route::post('/webhooks/woocommerce', [WebhookController::class, 'handle'])
 Route::post('/rewards/{id}/claim', [UserDashboardController::class, 'claimReward'])
     ->name('rewards.claim');
 
+Route::get('/user/products/sales/fetch', [UserDashboardController::class, 'fetchSalesProducts'])->name('user.products.sales.fetch');
+
+
 Route::post('/rewards/{id}/approve', [AdminDashboardController::class, 'approveReward'])
     ->name('admin.rewards.approve');
 

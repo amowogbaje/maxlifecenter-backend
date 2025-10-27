@@ -7,28 +7,40 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Message;
 use App\Models\MessageContact;
+use App\Models\AuditLog;
 use App\Models\User;
 use App\Mail\GenericMessageMail;
 use App\Mail\GenericTestMessageMail;
 use App\Models\Reward;
+use App\Services\AuditLogService;
 use Carbon\Carbon;
+use Auth;
 
 class MessagesController extends Controller
 {
+    private AuditLogService $auditLogService;
+
+    public function __construct(AuditLogService $auditLogService)
+    {
+        $this->auditLogService = $auditLogService;
+    }
     public function index()
     {
-        $noOfContactList = Message::count();
+        $noOfContactList = MessageContact::count();
         $noOfMessageTemplates = Message::count();
-        $messageLogCount = Message::count();
-        
+        $messageLogCount = AuditLog::whereIn('model_type', [
+            Message::class,
+            MessageContact::class,
+        ])->count();
+
 
         $metricCards = [
             ['title' => $noOfMessageTemplates, 'subtitle' => 'Total Message Templates', 'bgColor' => 'bg-green-600', 'svgIcon' => '<i class="fi fi-tr-envelopes text-white"></i>', 'routeName' => 'admin.messages.templates.index'],
-            ['title' => $noOfContactList, 'subtitle' => 'Total Contact List',  'bgColor' => 'bg-green-600','svgIcon' => '<i class="fi fi-tr-address-book text-white"></i>', 'routeName' => 'admin.messages.contacts.index'],
-            ['title' => $messageLogCount, 'subtitle' => 'Total Messages Sent',  'bgColor' => 'bg-green-600','svgIcon' => '<i class="fi fi-tr-newsletter-subscribe text-white"></i>', 'routeName' => 'admin.messages.templates.index'],
+            ['title' => $noOfContactList, 'subtitle' => 'Total Contact List',  'bgColor' => 'bg-green-600', 'svgIcon' => '<i class="fi fi-tr-address-book text-white"></i>', 'routeName' => 'admin.messages.contacts.index'],
+            ['title' => $messageLogCount, 'subtitle' => 'Messages Logs',  'bgColor' => 'bg-green-600', 'svgIcon' => '<i class="fi fi-tr-newsletter-subscribe text-white"></i>', 'routeName' => 'admin.messages.logs.index'],
         ];
 
-        
+
 
 
         return view('admin.messages.index', compact('metricCards'));
@@ -70,18 +82,27 @@ class MessagesController extends Controller
             'body'    => $request->body,
         ]);
 
+        // 📝 Audit log entry
+        $this->auditLogService->log(
+            action: 'create',
+            model: $message,
+            data: ['new' => $message->toArray()],
+            description: 'Created a new message template'
+        );
+
         return redirect()->route('admin.messages.templates.index')
-                        ->with('success', 'Message template created successfully.');
+            ->with('success', 'Message template created successfully.');
     }
 
 
     public function preview(Message $message, Request $request)
     {
 
+        $rewardLevels = Reward::all();
         $contactLists = MessageContact::select('id', 'title', 'user_ids')->orderBy('title')->get();
 
 
-        return view('admin.messages.templates.preview', compact('message', 'contactLists'));
+        return view('admin.messages.templates.preview', compact('message', 'contactLists', 'rewardLevels'));
     }
 
     public function previewOld(Message $message, Request $request)
@@ -97,33 +118,125 @@ class MessagesController extends Controller
     public function send(Request $request, Message $message)
     {
         $validated = $request->validate([
-            'contact_list_id' => 'required|exists:message_contacts,id',
+            'send_mode'       => 'required|in:contact_list,custom',
+            'contact_list_id' => 'nullable|exists:message_contacts,id',
+            'recipient_type'  => 'nullable|in:all,reward_level,individual',
+            'reward_level'    => 'nullable|exists:rewards,id',
+            'start_date'      => 'nullable|date',
+            'end_date'        => 'nullable|date|after_or_equal:start_date',
+            'users'           => 'nullable|array',
+            'users.*'         => 'exists:users,id',
         ]);
 
-         $contactList = MessageContact::findOrFail($validated['contact_list_id']);
-
-        $userIds = $contactList->user_ids ?? [];
-
-        if (empty($userIds)) {
-            return back()->with('error', 'The selected contact list has no users.');
-        }
-
-        $users = User::whereIn('id',$userIds)->get();
-
         try {
-            
-            // Send message to users
+            $users = collect();
+            $logDetails = [];
+
+            // Execute the right handler and populate $users and $logDetails
+            match ($validated['send_mode']) {
+                'contact_list' => $this->handleContactList($validated, $users, $logDetails, $message),
+                'custom' => $this->handleCustomMode($validated, $users, $logDetails, $message),
+            };
+
+            if ($users->isEmpty()) {
+                return back()->with('error', 'No users found for the selected mode.');
+            }
+
+            // Queue mail to users
+            \Log::info('Users:'. json_encode($users));
             foreach ($users as $user) {
-                // $user->notify(new SendAdminMessageNotification($message));
                 \Mail::to($user->email)->send(new GenericMessageMail($message, $user));
             }
 
-            return back()->with('success', 'Message sent successfully to ' . $users->count() . ' users.');
-        } catch (\Exception $e) {
-            \Log::error('Error sending message: ' . $e->getMessage());
-            return back()->with('error', 'Something went wrong while sending the message.');
+            // Audit log - use your audit service
+            $this->auditLogService->log(
+                action: 'send_message',
+                model: $message,
+                data: ['new' => $logDetails],
+                description: 'Message sent'
+            );
+
+            return back()->with('success', "Message sent successfully to {$users->count()} users.");
+        } catch (\Throwable $e) {
+            \Log::error('Message Send Error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'validated' => $validated,
+                'message_id' => $message->id ?? null,
+            ]);
+
+            return back()->with('error', $e->getMessage());
         }
     }
+
+    private function handleContactList(array $validated, &$users, &$logDetails, Message $message): void
+    {
+        if (empty($validated['contact_list_id'])) {
+            throw new \Exception('Contact list not provided.');
+        }
+
+        $contactList = MessageContact::findOrFail($validated['contact_list_id']);
+        $userIds = $contactList->user_ids ?? [];
+
+        if (empty($userIds)) {
+            throw new \Exception('The selected contact list has no users.');
+        }
+
+        $users = User::whereIn('id', $userIds)->get();
+
+        $logDetails = [
+            'send_mode' => 'contact_list',
+            'contact_list' => $contactList->only(['id', 'title']),
+            'recipients' => $users->pluck('email')->toArray(),
+            'message_id' => $message->id,
+            'message_subject' => $message->subject,
+        ];
+    }
+
+    private function handleCustomMode(array $validated, &$users, &$logDetails, Message $message): void
+    {
+        $recipientType = $validated['recipient_type'] ?? 'all';
+
+        $users = match ($recipientType) {
+            'all' => User::where('is_admin', false)->get(),
+
+            'reward_level' => User::whereHas('rewards', function ($q) use ($validated) {
+                $q->where('reward_id', $validated['reward_level']);
+                if (!empty($validated['start_date']) && !empty($validated['end_date'])) {
+                    $q->whereBetween('user_rewards.created_at', [
+                        $validated['start_date'],
+                        \Carbon\Carbon::parse($validated['end_date'])->endOfDay(),
+                    ]);
+                }
+            })->get(),
+
+            'individual' => User::whereIn('id', $validated['users'] ?? [])->get(),
+        };
+
+        if ($users->isEmpty()) {
+            throw new \Exception('No users found for the selected criteria.');
+        }
+
+        $logDetails = [
+            'send_mode' => 'custom',
+            'recipient_type' => $recipientType,
+            'recipients' => $users->pluck('email')->toArray(),
+            'filters' => [
+                'reward_level' => $validated['reward_level'] ?? null,
+                'start_date' => $validated['start_date'] ?? null,
+                'end_date' => $validated['end_date'] ?? null,
+                'users' => $validated['users'] ?? null,
+            ],
+            'message_id' => $message->id,
+            'message_subject' => $message->subject,
+        ];
+    }
+
+
+
+
+    
+
+
 
     public function sendOld(Request $request, Message $message)
     {
@@ -177,6 +290,20 @@ class MessagesController extends Controller
                 \Mail::to($user->email)->send(new GenericMessageMail($message, $user));
             }
 
+            // 📝 Audit log entry
+            $this->auditLogService->log(
+                action: 'send_old',
+                model: $message,
+                data: [
+                    'new' => [
+                        'recipient_type' => $validated['recipient_type'],
+                        'recipients' => $users->pluck('email')->toArray(),
+                        'filters' => $validated,
+                    ]
+                ],
+                description: 'Message sent using old sending method'
+            );
+
             return back()->with('success', 'Message sent successfully to ' . $users->count() . ' users.');
         } catch (\Exception $e) {
             \Log::error('Error sending message: ' . $e->getMessage());
@@ -187,9 +314,9 @@ class MessagesController extends Controller
 
     public function test(Message $message, Request $request)
     {
-            $email = $request->input('test_email');
+        $email = $request->input('test_email');
 
-            \Mail::to($email)->send(new GenericTestMessageMail($message));
+        \Mail::to($email)->send(new GenericTestMessageMail($message));
 
         return back()->with('success', 'Messages sent!');
     }

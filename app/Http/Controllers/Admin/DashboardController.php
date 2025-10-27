@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\AuditLog;
 use App\Models\Reward;
 use App\Models\UserReward;
 
@@ -37,14 +38,7 @@ class DashboardController extends Controller
             ['title' => $balogun->active_users_count, 'subtitle' => 'Total Count - KABIYESI', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/kabiyesi.png'],
         ];
 
-        $activityLogs = [
-            ['type' => 'Purchase', 'amount' => '₦230,0032', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'AD2383JSSUA', 'status' => 'Pending', 'statusColor' => 'bg-warning'],
-            ['type' => 'Reward', 'amount' => '30', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Tier Update', 'amount' => 'Oloye', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'Balogun', 'status' => '', 'statusColor' => ''],
-            ['type' => 'Campaign', 'amount' => '#383383', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => '', 'status' => 'Active', 'statusColor' => 'bg-success'],
-            ['type' => 'Purchase', 'amount' => '₦230,0032', 'date' => 'Apr 12, 1995 23:06 pm', 'id' => '484UEHSW22', 'status' => 'Pending', 'statusColor' => 'bg-warning'],
-        ];
-
+        $activityLogs = AuditLog::latest()->paginate(10);
         return view('admin.dashboard', compact('metricCards', 'activityLogs'));
     }
 
