@@ -43,12 +43,40 @@ class DashboardController extends Controller
 
 
 
-    public function purchases()
+    public function purchases(Request $request)
     {
-        $purchases = auth()->user()
-            ->orders()
-            ->orderBy('date_created', 'desc') 
-            ->paginate(10);
+        $search = $request->input('search');
+        $query = Order::where('user_id', auth()->user()->id)->with('user')->latest();
+
+        if ($search) {
+            $normalizedDate = null;
+            try {
+                $timestamp = strtotime($search);
+                if ($timestamp !== false) {
+                    $normalizedDate = date('Y-m-d', $timestamp);
+                }
+            } catch (\Exception $e) {
+                $normalizedDate = null;
+            }
+
+            $query->where(function ($q) use ($search, $normalizedDate) { // ✅ include $normalizedDate here
+                $q->where('woo_id', 'like', "%{$search}%")
+                ->orWhere('total', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('first_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->orWhereDate('created_at', $search);
+
+                if ($normalizedDate) {
+                    $q->orWhereDate('date_completed', $normalizedDate);
+                }
+            });
+        }
+
+
+        $purchases = $query->orderBy('date_created', 'desc')->paginate(10)->appends($request->query());
 
         return view('user.purchase', compact('purchases'));
     }
@@ -64,7 +92,7 @@ class DashboardController extends Controller
         $user = User::find(auth()->user()->id);
         $rewards = $user->rewards()
         ->withPivot(['id','status', 'mail_sent']) // include pivot fields
-        ->where('user_rewards.status', 'claimed')
+        // ->where('user_rewards.status', 'claimed')
         ->orderBy('user_rewards.created_at', 'desc')
         ->get([
             'rewards.id',

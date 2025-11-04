@@ -100,24 +100,30 @@ class User extends Authenticatable
             $pointsRemaining = max(0, $next->required_points - $points);
             $purchasesRemaining = max(0, $next->required_purchases - $purchases);
 
-            $pointsProgress = $next->required_points > 0 ? min(1, $points / $next->required_points) : 1;
-            $purchasesProgress = $next->required_purchases > 0 ? min(1, $purchases / $next->required_purchases) : 1;
+            $pointsProgress = $next->required_points > 0
+                ? round(min(1, $points / $next->required_points) * 100, 2)
+                : 100;
 
-            $progressPercent = round(($pointsProgress + $purchasesProgress) / 2 * 100, 2);
+            $purchasesProgress = $next->required_purchases > 0
+                ? round(min(1, $purchases / $next->required_purchases) * 100, 2)
+                : 100;
         } else {
             // Already at max tier
             $pointsRemaining = 0;
             $purchasesRemaining = 0;
-            $progressPercent = 100;
+            $pointsProgress = 100;
+            $purchasesProgress = 100;
         }
 
         return [
             'next_tier' => $next,
             'points_remaining' => $pointsRemaining,
             'purchases_remaining' => $purchasesRemaining,
-            'progress_percent' => $progressPercent,
+            'points_progress' => $pointsProgress,
+            'purchases_progress' => $purchasesProgress,
         ];
     }
+
 
 
 

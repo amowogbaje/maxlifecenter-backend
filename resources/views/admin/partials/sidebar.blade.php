@@ -90,6 +90,14 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Users Management</span>
         </a>
+        <a href="{{ route('admin.roles') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.roles') }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.roles') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 19V18C3 15.7909 4.79086 14 7 14H11C13.2091 14 15 15.7909 15 18V19M15 11C16.6569 11 18 9.65685 18 8C18 6.34315 16.6569 5 15 5M21 19V18C21 15.7909 19.2091 14 17 14H16.5M12 8C12 9.65685 10.6569 11 9 11C7.34315 11 6 9.65685 6 8C6 6.34315 7.34315 5 9 5C10.6569 5 12 6.34315 12 8Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">Role Management</span>
+        </a>
         {{-- <a href="{{ route('admin.updates') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass('admin.updates') }}">
         <div class="w-6 h-6 flex items-center justify-center">
             <svg class="w-10 h-10 fill-current {{ svgClass('admin.updates') }}" viewBox="0 0 27 24" xmlns="http://www.w3.org/2000/svg">
@@ -114,14 +122,32 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Profile</span>
         </a>
-        <a href="{{ route('admin.messages.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.index') }}">
+        <a href="{{ route('admin.messages.sent.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.sent.index') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 
-                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.sent.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 8L8.44992 11.6333C9.73295 12.4886 10.3745 12.9163 11.0678 13.0825C11.6806 13.2293 12.3194 13.2293 12.9322 13.0825C13.6255 12.9163 14.2671 12.4886 15.5501 11.6333L21 8M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Messages</span>
+        </a>
+        <a href="{{ route('admin.messages.contacts.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.contacts.index') }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                
+                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.contacts.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 8L8.44992 11.6333C9.73295 12.4886 10.3745 12.9163 11.0678 13.0825C11.6806 13.2293 12.3194 13.2293 12.9322 13.0825C13.6255 12.9163 14.2671 12.4886 15.5501 11.6333L21 8M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">Contact List</span>
+        </a>
+        <a href="{{ route('admin.messages.templates.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.templates.index') }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                
+                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.templates.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 8L8.44992 11.6333C9.73295 12.4886 10.3745 12.9163 11.0678 13.0825C11.6806 13.2293 12.3194 13.2293 12.9322 13.0825C13.6255 12.9163 14.2671 12.4886 15.5501 11.6333L21 8M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">Message Templates</span>
         </a>
         <a href="{{ route('admin.settings')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.settings') }}">
             <div class="w-6 h-6 flex items-center justify-center">

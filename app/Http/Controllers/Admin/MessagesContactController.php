@@ -147,7 +147,7 @@ class MessagesContactController extends Controller
             });
         }
 
-        $users = $query->paginate(10)->appends($request->except('page'));
+        $users = $query->paginate(1000)->appends($request->except('page'));
         $rewards = Reward::all();
         // return $selectedUserIds;
 
@@ -196,9 +196,5 @@ class MessagesContactController extends Controller
             ->route('admin.messages.contacts.index')
             ->with('success', 'Contact list updated successfully.');
     }
-
-
-
-
 
 }

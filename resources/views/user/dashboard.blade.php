@@ -1,5 +1,4 @@
 @extends('user.layouts.app')
-
 @section('content')
 <div class="mb-[32px] px-6">
     <h1 class="text-[#1D1F24] text-2xl font-bold font-nunito mb-[8px]">Hi, {{auth()->user()->full_name}}</h1>
@@ -12,67 +11,41 @@
 
 
 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-12 px-6">
+
+    <!-- Current Tier -->
     <div class="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between hover:shadow-md transition">
-
-        <!-- Icon -->
-        <div class="flex items-center justify-center mb-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-green-600">
-                <svg width="15" height="14" viewBox="0 0 15 14" fill="white">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.95481 4.86937L4.33168 9.05303C4.35918 9.37503 4.64106 9.61653 4.98543 9.61653H11.8086C12.1342 9.61653 12.4123 9.3902 12.4586 9.08978L13.0523 5.2637C13.0661 5.1727 13.0417 5.0817 12.9823 5.0082L12.7398 4.87345L3.95481 4.86937Z" fill="white"></path>
-                </svg>
-            </div>
-        </div>
-
-        <!-- Text -->
-        <div class="flex-1">
-            <p class="text-sm text-gray-500 mb-1 break-words text-center">My Purchase</p>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3 break-words text-center">{{$purchaseCount}}</h3>
-            <div class="bg-blue-50 rounded-lg px-3 py-1 flex justify-center">
-                <span class="text-xs font-semibold text-gray-700 break-words">₦{{$purchaseTotal}}</span>
-            </div>
-        </div>
-
-        <!-- Avatar -->
-    </div>
-
-    <div class="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between hover:shadow-md transition">
-
         <!-- Icon -->
         <div class="flex items-center justify-center mb-3">
             <div class="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center">
-                <img src="{{ asset('images/'. strtolower($currentTier) .'.png')}}" class="w-7 h-7" alt="{{$currentTier}}" />
+                <img src="{{ asset('images/'. strtolower($currentTier) .'.png')}}" class="w-7 h-7" alt="{{ $currentTier }}" />
             </div>
         </div>
 
         <!-- Text -->
         <div class="flex-1 text-center">
             <p class="text-xs text-gray-500 mb-1">Current Tier</p>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3">{{$currentTier}}</h3>
-
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">{{ $currentTier }}</h3>
         </div>
-
-
     </div>
 
     @if($nextTier)
+    <!-- Next Tier -->
     <div class="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between hover:shadow-md transition">
-
-        <!-- Icon -->
+        <!-- Icon (3× Bigger) -->
         <div class="flex items-center justify-center mb-3">
-            <div class="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center">
-                <img src="{{ asset('images/'. strtolower($nextTier) .'.png')}}" class="w-7 h-7" alt="{{$nextTier}}" />
+            <div class="w-28 h-28 bg-green-100 rounded-full flex items-center justify-center shadow-inner">
+                <img src="{{ asset('images/'. strtolower($nextTier) .'.png')}}" class="w-20 h-20" alt="{{ $nextTier }}" />
             </div>
         </div>
 
         <!-- Text -->
         <div class="flex-1 text-center">
             <p class="text-xs text-gray-500 mb-1">Next Tier</p>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3">{{$nextTier}}</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">{{ $nextTier }}</h3>
         </div>
-
-
     </div>
     @endif
+
 
 
 
@@ -81,7 +54,112 @@
 <!-- Bottom Grid -->
 <div class="flex flex-col lg:flex-row gap-6">
 
-    <!-- Updates Section -->
+    <!-- KOC Discounts (Swiper-enabled) -->
+    <section class="bg-white rounded-2xl p-6 flex-1 shadow-sm relative overflow-hidden">
+        <header class="flex items-center justify-between mb-6">
+            <h2 class="text-gray-900 text-xl font-bold">KOC Discounts</h2>
+            <div class="flex items-center text-blue-500 cursor-pointer hover:text-blue-600 transition">
+                <span class="text-base font-bold mr-1">View all</span>
+                <svg class="w-2 h-3" fill="currentColor" viewBox="0 0 6 10">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M0.293 0.293C0.653 -0.068 1.221 -0.095 1.613 0.21L5.707 4.293C6.068 4.653 6.095 5.221 5.79 5.613L1.707 9.707C1.317 10.098 0.683 10.098 0.293 9.707C-0.098 9.317 -0.098 8.683 0.293 8.293L3.586 5L0.293 1.707C-0.098 1.317 -0.098 0.683 0.293 0.293Z" />
+                </svg>
+            </div>
+        </header>
+
+        <!-- Swiper Container -->
+        <div class="swiper myDiscountsSwiper">
+            <div class="swiper-wrapper">
+
+                <!-- Eleniyan -->
+                <div class="swiper-slide">
+                    <article class="bg-gradient-to-r from-rose-50 to-pink-100 rounded-xl shadow-sm p-5 hover:shadow-md transition h-full">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold text-rose-700">Eleniyan</h3>
+                            <span class="text-xs bg-rose-700 text-white px-3 py-1 rounded-full font-semibold">10% OFF</span>
+                        </div>
+                        <p class="text-gray-700 text-sm mb-2">
+                            Begin your royal journey with <strong>10% off</strong> every purchase. Enjoy up to
+                            <strong>₦30,000</strong> in royal rewards — your first taste of the kingdom's generosity.
+                        </p>
+                        <p class="text-xs italic text-rose-700 font-medium">
+                            “Start earning your crown — every purchase brings you closer to your next royal rank.”
+                        </p>
+                    </article>
+                </div>
+
+                <!-- Oloye -->
+                <div class="swiper-slide">
+                    <article class="bg-gradient-to-r from-yellow-50 to-amber-100 rounded-xl shadow-sm p-5 hover:shadow-md transition h-full">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold text-amber-700">Oloye</h3>
+                            <span class="text-xs bg-amber-700 text-white px-3 py-1 rounded-full font-semibold">15% OFF</span>
+                        </div>
+                        <p class="text-gray-700 text-sm mb-2">
+                            Rise in the royal ranks and receive <strong>15% off</strong> your orders. Enjoy up to
+                            <strong>₦50,000</strong> in exclusive shopping rewards as recognition of your growing status.
+                        </p>
+                        <p class="text-xs italic text-amber-700 font-medium">
+                            “You're no longer just shopping — you're earning your royal privilege.”
+                        </p>
+                    </article>
+                </div>
+
+                <!-- Balogun -->
+                <div class="swiper-slide">
+                    <article class="bg-gradient-to-r from-indigo-50 to-blue-100 rounded-xl shadow-sm p-5 hover:shadow-md transition h-full">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold text-indigo-700">Balogun</h3>
+                            <span class="text-xs bg-indigo-700 text-white px-3 py-1 rounded-full font-semibold">20% OFF</span>
+                        </div>
+                        <p class="text-gray-700 text-sm mb-2">
+                            Command the kingdom's best with <strong>20% off</strong>. Unlock up to
+                            <strong>₦150,000</strong> in royal value — reserved for our most loyal warriors of commerce.
+                        </p>
+                        <p class="text-xs italic text-indigo-700 font-medium">
+                            “Your loyalty speaks power — enjoy the prestige you've earned.”
+                        </p>
+                    </article>
+                </div>
+
+                <!-- Kabiyesi -->
+                <div class="swiper-slide">
+                    <article class="bg-gradient-to-r from-purple-50 to-violet-100 rounded-xl shadow-sm p-5 hover:shadow-md transition h-full">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold text-violet-700">Kabiyesi</h3>
+                            <span class="text-xs bg-violet-700 text-white px-3 py-1 rounded-full font-semibold">30% OFF</span>
+                        </div>
+                        <p class="text-gray-700 text-sm mb-2">
+                            Reign at the very top with <strong>30% off</strong> your purchases. Enjoy up to
+                            <strong>₦300,000</strong> in royal value — the kingdom's ultimate token of honor.
+                        </p>
+                        <p class="text-xs italic text-violet-700 font-medium">
+                            “This is the throne of loyalty — where true kings and queens belong.”
+                        </p>
+                    </article>
+                </div>
+
+            </div>
+
+            <!-- Pagination + Navigation -->
+            <div class="swiper-pagination mt-4"></div>
+            <div class="swiper-button-next text-gray-700"></div>
+            <div class="swiper-button-prev text-gray-700"></div>
+        </div>
+    </section>
+
+    <!-- TIMEX Banner -->
+    <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-2xl overflow-hidden flex-1 flex items-center justify-center">
+        <img src="{{ asset('images/reward-banner.png') }}" alt="TIMEX banner"
+            class="w-full h-full object-contain">
+    </div>
+</div>
+
+
+<!-- Active Campaign Section -->
+<div class="mt-5 flex flex-col lg:flex-row gap-6">
+
+    <!-- Active Campaign -->
     <div class="bg-white rounded-2xl p-6 flex-1 max-w-full">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-gray-900 text-xl font-bold">Updates</h2>
@@ -142,58 +220,6 @@
         </div>
     </div>
 
-    <!-- TIMEX Banner -->
-    <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-2xl relative overflow-hidden flex-1 max-w-full">
-        <img src="{{asset('images/timex.png')}}" alt="TIMEX banner" class="w-full h-full object-cover">
-    </div>
-</div>
-
-
-<!-- Active Campaign Section -->
-<div class="mt-5 flex flex-col lg:flex-row gap-6">
-
-    <!-- Active Campaign -->
-    <div class="bg-white rounded-2xl p-6 flex-1 max-w-full">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-[#0A1629] text-xl font-bold font-nunito">Active Campaign</h2>
-            <div class="flex items-center text-[#3F8CFF] cursor-pointer">
-                <span class="text-base font-bold font-nunito mr-1">View all</span>
-                <svg class="w-2 h-3" fill="currentColor" viewBox="0 0 6 10">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.293 0.293C0.653 -0.068 1.221 -0.095 1.613 0.21L5.707 4.293C6.068 4.653 6.095 5.221 5.79 5.613L1.707 9.707C1.317 10.098 0.683 10.098 0.293 9.707V1.707C-0.068 1.347 -0.095 0.779 0.21 0.387Z" />
-                </svg>
-            </div>
-        </div>
-
-        <!-- Campaign Items -->
-        <div class="space-y-4">
-            <div class="bg-[#F4F6F9] rounded-xl p-4 flex items-center">
-                <div class="w-12 h-12 bg-[#FFEBEA] rounded-lg flex items-center justify-center mr-4">
-                    <div class="text-2xl text-[#F44336]">📢</div>
-                </div>
-                <div class="flex-1">
-                    <h4 class="text-[#0A1629] text-sm font-bold mb-1">Campaign Title</h4>
-                    <p class="text-[#91929E] text-xs">Some text form short call to action for the user to read and take some actions.</p>
-                </div>
-                <button class="bg-[#FFBE00] text-white rounded-lg px-3 py-1.5 text-xs font-bold shadow">
-                    View
-                </button>
-            </div>
-
-            <div class="bg-[#F4F6F9] rounded-xl p-4 flex items-center">
-                <div class="w-12 h-12 bg-[#FFEBEA] rounded-lg flex items-center justify-center mr-4">
-                    <div class="text-2xl text-[#F44336]">📢</div>
-                </div>
-                <div class="flex-1">
-                    <h4 class="text-[#0A1629] text-sm font-bold mb-1">Campaign Title</h4>
-                    <p class="text-[#91929E] text-xs">Some text form short call to action for the user to read and take some actions.</p>
-                </div>
-                <button class="bg-[#FFBE00] text-white rounded-lg px-3 py-1.5 text-xs font-bold shadow">
-                    View
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Products Section -->
     <div class="bg-white rounded-2xl p-6 flex-1 max-w-full">
         <div class="flex items-center justify-between mb-6">
@@ -238,3 +264,27 @@
 </div>
 
 @endsection
+@push('script')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    const swiper = new Swiper('.myDiscountsSwiper', {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+</script>
+@endpush

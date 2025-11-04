@@ -9,7 +9,7 @@ use App\Models\ProductOnSale;
 
 class SyncWooProducts extends Command
 {
-    protected $signature = 'sync:woo-products';
+    protected $signature = 'woo:sync-products';
     protected $description = 'Sync WooCommerce products with the local database';
 
     public function __construct(protected WooCommerceService $wooService)

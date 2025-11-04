@@ -75,7 +75,7 @@ class MessagesController extends Controller
             $slug .= '-' . ($count + 1);
         }
 
-        Message::create([
+        $message = Message::create([
             'title'   => $request->title,
             'slug'    => $slug,
             'subject' => $request->subject,
@@ -143,7 +143,7 @@ class MessagesController extends Controller
             }
 
             // Queue mail to users
-            \Log::info('Users:'. json_encode($users));
+            \Log::info('Users:' . json_encode($users));
             foreach ($users as $user) {
                 \Mail::to($user->email)->send(new GenericMessageMail($message, $user));
             }
@@ -189,8 +189,50 @@ class MessagesController extends Controller
             'recipients' => $users->pluck('email')->toArray(),
             'message_id' => $message->id,
             'message_subject' => $message->subject,
+            'message_body' => $message->body,
         ];
     }
+
+    public function countRecipients(Request $request)
+    {
+        $type = $request->input('type');
+
+        if ($type === 'tier') {
+            $query = \DB::table('user_rewards');
+
+            if ($request->filled('reward_id')) {
+                $query->where('reward_id', $request->reward_id);
+            }
+
+            if ($request->filled('start_date')) {
+                $query->whereDate('achieved_at', '>=', $request->start_date);
+            }
+
+            if ($request->filled('end_date')) {
+                $query->whereDate('achieved_at', '<=', $request->end_date);
+            }
+
+            $count = $query->distinct('user_id')->count('user_id');
+
+            return response()->json(['count' => $count]);
+        }
+
+        if ($type === 'recipient_type') {
+            $recipientType = $request->input('recipient_type');
+
+            $count = match ($recipientType) {
+                'all' => \App\Models\User::count(),
+                'individual' => 0, // dynamically handled by Select2
+                default => 0,
+            };
+
+            return response()->json(['count' => $count]);
+        }
+
+        return response()->json(['count' => 0]);
+    }
+
+
 
     private function handleCustomMode(array $validated, &$users, &$logDetails, Message $message): void
     {
@@ -228,13 +270,15 @@ class MessagesController extends Controller
             ],
             'message_id' => $message->id,
             'message_subject' => $message->subject,
+            'message_body' => $message->body,
+
         ];
     }
 
 
 
 
-    
+
 
 
 

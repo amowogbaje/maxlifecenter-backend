@@ -24,15 +24,18 @@ class MessageLogController extends Controller
 
         // Optional filtering
         if ($search = $request->get('search')) {
-            $query->where('description', 'like', "%{$search}%")
-                  ->orWhere('action', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('action', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    })
+                    ->orWhereDate('created_at', $search);
+            });
         }
 
-        if ($action = $request->get('action')) {
-            $query->where('action', $action);
-        }
-
-        $logs = $query->paginate(15);
+        $logs = $query->paginate(15)->appends($request->query());
 
         return view('admin.messages.logs.index', compact('logs'));
     }

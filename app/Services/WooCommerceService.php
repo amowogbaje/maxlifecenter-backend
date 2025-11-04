@@ -140,7 +140,7 @@ class WooCommerceService
         }
 
         // 🔥 After syncing order, recalc user rewards
-        $this->syncUserRewards($user);
+        $this->syncUserRewards($user, $orderData);
 
         return $order;
     }
@@ -148,7 +148,7 @@ class WooCommerceService
     /**
      * Sync user rewards based on points and purchases
      */
-    protected function syncUserRewards(User $user): void
+    protected function syncUserRewards(User $user, array $orderData): void
     {
         $totalPoints    = $user->orders()->sum('bonus_point');
         $totalSpent    = $user->orders()->sum('total');
@@ -163,9 +163,9 @@ class WooCommerceService
             foreach ($eligibleRewards as $reward) {
                 $user->rewards()->syncWithoutDetaching([
                     $reward->id => [
-                        'achieved_at' => now(),
+                        'achieved_at' => $orderData['date_completed'],
                         'mail_sent'   => false,
-                        'status'      => 'unclaimed',
+                        'status'      => 'pending',
                     ],
                 ]);
             }
@@ -206,7 +206,7 @@ class WooCommerceService
         $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
             ->get($this->baseUrl . 'products', [
                 'per_page' => 10,
-                'orderby' => 'rating',
+                'orderby' => 'popularity',
                 'on_sale'   => true,
             ]);
 

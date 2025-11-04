@@ -12,7 +12,7 @@ use App\Models\UserReward;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $rewardIcon = '<svg class="w-4 h-4 text-white" viewBox="0 0 12 12" fill="currentColor"><path d="M2.25 1C1.56 1 1 1.56 1 2.25V3.412C1.00027 3.67934 1.07198 3.94175 1.20771 4.17207C1.34344 4.40239 1.53826 4.59225 1.772 4.722L4.648 6.321C4.0456 6.62512 3.56332 7.12345 3.27909 7.73549C2.99486 8.34752 2.92528 9.03751 3.08159 9.69398C3.2379 10.3504 3.61097 10.935 4.14052 11.3533C4.67008 11.7716 5.32518 11.9991 6 11.9991C6.67482 11.9991 7.32992 11.7716 7.85948 11.3533C8.38903 10.935 8.7621 10.3504 8.91841 9.69398C9.07472 9.03751 9.00514 8.34752 8.72091 7.73549C8.43668 7.12345 7.9544 6.62512 7.352 6.321L10.229 4.723C10.4627 4.59304 10.6574 4.40297 10.793 4.17246C10.9285 3.94196 11 3.67941 11 3.412V2.25C11 1.56 10.44 1 9.75 1H2.25ZM5 5.372V2H7V5.372L6 5.928L5 5.372ZM8 9C8 9.53043 7.78929 10.0391 7.41421 10.4142C7.03914 10.7893 6.53043 11 6 11C5.46957 11 4.96086 10.7893 4.58579 10.4142C4.21071 10.0391 4 9.53043 4 9C4 8.46957 4.21071 7.96086 4.58579 7.58579C4.96086 7.21071 5.46957 7 6 7C6.53043 7 7.03914 7.21071 7.41421 7.58579C7.78929 7.96086 8 8.46957 8 9Z"/></svg>';
         $usersIcon = '<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12C14.21 12 16 10.21 16 8S14.21 4 12 4 8 5.79 8 8 9.79 12 12 12M12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/></svg>';
@@ -38,13 +38,43 @@ class DashboardController extends Controller
             ['title' => $balogun->active_users_count, 'subtitle' => 'Total Count - KABIYESI', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/kabiyesi.png'],
         ];
 
-        $activityLogs = AuditLog::latest()->paginate(10);
+        $search = $request->input('search');
+        $query = AuditLog::with('user')->latest();
+
+        if ($search) {
+            $normalizedDate = null;
+
+            try {
+                $timestamp = strtotime($search);
+                if ($timestamp !== false) {
+                    $normalizedDate = date('Y-m-d', $timestamp);
+                }
+            } catch (\Exception $e) {
+                $normalizedDate = null;
+            }
+
+            $query->where(function ($q) use ($search, $normalizedDate) {
+                $q->where('action', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('first_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                });
+
+                if (!empty($normalizedDate)) { // ✅ safer null/empty check
+                    $q->orWhereDate('created_at', $normalizedDate);
+                }
+            });
+        }
+
+
+        $activityLogs = $query->paginate(10)->appends($request->query());
         return view('admin.dashboard', compact('metricCards', 'activityLogs'));
     }
 
     
 
-    public function purchases()
+    public function purchases(Request $request)
     {
         $rewardIcon = '<svg class="w-4 h-4 text-white" viewBox="0 0 12 12" fill="currentColor"><path d="M2.25 1C1.56 1 1 1.56 1 2.25V3.412C1.00027 3.67934 1.07198 3.94175 1.20771 4.17207C1.34344 4.40239 1.53826 4.59225 1.772 4.722L4.648 6.321C4.0456 6.62512 3.56332 7.12345 3.27909 7.73549C2.99486 8.34752 2.92528 9.03751 3.08159 9.69398C3.2379 10.3504 3.61097 10.935 4.14052 11.3533C4.67008 11.7716 5.32518 11.9991 6 11.9991C6.67482 11.9991 7.32992 11.7716 7.85948 11.3533C8.38903 10.935 8.7621 10.3504 8.91841 9.69398C9.07472 9.03751 9.00514 8.34752 8.72091 7.73549C8.43668 7.12345 7.9544 6.62512 7.352 6.321L10.229 4.723C10.4627 4.59304 10.6574 4.40297 10.793 4.17246C10.9285 3.94196 11 3.67941 11 3.412V2.25C11 1.56 10.44 1 9.75 1H2.25ZM5 5.372V2H7V5.372L6 5.928L5 5.372ZM8 9C8 9.53043 7.78929 10.0391 7.41421 10.4142C7.03914 10.7893 6.53043 11 6 11C5.46957 11 4.96086 10.7893 4.58579 10.4142C4.21071 10.0391 4 9.53043 4 9C4 8.46957 4.21071 7.96086 4.58579 7.58579C4.96086 7.21071 5.46957 7 6 7C6.53043 7 7.03914 7.21071 7.41421 7.58579C7.78929 7.96086 8 8.46957 8 9Z"/></svg>';
         $usersIcon = '<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12C14.21 12 16 10.21 16 8S14.21 4 12 4 8 5.79 8 8 9.79 12 12 12M12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/></svg>';
@@ -62,7 +92,38 @@ class DashboardController extends Controller
             ['title' => $totalUsersCount, 'subtitle' => 'Purchasing Users', 'bgColor' => 'bg-warning', 'icon' => $rewardIcon, 'hasAvatar' => false],
         ];
 
-        $purchases = Order::orderBy('date_created', 'desc')->paginate(10);
+        $search = $request->input('search');
+        $query = Order::with('user')->latest();
+
+        if ($search) {
+            $normalizedDate = null;
+            try {
+                $timestamp = strtotime($search);
+                if ($timestamp !== false) {
+                    $normalizedDate = date('Y-m-d', $timestamp);
+                }
+            } catch (\Exception $e) {
+                $normalizedDate = null;
+            }
+
+            $query->where(function ($q) use ($search, $normalizedDate) { // ✅ include $normalizedDate here
+                $q->where('woo_id', 'like', "%{$search}%")
+                ->orWhere('total', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('first_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->orWhereDate('created_at', $search);
+
+                if ($normalizedDate) {
+                    $q->orWhereDate('date_completed', $normalizedDate);
+                }
+            });
+        }
+
+
+        $purchases = $query->orderBy('date_created', 'desc')->paginate(10)->appends($request->query());
 
         return view('admin.purchase', compact('metricCards', 'purchases'));
     }
@@ -70,10 +131,11 @@ class DashboardController extends Controller
     public function showPurchase($id) {
         $purchase = Order::with(['items.product'])->find($id);
         $user = User::find($purchase->user_id);
+        
         return view('admin.purchase-details', compact('purchase', 'user'));
     }
 
-    public function rewards()
+    public function rewards(Request $request)
     {
         $totalApprovedRewards = UserReward::where('status', 'claimed')->count();
         $pendingRewards = UserReward::where('status', 'pending')->count();
@@ -114,13 +176,54 @@ class DashboardController extends Controller
             ['title' => $totalApprovedRewards, 'subtitle' => 'Total Rewards Claimed',  'bgColor' => 'bg-green-600','svgIcon' => $approvedCartSvg],
         ];
 
+        $search = $request->input('search');
+
         $userRewards = UserReward::with(['user', 'reward'])
             ->join('rewards', 'user_rewards.reward_id', '=', 'rewards.id')
             ->select('user_rewards.*')
             ->where('user_rewards.status', '!=', 'unclaimed')
+            ->when($search, function ($query, $search) {
+                $normalizedDate = null;
+
+                // Try to normalize any date format
+                try {
+                    $timestamp = strtotime($search);
+                    if ($timestamp !== false) {
+                        $normalizedDate = date('Y-m-d', $timestamp);
+                    }
+                } catch (\Exception $e) {
+                    $normalizedDate = null;
+                }
+
+                $query->where(function ($q) use ($search, $normalizedDate) {
+                    // Search user fields
+                    $q->whereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('first_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%");
+                    })
+                    // Search reward fields
+                    ->orWhereHas('reward', function ($rewardQuery) use ($search) {
+                        $rewardQuery->where('title', 'like', "%{$search}%")
+                                    ->orWhere('reward_benefit', 'like', "%{$search}%");
+                    });
+
+                    // Handle date-based search
+                    if (preg_match('/^\d{4}-\d{2}$/', $search)) {
+                        // Match entire month (e.g., 2025-10)
+                        $q->orWhereBetween('user_rewards.achieved_at', [
+                            "{$search}-01",
+                            date('Y-m-t', strtotime($search . '-01')),
+                        ]);
+                    } elseif (!empty($normalizedDate)) {
+                        // Match specific date
+                        $q->orWhereDate('user_rewards.achieved_at', $normalizedDate);
+                    }
+                });
+            })
             ->orderByRaw("FIELD(user_rewards.status, 'pending', 'claimed')")
             ->orderBy('rewards.priority', 'asc')
-            ->paginate(10);
+            ->paginate(10)->appends($request->query());
+
 
 
         return view('admin.reward', compact('metricCards', 'userRewards'));
@@ -153,12 +256,42 @@ class DashboardController extends Controller
         }
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::where('is_admin', false)->paginate(10);
+        $search = $request->input('search');
+
+        $users = User::with('currentReward') // eager load for performance
+            ->where('is_admin', false)
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    // Basic text fields
+                    $q->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+
+                    // Numeric or partial match fields
+                    if (is_numeric($search)) {
+                        $q->orWhere('bonus_point', $search)
+                        ->orWhere('total_spent', $search);
+                    } else {
+                        // Handle fuzzy number search (e.g., "1000" matches "1000.50")
+                        $q->orWhere('bonus_point', 'like', "%{$search}%")
+                        ->orWhere('total_spent', 'like', "%{$search}%");
+                    }
+
+                    
+                    $q->orWhereHas('currentReward', function ($tierQuery) use ($search) {
+                        $tierQuery->where('title', 'like', "%{$search}%");
+                    });
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->appends($request->query());
 
         return view('admin.user', compact('users'));
     }
+
 
     public function showUser($id)
     {
