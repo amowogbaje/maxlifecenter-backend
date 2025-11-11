@@ -28,9 +28,9 @@ class AuditLog extends Model
     /**
      * The user who performed the action.
      */
-    public function user(): BelongsTo
+    public function admin(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Admin::class);
     }
 
     /**

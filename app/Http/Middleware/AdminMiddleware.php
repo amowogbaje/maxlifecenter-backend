@@ -7,20 +7,23 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminMiddleware
 {
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next)
     {
-        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->is_admin) {
-            return $next($request);
+        // Only handle admin guard
+        if (Auth::guard('admin')->check()) {
+
+            // Check if this route is using the guest.admin middleware
+            $routeMiddleware = $request->route()?->gatherMiddleware() ?? [];
+
+            $isGuestRoute = collect($routeMiddleware)
+                ->contains(fn ($mw) => str_contains($mw, 'guest.admin'));
+
+            // If it's a guest route, redirect to dashboard
+            if ($isGuestRoute) {
+                return redirect()->route('admin.dashboard');
+            }
         }
 
-        // if ($request->ajax() || $request->wantsJson()) {
-        //     return response('Unauthorized.', 401);
-        // }
-        
-        // return redirect()->guest(route('admin.login'))->with('error', 'You need admin privileges to access this page.');
-        return redirect()->route('admin.login');
-        
-        // Alternatively, you can show a forbidden page:
-        // abort(403, 'Access denied. Admin privileges required.');
+        return $next($request);
     }
 }

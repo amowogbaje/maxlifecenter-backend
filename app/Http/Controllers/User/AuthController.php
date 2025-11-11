@@ -103,6 +103,7 @@ class AuthController extends Controller
             'email'    => 'required|email',
             'password' => 'nullable|string',
         ]);
+        // return $request->all();
 
         $user = User::where('email', $request->email)->first();
 
@@ -132,8 +133,9 @@ class AuthController extends Controller
         }
 
         // Normal login
-        if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
+        if (Auth::guard('web')->attempt($request->only('email', 'password'), $request->filled('remember'))) {
             $request->session()->regenerate();
+            $request->session()->regenerateToken();
             return redirect()->intended('/dashboard')->with('success', 'Welcome back!');
         }
 
@@ -170,7 +172,7 @@ class AuthController extends Controller
 
         // Handle password login
         if (!is_null($user->password)) {
-            if (Auth::attempt([$field => $identifier, 'password' => $request->password], $request->filled('remember'))) {
+            if (Auth::guard('web')->attempt([$field => $identifier, 'password' => $request->password], $request->filled('remember'))) {
                 $request->session()->regenerate();
 
                 Log::info('Login successful', [
@@ -346,7 +348,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

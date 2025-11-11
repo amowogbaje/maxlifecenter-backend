@@ -103,8 +103,7 @@ class MessagesContactController extends Controller
             'create_contact_list',
             $contactList,
             ['old'=>[], 'new' =>$contactList],
-            Auth::id(),
-            ['message' => 'Contact list created', 'data' => $validated]
+            'Contact list created'
         );
 
         return redirect()->route('admin.messages.contacts.edit', $contactList->id)
@@ -184,12 +183,8 @@ class MessagesContactController extends Controller
             'update_contact_list',
             $contactList,
             ['old' => $oldData, 'new' => $contactList],
-            Auth::id(),
-            [
-                'message' => 'Contact list updated',
-                'before' => $oldData,
-                'after' => $contactList->toArray()
-            ]
+            Auth('admin')::id(),
+            'Contact list updated'
         );
 
         return redirect()

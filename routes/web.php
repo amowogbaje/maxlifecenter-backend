@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\BlogController;
 use App\Http\Controllers\EmailPreviewController;
 use App\Http\Controllers\User\DashboardController;
 use Illuminate\Support\Facades\Artisan;
@@ -16,9 +17,45 @@ Route::get('/migrate', function () {
     ]);
 });
 
+Route::get('/seed', function () {
+    // ✅ Correct seeder option
+    Artisan::call('db:seed', ['--class' => 'AdminSeeder']);
+
+    return response()->json([
+        'message' => 'Database seeding completed successfully.',
+        'output'  => Artisan::output(),
+    ]);
+});
+
+
+
+Route::get('/artisan-command/{signature}', function ($signature) {
+    // ❌ Restricted commands for safety
+    $restricted = ['down', 'up', 'serve'];
+
+    if (in_array($signature, $restricted)) {
+        return response()->json([
+            'error' => "The '{$signature}' command is restricted.",
+        ], 403);
+    }
+
+    try {
+        Artisan::call($signature);
+
+        return response()->json([
+            'message' => "Artisan command '{$signature}' executed successfully.",
+            'output'  => Artisan::output(),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+});
+
+
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/about-us', [AuthController::class, 'login'])->name('about-us');
 
 
 Route::middleware('auth')->group(function () {
@@ -27,7 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
     Route::get('/purchases', [DashboardController::class, 'purchases'])->name('purchases');
@@ -36,9 +73,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/uploads', [DashboardController::class, 'uploads'])->name('uploads');
     Route::get('/upload-requests', [DashboardController::class, 'uploadRequests'])->name('upload-requests');
     Route::get('/users', [DashboardController::class, 'users'])->name('users');
-    Route::get('/updates', [DashboardController::class, 'updates'])->name('updates');
     Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
+    Route::get('/about-us', [DashboardController::class, 'about'])->name('about-us');
     Route::get('/campaign', [DashboardController::class, 'settings'])->name('campaign');
+    Route::prefix('updates')->name('updates.')->group(function () {
+        Route::get('/', [BlogController::class, 'index'])->name('index');
+        Route::get('/{update}/show', [BlogController::class, 'show'])->name('show');
+    });
 });
 // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -68,6 +109,8 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
     Route::get('/confirm-password-reset-otp', [AuthController::class, 'confirmPasswordResetOTP'])->name('confirm-password-reset-otp');
     
+    
+
     Route::prefix('emails')->name('emails.')->group(function () {
         Route::get('/', [EmailPreviewController::class, 'index']);
         Route::get('/password', [EmailPreviewController::class, 'password'])->name('password');

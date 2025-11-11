@@ -28,8 +28,8 @@
             <div><strong>Action:</strong> {{ ucfirst(str_replace('_', ' ', $log->action)) }}</div>
             {{-- <div><strong>Model Type:</strong> {{ class_basename($log->model_type) }}</div> --}}
             {{-- <div><strong>Model ID:</strong> {{ $log->model_id }}</div> --}}
-            <div><strong>Performed By:</strong> {{ $log->user->name ?? 'System' }}</div>
-            <div><strong>User Email:</strong> {{ $log->user->email ?? '—' }}</div>
+            <div><strong>Performed By:</strong> {{ $log->admin->name ?? 'System' }}</div>
+            <div><strong>Admin Email:</strong> {{ $log->admin->email ?? '—' }}</div>
             <div><strong>Description:</strong> {{ $log->description ?? 'No description provided.' }}</div>
         </div>
     </section>

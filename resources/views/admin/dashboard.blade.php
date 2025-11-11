@@ -84,8 +84,8 @@
                     <div class="flex-1 min-w-0">
                         <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 lg:gap-6">
                             <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light">User</span>
-                                <span class="text-base text-text-dark truncate" title="{{ $log->user->full_name ?? 'System' }}">{{ $log->user->full_name ?? 'System' }}</span>
+                                <span class="text-sm text-text-light">Admin</span>
+                                <span class="text-base text-text-dark truncate" title="{{ $log->admin->full_name ?? 'System' }}">{{ $log->admin->full_name ?? 'System' }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light truncate">Action</span>

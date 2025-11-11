@@ -61,18 +61,18 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Purchase History</span>
         </a>
-        {{-- <a href="{{ route('uploads') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors   {{ menuClass(['uploads','upload-requests']) }}">
-            <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-10 h-10 fill-current {{ svgClass('uploads') }}" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg">
-                    <mask id="mask0_791_5247" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="23" height="20">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0.984314 0.000366211H22.1656V19.4994H0.984314V0.000366211Z" fill="white" />
-                    </mask>
-                    <g mask="url(#mask0_791_5247)">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5489 11.8178L14.5214 17.7508C14.6952 18.0108 14.9667 18.0078 15.0764 17.9938C15.1862 17.9798 15.4501 17.9178 15.5457 17.6228L20.5133 2.17777C20.6002 1.90477 20.4405 1.71877 20.3688 1.65277C20.2993 1.58677 20.1005 1.44577 19.8126 1.52077L3.02314 6.04677C2.70486 6.13277 2.63534 6.37877 2.62013 6.47977C2.60493 6.58277 2.60058 6.83777 2.88193 7.00077L9.40066 10.7538L15.1601 5.39577C15.4762 5.10177 15.9922 5.09877 16.3126 5.38977C16.6331 5.68077 16.6353 6.15677 16.3191 6.45077L10.5489 11.8178ZM14.9917 19.4998C14.2357 19.4998 13.5426 19.1458 13.1342 18.5378L8.9227 12.2468L2.01834 8.27177C1.27424 7.84277 0.885354 7.07877 1.00593 6.27577C1.12542 5.47277 1.72396 4.83477 2.56473 4.60777L19.3542 0.0817716C20.1265 -0.126228 20.9543 0.0707716 21.5235 0.592772C22.0927 1.11977 22.3045 1.88977 22.0742 2.60377L17.1067 18.0478C16.8579 18.8248 16.1627 19.3738 15.2926 19.4808C15.1905 19.4928 15.0917 19.4998 14.9917 19.4998Z" />
-                    </g>
-                </svg>
-            </div>
-            <span class="font-bold text-base truncate">All Uploads</span>
+        {{-- <a href="{{ route('uploads') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass(['uploads','upload-requests']) }}">
+        <div class="w-6 h-6 flex items-center justify-center">
+            <svg class="w-10 h-10 fill-current {{ svgClass('uploads') }}" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg">
+                <mask id="mask0_791_5247" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="23" height="20">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.984314 0.000366211H22.1656V19.4994H0.984314V0.000366211Z" fill="white" />
+                </mask>
+                <g mask="url(#mask0_791_5247)">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5489 11.8178L14.5214 17.7508C14.6952 18.0108 14.9667 18.0078 15.0764 17.9938C15.1862 17.9798 15.4501 17.9178 15.5457 17.6228L20.5133 2.17777C20.6002 1.90477 20.4405 1.71877 20.3688 1.65277C20.2993 1.58677 20.1005 1.44577 19.8126 1.52077L3.02314 6.04677C2.70486 6.13277 2.63534 6.37877 2.62013 6.47977C2.60493 6.58277 2.60058 6.83777 2.88193 7.00077L9.40066 10.7538L15.1601 5.39577C15.4762 5.10177 15.9922 5.09877 16.3126 5.38977C16.6331 5.68077 16.6353 6.15677 16.3191 6.45077L10.5489 11.8178ZM14.9917 19.4998C14.2357 19.4998 13.5426 19.1458 13.1342 18.5378L8.9227 12.2468L2.01834 8.27177C1.27424 7.84277 0.885354 7.07877 1.00593 6.27577C1.12542 5.47277 1.72396 4.83477 2.56473 4.60777L19.3542 0.0817716C20.1265 -0.126228 20.9543 0.0707716 21.5235 0.592772C22.0927 1.11977 22.3045 1.88977 22.0742 2.60377L17.1067 18.0478C16.8579 18.8248 16.1627 19.3738 15.2926 19.4808C15.1905 19.4928 15.0917 19.4998 14.9917 19.4998Z" />
+                </g>
+            </svg>
+        </div>
+        <span class="font-bold text-base truncate">All Uploads</span>
         </a> --}}
         <a href="{{ route('rewards') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('rewards') }}">
             <div class="w-6 h-6 flex items-center justify-center">
@@ -81,6 +81,22 @@ return request()->routeIs($routes)
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Rewards</span>
+        </a>
+        <a href="{{ route('updates.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass('updates.index') }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                <svg class="w-6 h-6 fill-current {{ svgClass('updates.index') }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m21,19.036v-6.036c0-4.963-4.037-9-9-9S3,8.037,3,13v6.036c-1.694.243-3,1.704-3,3.464,0,.827.673,1.5,1.5,1.5h21c.827,0,1.5-.673,1.5-1.5,0-1.76-1.306-3.221-3-3.464ZM4,13c0-4.411,3.589-8,8-8s8,3.589,8,8v6H4v-6Zm18.5,10H1.5c-.275,0-.5-.225-.5-.5,0-1.379,1.121-2.5,2.5-2.5h17c1.379,0,2.5,1.121,2.5,2.5,0,.275-.225.5-.5.5ZM17.053,2.276l1-2c.125-.246.424-.347.671-.224.247.124.347.424.224.671l-1,2c-.088.175-.265.276-.447.276-.075,0-.151-.017-.224-.053-.247-.124-.347-.424-.224-.671Zm4.094,3.577c-.195-.195-.195-.512,0-.707l2-2c.195-.195.512-.195.707,0s.195.512,0,.707l-2,2c-.098.098-.226.146-.354.146s-.256-.049-.354-.146ZM5.053.724c-.123-.247-.023-.547.224-.671s.547-.023.671.224l1,2c.123.247.023.547-.224.671-.072.036-.148.053-.224.053-.183,0-.359-.102-.447-.276l-1-2ZM.146,3.854c-.195-.195-.195-.512,0-.707s.512-.195.707,0l2,2c.195.195.195.512,0,.707-.098.098-.226.146-.354.146s-.256-.049-.354-.146L.146,3.854Zm11.854,5.646c0,.276-.224.5-.5.5-1.379,0-2.5,1.121-2.5,2.5,0,.276-.224.5-.5.5s-.5-.224-.5-.5c0-1.93,1.57-3.5,3.5-3.5.276,0,.5.224.5.5Z" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">Updates</span>
+        </a>
+        <a href="{{ route('about-us') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass('about-us') }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                <svg class="w-6 h-6 text-current {{ svgClass('about-us') }}" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m13,10.5v8.5h-1v-8.5c0-.276-.224-.5-.5-.5h-1.5v-1h1.5c.827,0,1.5.673,1.5,1.5Zm-1-5.5c-.552,0-1,.448-1,1s.448,1,1,1,1-.448,1-1-.448-1-1-1Zm12,7c0,6.617-5.383,12-12,12S0,18.617,0,12,5.383,0,12,0s12,5.383,12,12Zm-1,0c0-6.065-4.935-11-11-11S1,5.935,1,12s4.935,11,11,11,11-4.935,11-11Z" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">About Us</span>
         </a>
         <a href="{{ route('profile')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('profile') }}">
             <div class="w-6 h-6 flex items-center justify-center">

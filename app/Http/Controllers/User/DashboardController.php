@@ -23,7 +23,7 @@ class DashboardController extends Controller
     {
         $rewardIcon = '<svg class="w-4 h-4 text-white" viewBox="0 0 12 12" fill="currentColor"><path d="M2.25 1C1.56 1 1 1.56 1 2.25V3.412C1.00027 3.67934 1.07198 3.94175 1.20771 4.17207C1.34344 4.40239 1.53826 4.59225 1.772 4.722L4.648 6.321C4.0456 6.62512 3.56332 7.12345 3.27909 7.73549C2.99486 8.34752 2.92528 9.03751 3.08159 9.69398C3.2379 10.3504 3.61097 10.935 4.14052 11.3533C4.67008 11.7716 5.32518 11.9991 6 11.9991C6.67482 11.9991 7.32992 11.7716 7.85948 11.3533C8.38903 10.935 8.7621 10.3504 8.91841 9.69398C9.07472 9.03751 9.00514 8.34752 8.72091 7.73549C8.43668 7.12345 7.9544 6.62512 7.352 6.321L10.229 4.723C10.4627 4.59304 10.6574 4.40297 10.793 4.17246C10.9285 3.94196 11 3.67941 11 3.412V2.25C11 1.56 10.44 1 9.75 1H2.25ZM5 5.372V2H7V5.372L6 5.928L5 5.372ZM8 9C8 9.53043 7.78929 10.0391 7.41421 10.4142C7.03914 10.7893 6.53043 11 6 11C5.46957 11 4.96086 10.7893 4.58579 10.4142C4.21071 10.0391 4 9.53043 4 9C4 8.46957 4.21071 7.96086 4.58579 7.58579C4.96086 7.21071 5.46957 7 6 7C6.53043 7 7.03914 7.21071 7.41421 7.58579C7.78929 7.96086 8 8.46957 8 9Z"/></svg>';
         $usersIcon = '<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12C14.21 12 16 10.21 16 8S14.21 4 12 4 8 5.79 8 8 9.79 12 12 12M12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/></svg>';
-        $user = auth()->user();
+        $user = auth('web')->user();
         $purchaseCount = Order::where('user_id', $user->id)->count();
         $purchaseTotal = Order::where('user_id', $user->id)->sum('total');
         $currentTier = $user->approvedTier->title;
@@ -32,6 +32,61 @@ class DashboardController extends Controller
         $data = compact('purchaseCount', 'purchaseTotal','currentTier', 'nextTier', 'recentProducts');
 
         return view('user.dashboard', $data);
+    }
+
+    public function about() {
+        $tiers = [
+            [
+                'name' => 'Tier 1 - Eleniyan (Chief)',
+                'color' => 'blue',
+                'border' => 'border-blue-500',
+                'gradient' => 'from-blue-50 to-blue-100',
+                'benefits' => [
+                    'Signature Cap (Fila) & Jotter',
+                    '10% discount (up to ₦30,000)',
+                ],
+                'image' => url('images/rewards/eleniyan.png'),
+                'size' => ['w' => 40, 'h' => 40, 'img' => 25],
+            ],
+            [
+                'name' => 'Tier 2 - Oloye (High Chief)',
+                'color' => 'purple',
+                'border' => 'border-purple-600',
+                'gradient' => 'from-purple-50 to-purple-100',
+                'benefits' => [
+                    'Coral Bead Handbracelet',
+                    '15% discount (up to ₦50,000)',
+                ],
+                'image' => url('images/rewards/oloye.png'),
+                'size' => ['w' => 60, 'h' => 60, 'img' => 38],
+            ],
+            [
+                'name' => 'Tier 3 - Balogun (Warlord)',
+                'color' => 'orange',
+                'border' => 'border-blue-500',
+                'gradient' => 'from-orange-50 to-orange-100',
+                'benefits' => [
+                    'Premium Kaftan',
+                    '20% discount (up to ₦150,000)',
+                ],
+                'image' => url('images/rewards/balogun.png'),
+                'size' => ['w' => 80, 'h' => 80, 'img' => 50],
+            ],
+            [
+                'name' => 'Tier 4 - Kabiyesi (King)',
+                'color' => 'green',
+                'border' => 'border-green-600',
+                'gradient' => 'from-green-50 to-green-100',
+                'benefits' => [
+                    'Full Agbada',
+                    '20% discount (up to ₦300,000)',
+                ],
+                'image' => url('images/rewards/kabiyesi.png'),
+                'size' => ['w' => 100, 'h' => 100, 'img' => 63],
+            ],
+        ];
+
+        return view('user.about', compact('tiers'));
     }
 
     public function fetchSalesProducts()
@@ -46,7 +101,7 @@ class DashboardController extends Controller
     public function purchases(Request $request)
     {
         $search = $request->input('search');
-        $query = Order::where('user_id', auth()->user()->id)->with('user')->latest();
+        $query = Order::where('user_id', auth('web')->user()->id)->with('user')->latest();
 
         if ($search) {
             $normalizedDate = null;
@@ -83,13 +138,13 @@ class DashboardController extends Controller
 
     public function showPurchase($id) {
         $purchase = Order::with(['items.product'])->find($id);
-        $user = auth()->user();
+        $user = auth('web')->user();
         return view('user.purchase-details', compact('purchase', 'user'));
     }
 
     public function rewards()
     {
-        $user = User::find(auth()->user()->id);
+        $user = User::find(auth('web')->user()->id);
         $rewards = $user->rewards()
         ->withPivot(['id','status', 'mail_sent']) // include pivot fields
         // ->where('user_rewards.status', 'claimed')

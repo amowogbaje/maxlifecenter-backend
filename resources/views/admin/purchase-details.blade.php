@@ -111,7 +111,7 @@
                 <div class="bg-white rounded-3xl border-2 border-dashed border-gray-300 p-6">
                     <!-- Profile -->
                     <div class="flex justify-center items-center gap-3 mb-6">
-                        <img src="https://i.pravatar.cc/80?img=5" alt="avatar" class="w-12 h-12 rounded-full">
+                        <img src="{{asset($user->approvedTier->img_src)}}" alt="avatar" class="w-12 h-12 rounded-full">
                         <div>
                             <div class="flex items-center gap-2">
                                 <p class="font-semibold text-gray-900">{{$user->full_name}}</p>

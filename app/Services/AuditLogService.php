@@ -12,7 +12,7 @@ class AuditLogService
             'action'       => $action,
             'model_type'   => get_class($model),
             'model_id'     => $model->getKey(),
-            'user_id'      => auth()->id(),
+            'admin_id'      => auth('admin')->id(),
             'old_data'     => $data['old'] ?? null,
             'new_data'     => $data['new'] ?? null,
             'description'  => $description,

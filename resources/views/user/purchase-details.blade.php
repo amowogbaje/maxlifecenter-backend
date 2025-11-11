@@ -111,7 +111,7 @@
                 <div class="bg-white rounded-3xl border-2 border-dashed border-gray-300 p-6">
                     <!-- Profile -->
                     <div class="flex justify-center items-center gap-3 mb-6">
-                        <img src="https://i.pravatar.cc/80?img=5" alt="avatar" class="w-12 h-12 rounded-full">
+                        <img src="{{asset($user->approvedTier->img_src)}}" alt="avatar" class="w-12 h-12 rounded-full">
                         <div>
                             <div class="flex items-center gap-2">
                                 <p class="font-semibold text-gray-900">{{$user->full_name}}</p>
@@ -126,13 +126,13 @@
                     <!-- Bonus & Value -->
                     <div class="rounded-2xl bg-[#F6FBEF] p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
                         <!-- Bonus Point -->
-                        {{-- <div class="flex items-center gap-3 flex-1 min-w-[150px]">
+                        <div class="flex items-center gap-3 flex-1 min-w-[150px]">
                             <img class="w-9 h-9 rounded-full" src="{{asset('images/icons/bonus_cocoa.png')}}"/>
                             <div>
                                 <p class="text-xs text-gray-600">Bonus Point</p>
                                 <p class="font-semibold text-gray-800">{{ $user->bonus_point }}</p>
                             </div>
-                        </div> --}}
+                        </div>
 
                         <!-- Divider (hidden on wrap) -->
                         <div class="hidden sm:block h-10 w-px bg-gray-200 rounded"></div>
@@ -164,12 +164,8 @@
                                 <p class="text-base text-brand-dark">{{ \Carbon\Carbon::parse($purchase->date_created)->format('M d, Y H:i a') }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-brand-light-gray mb-1">User ID</p>
-                                <p class="text-base text-brand-dark">{{$user->woo_id > 0 ? $user->woo_id : 'No Shop ID'}}</p>
-                            </div>
-                            <div>
                                 <p class="text-sm text-brand-light-gray mb-1">Status</p>
-                                <div class="inline-flex items-center justify-center w-[75px] h-[30px] bg-success rounded-[10px]"><span class="text-xs font-bold text-white">Complete</span></div>
+                                <div class="inline-flex items-center justify-center w-[75px] h-[30px] bg-success rounded-[10px]"><span class="text-xs font-bold text-white">Completed</span></div>
                             </div>
                         </div>
                     </div>

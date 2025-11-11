@@ -28,14 +28,14 @@
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1">
                 <!-- Sender Avatar -->
                 <div class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-bold">
-                    {{ strtoupper(substr($log->user->full_name ?? 'S', 0, 1)) }}
+                    {{ strtoupper(substr($log->admin->full_name ?? 'S', 0, 1)) }}
                 </div>
 
                 <!-- Message Summary -->
                 <div class="flex-1 min-w-0">
                     <div class="flex justify-between items-center">
                         <p class="font-semibold text-gray-800 truncate">
-                            {{ $log->user->full_name ?? 'System' }}
+                            {{ $log->admin->full_name ?? 'System' }}
                         </p>
                         <p class="text-xs text-gray-500">
                             {{ $log->created_at->format('M d, Y H:i') }}

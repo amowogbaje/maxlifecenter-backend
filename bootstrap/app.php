@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => AdminMiddleware::class,
+            'guest.admin' => \App\Http\Middleware\AdminMiddleware::class,
              'wc.signed' => \App\Http\Middleware\VerifyWooCommerceSignature::class,
         ]);
         $middleware->redirectGuestsTo(fn (Request $request) => 

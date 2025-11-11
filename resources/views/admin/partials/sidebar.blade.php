@@ -36,6 +36,17 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Dashboard</span>
         </a>
+        @can('view activity logs')
+        <a href="{{ route('admin.logs.all') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.logs.all') }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                <svg class="w-6 h-6 text-current {{ svgClass('admin.logs.all') }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path class="fill-current" d="m14.707 0h-10.207c-1.378 0-2.5 1.122-2.5 2.5v21.5h20v-16.707zm.293 1.707 5.293 5.293h-5.293zm-12 21.293v-20.5c0-.827.673-1.5 1.5-1.5h9.5v7h7v15zm4-5h2v1h-3v-6h1zm4.5-5c-1.103 0-2 .897-2 2v2c0 1.103.897 2 2 2s2-.897 2-2v-2c0-1.103-.897-2-2-2zm1 4c0 .552-.449 1-1 1s-1-.448-1-1v-2c0-.552.449-1 1-1s1 .448 1 1zm3-2v2c0 .552.449 1 1 1s1-.448 1-1h-1v-1h2v1c0 1.103-.897 2-2 2s-2-.897-2-2v-2c0-1.103.897-2 2-2s2 .897 2 2h-1c0-.552-.449-1-1-1s-1 .448-1 1z" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">Activity Logs</span>
+        </a>
+        @endcan
+        @can('view purchases')
         <a href="{{ route('admin.purchases') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.purchases') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('admin.purchases') }}" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg">
@@ -61,6 +72,7 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Purchase Management</span>
         </a>
+        @endcan
         {{-- <a href="{{ route('admin.uploads') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass(['admin.uploads','admin.upload-requests']) }}">
         <div class="w-6 h-6 flex items-center justify-center">
             <svg class="w-10 h-10 fill-current {{ svgClass('admin.uploads') }}" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg">
@@ -74,6 +86,7 @@ return request()->routeIs($routes)
         </div>
         <span class="font-bold text-base truncate">Uploads Management</span>
         </a> --}}
+        @can('view reward')
         <a href="{{ route('admin.rewards') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.rewards') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('admin.rewards') }}" viewBox="0 0 27 24" xmlns="http://www.w3.org/2000/svg">
@@ -82,6 +95,8 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Rewards Management</span>
         </a>
+        @endcan
+        @can('view users')
         <a href="{{ route('admin.users') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.users') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 stroke-current {{ svgClass('admin.users') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -90,22 +105,37 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Users Management</span>
         </a>
-        <a href="{{ route('admin.roles') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.roles') }}">
+        @endcan
+        @can('view roles')
+        <a href="{{ route('admin.roles.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.roles.index') }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.roles') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.roles.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 19V18C3 15.7909 4.79086 14 7 14H11C13.2091 14 15 15.7909 15 18V19M15 11C16.6569 11 18 9.65685 18 8C18 6.34315 16.6569 5 15 5M21 19V18C21 15.7909 19.2091 14 17 14H16.5M12 8C12 9.65685 10.6569 11 9 11C7.34315 11 6 9.65685 6 8C6 6.34315 7.34315 5 9 5C10.6569 5 12 6.34315 12 8Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Role Management</span>
         </a>
-        {{-- <a href="{{ route('admin.updates') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass('admin.updates') }}">
-        <div class="w-6 h-6 flex items-center justify-center">
-            <svg class="w-10 h-10 fill-current {{ svgClass('admin.updates') }}" viewBox="0 0 27 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.2548 2.9636C15.653 1.67814 17.9189 1.67848 19.3163 2.96458C20.505 4.05885 20.6827 5.73188 19.8495 6.99973H21.4511C23.2508 6.9998 24.7097 8.34304 24.7099 9.99973V10.9997C24.7099 12.3056 23.8022 13.4128 22.537 13.8249V18.9997C22.537 20.5974 21.1803 21.9036 19.4697 21.9949L19.2783 21.9997H8.41595C6.68051 21.9997 5.26127 20.7512 5.16205 19.1765L5.15717 18.9997V13.8249C3.89197 13.4128 2.98431 12.3056 2.98431 10.9997V9.99973C2.98447 8.34301 4.44342 6.99975 6.2431 6.99973H7.84467C7.01167 5.73224 7.18923 4.05994 8.37787 2.96555C9.77531 1.6791 12.0407 1.6785 13.4394 2.96458C13.5893 3.10261 13.7251 3.2577 13.8476 3.42942C13.9702 3.25792 14.1048 3.10167 14.2548 2.9636ZM7.32904 18.9997C7.32904 19.5126 7.74878 19.9351 8.289 19.9929L8.41595 19.9997H12.7607V13.9997H7.32904V18.9997ZM14.9335 19.9997H19.2783C19.8352 19.9997 20.2945 19.6141 20.3574 19.1169L20.3652 18.9997V13.9997H14.9335V19.9997ZM6.2431 8.99973C5.64328 8.99975 5.15732 9.44758 5.15717 9.99973V10.9997C5.15717 11.552 5.64319 11.9997 6.2431 11.9997H12.7607V8.99973H6.2431ZM14.9335 11.9997H21.4511C22.051 11.9997 22.537 11.552 22.537 10.9997V9.99973C22.5369 9.44761 22.0509 8.9998 21.4511 8.99973H14.9335V11.9997ZM11.9042 4.37864C11.3545 3.87326 10.4634 3.8739 9.914 4.37962C9.36482 4.88534 9.36456 5.70508 9.91302 6.21067C10.1468 6.42587 10.7262 6.63959 11.5204 6.78587C11.7723 6.83223 12.0363 6.8701 12.3056 6.9011L12.6953 6.94016L12.6533 6.58079L12.5966 6.2136L12.5283 5.85911C12.3694 5.12787 12.1376 4.59355 11.9042 4.37864ZM17.666 4.28489C17.1136 3.87603 16.3035 3.90749 15.791 4.37864C15.5142 4.63342 15.2541 5.3085 15.0976 6.20872C15.0656 6.39279 15.0394 6.57657 15.0175 6.75559L14.996 6.94016L15.3886 6.9011L15.787 6.84934L16.1728 6.78587C16.9673 6.63959 17.5468 6.4255 17.7802 6.21067C18.329 5.70474 18.3292 4.88534 17.7802 4.37962L17.666 4.28489Z" />
-            </svg>
-        </div>
-        <span class="font-bold text-base truncate">Campaign & Updates</span>
-        </a> --}}
+        @endcan
+        @can('view admins')
+        <a href="{{ route('admin.list.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.list.index') }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.list.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 19V18C3 15.7909 4.79086 14 7 14H11C13.2091 14 15 15.7909 15 18V19M15 11C16.6569 11 18 9.65685 18 8C18 6.34315 16.6569 5 15 5M21 19V18C21 15.7909 19.2091 14 17 14H16.5M12 8C12 9.65685 10.6569 11 9 11C7.34315 11 6 9.65685 6 8C6 6.34315 7.34315 5 9 5C10.6569 5 12 6.34315 12 8Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">Admin Management</span>
+        </a>
+        @endcan
+        @can('view updates')
+        <a href="{{ route('admin.updates.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass('admin.updates.index') }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                <svg class="w-6 h-6 fill-current {{ svgClass('admin.updates.index') }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m21,19.036v-6.036c0-4.963-4.037-9-9-9S3,8.037,3,13v6.036c-1.694.243-3,1.704-3,3.464,0,.827.673,1.5,1.5,1.5h21c.827,0,1.5-.673,1.5-1.5,0-1.76-1.306-3.221-3-3.464ZM4,13c0-4.411,3.589-8,8-8s8,3.589,8,8v6H4v-6Zm18.5,10H1.5c-.275,0-.5-.225-.5-.5,0-1.379,1.121-2.5,2.5-2.5h17c1.379,0,2.5,1.121,2.5,2.5,0,.275-.225.5-.5.5ZM17.053,2.276l1-2c.125-.246.424-.347.671-.224.247.124.347.424.224.671l-1,2c-.088.175-.265.276-.447.276-.075,0-.151-.017-.224-.053-.247-.124-.347-.424-.224-.671Zm4.094,3.577c-.195-.195-.195-.512,0-.707l2-2c.195-.195.512-.195.707,0s.195.512,0,.707l-2,2c-.098.098-.226.146-.354.146s-.256-.049-.354-.146ZM5.053.724c-.123-.247-.023-.547.224-.671s.547-.023.671.224l1,2c.123.247.023.547-.224.671-.072.036-.148.053-.224.053-.183,0-.359-.102-.447-.276l-1-2ZM.146,3.854c-.195-.195-.195-.512,0-.707s.512-.195.707,0l2,2c.195.195.195.512,0,.707-.098.098-.226.146-.354.146s-.256-.049-.354-.146L.146,3.854Zm11.854,5.646c0,.276-.224.5-.5.5-1.379,0-2.5,1.121-2.5,2.5,0,.276-.224.5-.5.5s-.5-.224-.5-.5c0-1.93,1.57-3.5,3.5-3.5.276,0,.5.224.5.5Z" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">Campaign & Updates</span>
+        </a>
+        @endcan
         {{-- <a href="#" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  bg-transparent text-muted-foreground hover:bg-muted">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current text-black" viewBox="0 0 27 24" xmlns="http://www.w3.org/2000/svg">
@@ -114,6 +144,7 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Analytics</span>
         </a> --}}
+
         <a href="{{ route('admin.profile')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.profile') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('admin.profile') }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -122,33 +153,41 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Profile</span>
         </a>
+        @can('view messages')
         <a href="{{ route('admin.messages.sent.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.sent.index') }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                
+
                 <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.sent.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 8L8.44992 11.6333C9.73295 12.4886 10.3745 12.9163 11.0678 13.0825C11.6806 13.2293 12.3194 13.2293 12.9322 13.0825C13.6255 12.9163 14.2671 12.4886 15.5501 11.6333L21 8M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Messages</span>
         </a>
+        @endcan
+        @can('manage contacts')
         <a href="{{ route('admin.messages.contacts.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.contacts.index') }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                
+
                 <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.contacts.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 8L8.44992 11.6333C9.73295 12.4886 10.3745 12.9163 11.0678 13.0825C11.6806 13.2293 12.3194 13.2293 12.9322 13.0825C13.6255 12.9163 14.2671 12.4886 15.5501 11.6333L21 8M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Contact List</span>
         </a>
+        @endcan
+
+        @can('view messages')
         <a href="{{ route('admin.messages.templates.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.templates.index') }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                
+
                 <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.templates.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 8L8.44992 11.6333C9.73295 12.4886 10.3745 12.9163 11.0678 13.0825C11.6806 13.2293 12.3194 13.2293 12.9322 13.0825C13.6255 12.9163 14.2671 12.4886 15.5501 11.6333L21 8M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Message Templates</span>
         </a>
+        @endcan
+
         <a href="{{ route('admin.settings')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.settings') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('admin.settings') }}" viewBox="0 0 27 24" xmlns="http://www.w.w3.org/2000/svg">

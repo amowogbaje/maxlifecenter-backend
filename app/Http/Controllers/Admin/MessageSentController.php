@@ -19,7 +19,7 @@ class MessageSentController extends Controller
                 \App\Models\Message::class,
             ])
             ->whereRaw('LOWER(action) LIKE ?', ['%send%'])
-            ->with('user') // if your AuditLog has a user() relationship
+            ->with('admin') // if your AuditLog has a user() relationship
             ->latest();
 
         // Optional filtering
@@ -50,7 +50,7 @@ class MessageSentController extends Controller
      */
     public function show($id)
     {
-        $log = AuditLog::with('user')->findOrFail($id);
+        $log = AuditLog::with('admin')->findOrFail($id);
 
         abort_unless(
             in_array($log->model_type, [\App\Models\Message::class, \App\Models\MessageContact::class]),
@@ -64,7 +64,7 @@ class MessageSentController extends Controller
 
     public function showActivityLog($id)
     {
-        $log = AuditLog::with('user')->findOrFail($id);
+        $log = AuditLog::with('admin')->findOrFail($id);
 
         return view('admin.messages.sent.show', compact('sent'));
     }

@@ -234,6 +234,7 @@
                 }
 
                 try {
+                    console.log(password)
                     let response = await fetch('/login/new', {
                         method: 'POST'
                         , headers: {

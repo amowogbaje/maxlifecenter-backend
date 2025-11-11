@@ -19,19 +19,34 @@ class MessageLogController extends Controller
                 \App\Models\Message::class,
                 \App\Models\MessageContact::class,
             ])
-            ->with('user') // if your AuditLog has a user() relationship
+            ->with('admin') // if your AuditLog has a admin() relationship
             ->latest();
 
         // Optional filtering
-        if ($search = $request->get('search')) {
-            $query->where(function ($q) use ($search) {
+        $search = $request->input('search');
+        if ($search) {
+            $normalizedDate = null;
+
+            try {
+                $timestamp = strtotime($search);
+                if ($timestamp !== false) {
+                    $normalizedDate = date('Y-m-d', $timestamp);
+                }
+            } catch (\Exception $e) {
+                $normalizedDate = null;
+            }
+
+            $query->where(function ($q) use ($search, $normalizedDate) {
                 $q->where('action', 'like', "%{$search}%")
-                    ->orWhereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('first_name', 'like', "%{$search}%")
-                            ->orWhere('last_name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
-                    })
-                    ->orWhereDate('created_at', $search);
+                ->orWhereHas('admin', function ($userQuery) use ($search) {
+                    $userQuery->where('first_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                });
+
+                if (!empty($normalizedDate)) { // ✅ safer null/empty check
+                    $q->orWhereDate('created_at', $normalizedDate);
+                }
             });
         }
 
@@ -45,7 +60,7 @@ class MessageLogController extends Controller
      */
     public function show($id)
     {
-        $log = AuditLog::with('user')->findOrFail($id);
+        $log = AuditLog::with('admin')->findOrFail($id);
 
         abort_unless(
             in_array($log->model_type, [\App\Models\Message::class, \App\Models\MessageContact::class]),
@@ -59,8 +74,44 @@ class MessageLogController extends Controller
 
     public function showActivityLog($id)
     {
-        $log = AuditLog::with('user')->findOrFail($id);
+        $log = AuditLog::with('admin')->findOrFail($id);
 
         return view('admin.messages.logs.show', compact('log'));
+    }
+
+    public function activityLogs(Request $request) 
+    {
+        $search = $request->input('search');
+        $query = AuditLog::with('admin')->latest();
+
+        if ($search) {
+            $normalizedDate = null;
+
+            try {
+                $timestamp = strtotime($search);
+                if ($timestamp !== false) {
+                    $normalizedDate = date('Y-m-d', $timestamp);
+                }
+            } catch (\Exception $e) {
+                $normalizedDate = null;
+            }
+
+            $query->where(function ($q) use ($search, $normalizedDate) {
+                $q->where('action', 'like', "%{$search}%")
+                ->orWhereHas('admin', function ($userQuery) use ($search) {
+                    $userQuery->where('first_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                });
+
+                if (!empty($normalizedDate)) { // ✅ safer null/empty check
+                    $q->orWhereDate('created_at', $normalizedDate);
+                }
+            });
+        }
+
+
+        $activityLogs = $query->paginate(10)->appends($request->query());
+        return view('admin.messages.logs.activity_logs', compact('activityLogs'));
     }
 }

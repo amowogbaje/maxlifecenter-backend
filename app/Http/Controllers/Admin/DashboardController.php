@@ -39,7 +39,7 @@ class DashboardController extends Controller
         ];
 
         $search = $request->input('search');
-        $query = AuditLog::with('user')->latest();
+        $query = AuditLog::with('admin')->latest();
 
         if ($search) {
             $normalizedDate = null;
@@ -55,7 +55,7 @@ class DashboardController extends Controller
 
             $query->where(function ($q) use ($search, $normalizedDate) {
                 $q->where('action', 'like', "%{$search}%")
-                ->orWhereHas('user', function ($userQuery) use ($search) {
+                ->orWhereHas('admin', function ($userQuery) use ($search) {
                     $userQuery->where('first_name', 'like', "%{$search}%")
                                 ->orWhere('last_name', 'like', "%{$search}%")
                                 ->orWhere('email', 'like', "%{$search}%");
@@ -299,26 +299,7 @@ class DashboardController extends Controller
         return view('admin.profile-user', compact('user'));
     }
 
-    public function updates()
-    {
-        $metricCards = [
-            ['title' => '600,000', 'subtitle' => 'Total Point Allocation', 'bgColor' => 'bg-green-600'],
-            ['title' => '393', 'subtitle' => 'Reward Rate',  'bgColor' => 'bg-green-600'],
-            ['title' => '69,088', 'subtitle' => 'Uploads',  'bgColor' => 'bg-green-600'],
-        ];
-
-
-        $updates = [
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Oloye'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Balogun'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Kabiyesi'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Eleniyan'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Oloye'],
-            ['title' => 'New app build release', 'bonus_point' => 30,  'date' => 'Apr 12, 1995 23:06 pm', 'id' => 'JD257HYD373', 'segment' => 'Balogun'],
-        ];
-
-        return view('admin.updates', compact('metricCards','updates'));
-    }
+    
 
 
     public function profile()

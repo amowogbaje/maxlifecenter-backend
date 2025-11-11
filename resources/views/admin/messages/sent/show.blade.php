@@ -35,14 +35,14 @@
             <!-- Sender Info -->
             <div class="flex items-center gap-4 border-t border-gray-100 pt-5">
                 <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-lg">
-                    {{ strtoupper(substr($log->user->name ?? 'S', 0, 1)) }}
+                    {{ strtoupper(substr($log->admin->name ?? 'S', 0, 1)) }}
                 </div>
                 <div>
                     <p class="text-gray-900 font-semibold">
-                        {{ $log->user->name ?? 'System' }}
+                        {{ $log->admin->name ?? 'System' }}
                     </p>
                     <p class="text-sm text-gray-500">
-                        {{ $log->user->email ?? 'system@admin.local' }}
+                        {{ $log->admin->email ?? 'system@admin.local' }}
                     </p>
                 </div>
             </div>

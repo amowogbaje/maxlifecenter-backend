@@ -1,7 +1,7 @@
 @extends('user.layouts.app')
 @section('content')
 <div class="mb-[32px] px-6">
-    <h1 class="text-[#1D1F24] text-2xl font-bold font-nunito mb-[8px]">Hi, {{auth()->user()->full_name}}</h1>
+    <h1 class="text-[#1D1F24] text-2xl font-bold font-nunito mb-[8px]">Hi, {{auth('web')->user()->full_name}}</h1>
     <p class="text-base font-nunito">
         <span class="text-[#6B6E75] font-bold">Take a look your overview </span>
         <span class="text-[#1D1F24] font-bold">Today {{ now()->format('M d, Y') }}</span>
