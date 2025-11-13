@@ -23,15 +23,17 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
     // 📊 Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    Route::get('/analytics', [DashboardController::class, 'analytics'])
+        ->name('analytics');
     
     Route::get('/logs/all', [MessageLogController::class, 'activityLogs'])
         ->name('logs.all')->middleware('can:view activity logs');
 
     Route::get('/activity-log/{id}/show', [MessageLogController::class, 'showActivityLog'])
-        ->name('show-activity-log')->middleware('can:view logs');
+        ->name('logs.show')->middleware('can:view logs');
 
-    Route::get('/activity-logs', [DashboardController::class, 'activityLog'])
-        ->name('activity-logs')->middleware('can:view logs');
+
 
     Route::get('/purchases', [DashboardController::class, 'purchases'])
         ->name('purchases')->middleware('can:view purchases');

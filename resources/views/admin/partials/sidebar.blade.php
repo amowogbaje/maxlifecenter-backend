@@ -37,19 +37,19 @@ return request()->routeIs($routes)
             <span class="font-bold text-base truncate">Dashboard</span>
         </a>
         @can('view activity logs')
-        <a href="{{ route('admin.logs.all') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.logs.all') }}">
+        <a href="{{ route('admin.logs.all') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass(['admin.logs.all', 'admin.logs.show']) }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-6 h-6 text-current {{ svgClass('admin.logs.all') }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path class="fill-current" d="m14.707 0h-10.207c-1.378 0-2.5 1.122-2.5 2.5v21.5h20v-16.707zm.293 1.707 5.293 5.293h-5.293zm-12 21.293v-20.5c0-.827.673-1.5 1.5-1.5h9.5v7h7v15zm4-5h2v1h-3v-6h1zm4.5-5c-1.103 0-2 .897-2 2v2c0 1.103.897 2 2 2s2-.897 2-2v-2c0-1.103-.897-2-2-2zm1 4c0 .552-.449 1-1 1s-1-.448-1-1v-2c0-.552.449-1 1-1s1 .448 1 1zm3-2v2c0 .552.449 1 1 1s1-.448 1-1h-1v-1h2v1c0 1.103-.897 2-2 2s-2-.897-2-2v-2c0-1.103.897-2 2-2s2 .897 2 2h-1c0-.552-.449-1-1-1s-1 .448-1 1z" />
+                <svg class="w-6 h-6  {{ svgClass(['admin.logs.all', 'admin.logs.show']) }}" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m8.722 18.368c0 .346-.28.627-.626.628l-1.468.003c-.347 0-.629-.28-.629-.627l-.005-4.744c0-.347.281-.628.628-.628s.627.28.627.626c.001 1.249.003 2.869.004 4.118.71-.001.592-.003.837-.004.348-.002.631.28.631.628zm4.757-3.368.008 2v.015c0 1.094-.902 1.985-2.012 1.985-1.086 0-1.967-.881-1.967-1.967l-.008-2.066c0-1.086.881-1.967 1.967-1.967 1.109 0 2.012.891 2.012 1.985zm-1.242 2.015-.008-2.015v-.015c0-.394-.342-.726-.75-.733-.402.007-.725.333-.724.736 0 .095.008 1.886.008 2.024 0 .403.322.729.724.736.408-.007.75-.338.75-.733zm5.62-1.013-.766.002c-.345.001-.625.281-.625.627 0 .349.284.631.633.627h.085c-.106.279-.378.485-.698.491-.402-.007-.725-.333-.724-.736 0-.138-.008-1.929-.008-2.024 0-.403.322-.729.724-.736.289.005.544.172.669.409.106.202.32.324.548.324.473 0 .776-.504.553-.921-.337-.632-1.009-1.064-1.782-1.064-1.086 0-1.967.881-1.967 1.967l.008 2.066c0 1.086.881 1.967 1.967 1.967 1.11 0 2.012-.891 2.012-1.985v-.389c-.003-.346-.284-.625-.63-.624zm4.143-5.516v8.515c0 2.757-2.243 5-5 5h-10c-2.757 0-5-2.243-5-5v-14.001c0-2.757 2.243-5 5-5h4.515c1.87 0 3.627.728 4.95 2.05l3.485 3.485c1.322 1.322 2.05 3.08 2.05 4.95zm-6.95-7.022c-.315-.315-.674-.564-1.05-.781v4.317c0 .551.449 1 1 1h4.317c-.217-.376-.466-.735-.781-1.05l-3.485-3.485zm4.95 7.021c0-.165-.032-.323-.047-.485h-4.953c-1.654 0-3-1.346-3-3v-4.953c-.162-.016-.32-.047-.485-.047h-4.515c-1.654 0-3 1.346-3 3v14c0 1.654 1.346 3 3 3h10c1.654 0 3-1.346 3-3z" />
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Activity Logs</span>
         </a>
         @endcan
         @can('view purchases')
-        <a href="{{ route('admin.purchases') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.purchases') }}">
+        <a href="{{ route('admin.purchases') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass(['admin.purchases', 'admin.purchases.show']) }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-10 h-10 fill-current {{ svgClass('admin.purchases') }}" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-10 h-10 fill-current {{ svgClass(['admin.purchases', 'admin.purchases.show']) }}" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M4.68539 5.34736L5.34041 12.5194C5.38821 13.0714 5.87812 13.4854 6.47665 13.4854H6.481H18.3333H18.3355C18.9015 13.4854 19.3849 13.0974 19.4652 12.5824L20.4972 6.02336C20.5211 5.86736 20.4787 5.71136 20.3755 5.58536C20.2734 5.45836 20.1235 5.37636 19.9541 5.35436C19.727 5.36236 10.3058 5.35036 4.68539 5.34736ZM6.47448 14.9854C5.04386 14.9854 3.83266 13.9574 3.71643 12.6424L2.7214 1.74836L1.08439 1.48836C0.640099 1.41636 0.343546 1.02936 0.419585 0.620365C0.497797 0.211365 0.926875 -0.054635 1.36139 0.00936497L3.62084 0.369365C3.98474 0.428365 4.26174 0.706365 4.29324 1.04636L4.54851 3.84736C20.0562 3.85336 20.1061 3.86036 20.1811 3.86836C20.7861 3.94936 21.3184 4.24036 21.6812 4.68836C22.0441 5.13536 22.1961 5.68636 22.1092 6.23836L21.0784 12.7964C20.8839 14.0444 19.7064 14.9854 18.3377 14.9854H18.3323H6.48317H6.47448Z" />
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M16.5908 9.0437H13.5797C13.1289 9.0437 12.765 8.7077 12.765 8.2937C12.765 7.8797 13.1289 7.5437 13.5797 7.5437H16.5908C17.0406 7.5437 17.4056 7.8797 17.4056 8.2937C17.4056 8.7077 17.0406 9.0437 16.5908 9.0437Z" />
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M6.00717 17.7019C6.33413 17.7019 6.5981 17.9449 6.5981 18.2459C6.5981 18.5469 6.33413 18.7909 6.00717 18.7909C5.67911 18.7909 5.41515 18.5469 5.41515 18.2459C5.41515 17.9449 5.67911 17.7019 6.00717 17.7019Z" />
@@ -86,7 +86,7 @@ return request()->routeIs($routes)
         </div>
         <span class="font-bold text-base truncate">Uploads Management</span>
         </a> --}}
-        @can('view reward')
+        @can('view rewards')
         <a href="{{ route('admin.rewards') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.rewards') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('admin.rewards') }}" viewBox="0 0 27 24" xmlns="http://www.w3.org/2000/svg">
@@ -97,9 +97,9 @@ return request()->routeIs($routes)
         </a>
         @endcan
         @can('view users')
-        <a href="{{ route('admin.users') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.users') }}">
+        <a href="{{ route('admin.users') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass(['admin.users', 'admin.users.show']) }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.users') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-10 h-10 stroke-current {{ svgClass(['admin.users', 'admin.users.show']) }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 19V18C3 15.7909 4.79086 14 7 14H11C13.2091 14 15 15.7909 15 18V19M15 11C16.6569 11 18 9.65685 18 8C18 6.34315 16.6569 5 15 5M21 19V18C21 15.7909 19.2091 14 17 14H16.5M12 8C12 9.65685 10.6569 11 9 11C7.34315 11 6 9.65685 6 8C6 6.34315 7.34315 5 9 5C10.6569 5 12 6.34315 12 8Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </div>
@@ -109,17 +109,17 @@ return request()->routeIs($routes)
         @can('view roles')
         <a href="{{ route('admin.roles.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.roles.index') }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.roles.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 19V18C3 15.7909 4.79086 14 7 14H11C13.2091 14 15 15.7909 15 18V19M15 11C16.6569 11 18 9.65685 18 8C18 6.34315 16.6569 5 15 5M21 19V18C21 15.7909 19.2091 14 17 14H16.5M12 8C12 9.65685 10.6569 11 9 11C7.34315 11 6 9.65685 6 8C6 6.34315 7.34315 5 9 5C10.6569 5 12 6.34315 12 8Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <svg class="w-6 h-6 fill-current {{ svgClass('admin.roles.index') }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m11,6h2c1.379,0,2.5-1.121,2.5-2.5v-1c0-1.379-1.121-2.5-2.5-2.5h-2c-1.378,0-2.5,1.121-2.5,2.5v1c0,1.379,1.122,2.5,2.5,2.5Zm-.5-3.5c0-.275.224-.5.5-.5h2c.275,0,.5.225,.5.5v1c0,.275-.225.5-.5.5h-2c-.276,0-.5-.225-.5-.5v-1Zm2.5,15.5h-2c-1.378,0-2.5,1.121-2.5,2.5v1c0,1.379,1.122,2.5,2.5,2.5h2c1.379,0,2.5-1.121,2.5-2.5v-1c0-1.379-1.121-2.5-2.5-2.5Zm.5,3.5c0,.275-.225.5-.5.5h-2c-.276,0-.5-.225-.5-.5v-1c0-.275.224-.5.5-.5h2c.275,0,.5.225,.5.5v1Zm8-3.5h-2c-1.379,0-2.5,1.121-2.5,2.5v1c0,1.379,1.121,2.5,2.5,2.5h2c1.379,0,2.5-1.121,2.5-2.5v-1c0-1.379-1.121-2.5-2.5-2.5Zm.5,3.5c0,.275-.225.5-.5.5h-2c-.275,0-.5-.225-.5-.5v-1c0-.275.225-.5.5-.5h2c.275,0,.5.225,.5.5v1Zm-17.5-3.5h-2c-1.378,0-2.5,1.121-2.5,2.5v1c0,1.379,1.122,2.5,2.5,2.5h2c1.378,0,2.5-1.121,2.5-2.5v-1c0-1.379-1.122-2.5-2.5-2.5Zm.5,3.5c0,.275-.224.5-.5.5h-2c-.276,0-.5-.225-.5-.5v-1c0-.275.224-.5.5-.5h2c.276,0,.5.225,.5.5v1Zm-2.5-6v-1c0-1.93,1.57-3.5,3.5-3.5h5v-2.5c0-.553.448-1,1-1s1,.447,1,1v2.5h5c1.93,0,3.5,1.57,3.5,3.5v1c0,.553-.447,1-1,1s-1-.447-1-1v-1c0-.827-.673-1.5-1.5-1.5h-5v2.5c0,.553-.448,1-1,1s-1-.447-1-1v-2.5h-5c-.827,0-1.5.673-1.5,1.5v1c0,.553-.448,1-1,1s-1-.447-1-1Z" />
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Role Management</span>
         </a>
         @endcan
         @can('view admins')
-        <a href="{{ route('admin.list.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.list.index') }}">
+        <a href="{{ route('admin.list.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass(['admin.list.index', 'admin.list.show']) }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.list.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-10 h-10 stroke-current {{ svgClass(['admin.list.index', 'admin.list.show']) }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 19V18C3 15.7909 4.79086 14 7 14H11C13.2091 14 15 15.7909 15 18V19M15 11C16.6569 11 18 9.65685 18 8C18 6.34315 16.6569 5 15 5M21 19V18C21 15.7909 19.2091 14 17 14H16.5M12 8C12 9.65685 10.6569 11 9 11C7.34315 11 6 9.65685 6 8C6 6.34315 7.34315 5 9 5C10.6569 5 12 6.34315 12 8Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </div>
@@ -127,23 +127,28 @@ return request()->routeIs($routes)
         </a>
         @endcan
         @can('view updates')
-        <a href="{{ route('admin.updates.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass('admin.updates.index') }}">
+        <a href="{{ route('admin.updates.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass(['admin.updates.index', 'admin.updates.edit']) }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-6 h-6 fill-current {{ svgClass('admin.updates.index') }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="m21,19.036v-6.036c0-4.963-4.037-9-9-9S3,8.037,3,13v6.036c-1.694.243-3,1.704-3,3.464,0,.827.673,1.5,1.5,1.5h21c.827,0,1.5-.673,1.5-1.5,0-1.76-1.306-3.221-3-3.464ZM4,13c0-4.411,3.589-8,8-8s8,3.589,8,8v6H4v-6Zm18.5,10H1.5c-.275,0-.5-.225-.5-.5,0-1.379,1.121-2.5,2.5-2.5h17c1.379,0,2.5,1.121,2.5,2.5,0,.275-.225.5-.5.5ZM17.053,2.276l1-2c.125-.246.424-.347.671-.224.247.124.347.424.224.671l-1,2c-.088.175-.265.276-.447.276-.075,0-.151-.017-.224-.053-.247-.124-.347-.424-.224-.671Zm4.094,3.577c-.195-.195-.195-.512,0-.707l2-2c.195-.195.512-.195.707,0s.195.512,0,.707l-2,2c-.098.098-.226.146-.354.146s-.256-.049-.354-.146ZM5.053.724c-.123-.247-.023-.547.224-.671s.547-.023.671.224l1,2c.123.247.023.547-.224.671-.072.036-.148.053-.224.053-.183,0-.359-.102-.447-.276l-1-2ZM.146,3.854c-.195-.195-.195-.512,0-.707s.512-.195.707,0l2,2c.195.195.195.512,0,.707-.098.098-.226.146-.354.146s-.256-.049-.354-.146L.146,3.854Zm11.854,5.646c0,.276-.224.5-.5.5-1.379,0-2.5,1.121-2.5,2.5,0,.276-.224.5-.5.5s-.5-.224-.5-.5c0-1.93,1.57-3.5,3.5-3.5.276,0,.5.224.5.5Z" />
-                </svg>
+                <svg class="w-6 h-6 fill-current {{ svgClass(['admin.updates.index', 'admin.updates.edit']) }}" viewBox="0 0 24 24" width="512" height="512">
+                    <path d="m21,18v-5c0-4.963-4.037-9-9-9S3,8.037,3,13v5c-1.654,0-3,1.346-3,3v3h24v-3c0-1.654-1.346-3-3-3ZM5,13c0-3.859,3.141-7,7-7s7,3.141,7,7v5H5v-5Zm17,9H2v-1c0-.552.448-1,1-1h18c.552,0,1,.448,1,1v1ZM2.335,6.646L.018,4.426l1.383-1.443,2.317,2.22-1.383,1.443Zm3.419-3.122l-1.212-2.717L6.368-.008l1.212,2.717-1.826.814Zm15.912,3.122l-1.383-1.443,2.317-2.22,1.383,1.443-2.317,2.22Zm-3.42-3.122l-1.826-.814L17.633-.008l1.826.814-1.213,2.717Zm-6.246,5.477v2c-1.103,0-2,.897-2,2h-2c0-2.206,1.794-4,4-4Z" /></svg>
             </div>
             <span class="font-bold text-base truncate">Campaign & Updates</span>
         </a>
         @endcan
-        {{-- <a href="#" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  bg-transparent text-muted-foreground hover:bg-muted">
+        <a href="{{route('admin.analytics')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass('admin.analytics') }}">
             <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-10 h-10 fill-current text-black" viewBox="0 0 27 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14.2548 2.9636C15.653 1.67814 17.9189 1.67848 19.3163 2.96458C20.505 4.05885 20.6827 5.73188 19.8495 6.99973H21.4511C23.2508 6.9998 24.7097 8.34304 24.7099 9.99973V10.9997C24.7099 12.3056 23.8022 13.4128 22.537 13.8249V18.9997C22.537 20.5974 21.1803 21.9036 19.4697 21.9949L19.2783 21.9997H8.41595C6.68051 21.9997 5.26127 20.7512 5.16205 19.1765L5.15717 18.9997V13.8249C3.89197 13.4128 2.98431 12.3056 2.98431 10.9997V9.99973C2.98447 8.34301 4.44342 6.99975 6.2431 6.99973H7.84467C7.01167 5.73224 7.18923 4.05994 8.37787 2.96555C9.77531 1.6791 12.0407 1.6785 13.4394 2.96458C13.5893 3.10261 13.7251 3.2577 13.8476 3.42942C13.9702 3.25792 14.1048 3.10167 14.2548 2.9636ZM7.32904 18.9997C7.32904 19.5126 7.74878 19.9351 8.289 19.9929L8.41595 19.9997H12.7607V13.9997H7.32904V18.9997ZM14.9335 19.9997H19.2783C19.8352 19.9997 20.2945 19.6141 20.3574 19.1169L20.3652 18.9997V13.9997H14.9335V19.9997ZM6.2431 8.99973C5.64328 8.99975 5.15732 9.44758 5.15717 9.99973V10.9997C5.15717 11.552 5.64319 11.9997 6.2431 11.9997H12.7607V8.99973H6.2431ZM14.9335 11.9997H21.4511C22.051 11.9997 22.537 11.552 22.537 10.9997V9.99973C22.5369 9.44761 22.0509 8.9998 21.4511 8.99973H14.9335V11.9997ZM11.9042 4.37864C11.3545 3.87326 10.4634 3.8739 9.914 4.37962C9.36482 4.88534 9.36456 5.70508 9.91302 6.21067C10.1468 6.42587 10.7262 6.63959 11.5204 6.78587C11.7723 6.83223 12.0363 6.8701 12.3056 6.9011L12.6953 6.94016L12.6533 6.58079L12.5966 6.2136L12.5283 5.85911C12.3694 5.12787 12.1376 4.59355 11.9042 4.37864ZM17.666 4.28489C17.1136 3.87603 16.3035 3.90749 15.791 4.37864C15.5142 4.63342 15.2541 5.3085 15.0976 6.20872C15.0656 6.39279 15.0394 6.57657 15.0175 6.75559L14.996 6.94016L15.3886 6.9011L15.787 6.84934L16.1728 6.78587C16.9673 6.63959 17.5468 6.4255 17.7802 6.21067C18.329 5.70474 18.3292 4.88534 17.7802 4.37962L17.666 4.28489Z"/>
+
+                <svg class="w-6 h-6 fill-current {{ svgClass('admin.analytics') }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M3,21.976a1,1,0,0,1-1-1V0H0V20.976a3,3,0,0,0,3,3H24v-2Z" />
+                    <rect class="fill-current" x="5" y="12" width="2" height="7" />
+                    <rect class="fill-current" x="10" y="10" width="2" height="9" />
+                    <rect class="fill-current" x="15" y="13" width="2" height="6" />
+                    <rect class="fill-current" x="20" y="9" width="2" height="10" />
+                    <polygon class="fill-current" points="11 4.414 16 9.414 23.707 1.707 22.293 0.293 16 6.586 11 1.586 5.293 7.293 6.707 8.707 11 4.414" />
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Analytics</span>
-        </a> --}}
+        </a>
 
         <a href="{{ route('admin.profile')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.profile') }}">
             <div class="w-6 h-6 flex items-center justify-center">
@@ -156,20 +161,20 @@ return request()->routeIs($routes)
         @can('view messages')
         <a href="{{ route('admin.messages.sent.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.sent.index') }}">
             <div class="w-6 h-6 flex items-center justify-center">
-
-                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.sent.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 8L8.44992 11.6333C9.73295 12.4886 10.3745 12.9163 11.0678 13.0825C11.6806 13.2293 12.3194 13.2293 12.9322 13.0825C13.6255 12.9163 14.2671 12.4886 15.5501 11.6333L21 8M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <svg class="w-6 h-6 {{ svgClass('admin.messages.sent.index') }}" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.769,9.343l-1.769-1.694V3c0-1.654-1.346-3-3-3H6c-1.654,0-3,1.346-3,3V7.651l-1.766,1.691C.451,10.093,.001,11.146,.001,12.231v11.769H24V12.231c0-1.086-.448-2.139-1.231-2.889ZM6,2h12c.552,0,1,.449,1,1V12.242l-4.879,4.879c-1.133,1.133-3.109,1.133-4.243,0l-4.878-4.879V3c0-.551,.449-1,1-1ZM22,22H2V12.231c.001-.051,.004-.102,.008-.153l6.456,6.457c.945,.944,2.2,1.464,3.536,1.464s2.591-.52,3.535-1.464l6.458-6.459c.004,.051,.007,.103,.007,.154v9.769Zm-5-15H7v-2h10v2Zm-2,4H7v-2H15v2Z" />
                 </svg>
             </div>
-            <span class="font-bold text-base truncate">Messages</span>
+            <span class="font-bold text-base truncate">Sent Message</span>
         </a>
         @endcan
         @can('manage contacts')
         <a href="{{ route('admin.messages.contacts.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.contacts.index') }}">
             <div class="w-6 h-6 flex items-center justify-center">
-
-                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.contacts.index') }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 8L8.44992 11.6333C9.73295 12.4886 10.3745 12.9163 11.0678 13.0825C11.6806 13.2293 12.3194 13.2293 12.9322 13.0825C13.6255 12.9163 14.2671 12.4886 15.5501 11.6333L21 8M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.contacts.index') }}" viewBox="0 0 24 24">
+                    <path d="M20.78,2.555c-.052-.161-.181-.285-.344-.33-.184-.05-4.526-1.226-7.869-1.226-3.435,0-7.692,1.176-7.872,1.227-.169,.047-.301,.179-.348,.348-.019,.069-.205,.746-.426,1.832h-.839c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.648c-.186,1.047-.372,2.324-.489,3.729h-.758c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.688c-.034,.606-.054,1.23-.054,1.865s.02,1.258,.054,1.865h-.688c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.758c.118,1.403,.304,2.681,.49,3.729h-.649c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.84c.221,1.085,.405,1.762,.425,1.832,.046,.167,.175,.297,.341,.346,.17,.05,4.214,1.229,7.878,1.229s7.708-1.178,7.878-1.229c.159-.047,.285-.169,.335-.328,.05-.158,1.235-3.934,1.235-9.444s-1.185-9.288-1.235-9.445Zm-.878,18.33c-.952,.258-4.333,1.115-7.335,1.115s-6.361-.851-7.326-1.112c-.256-1.022-1.123-4.787-1.123-8.888s.865-7.858,1.122-8.884c1-.259,4.516-1.116,7.327-1.116,2.748,0,6.338,.865,7.337,1.12,.262,.934,1.111,4.31,1.111,8.88s-.853,7.954-1.113,8.885Z" />
+                    <path d="M12.567,14.26c-2.28,0-4.134,1.851-4.134,4.125,0,.276,.224,.5,.5,.5s.5-.224,.5-.5c0-1.723,1.406-3.125,3.134-3.125s3.134,1.402,3.134,3.125c0,.276,.224,.5,.5,.5s.5-.224,.5-.5c0-2.274-1.854-4.125-4.134-4.125Z" />
+                    <path d="M10.982,11.15c.526,.176,1.055,.264,1.585,.264s1.059-.088,1.585-.264c.612-.205,1.101-.692,1.306-1.303,.354-1.05,.354-2.115,0-3.165-.206-.611-.694-1.099-1.307-1.303-1.052-.352-2.118-.352-3.17,0-.612,.205-1.101,.692-1.306,1.303-.354,1.05-.354,2.115,0,3.165,.206,.611,.694,1.099,1.306,1.303Zm-.358-4.148c.106-.316,.359-.568,.676-.674,.426-.143,.847-.214,1.268-.214s.841,.071,1.268,.214c.317,.106,.57,.358,.676,.674,.286,.85,.286,1.676,0,2.526-.106,.316-.359,.568-.676,.674-.854,.285-1.683,.285-2.535,0-.317-.106-.57-.358-.676-.674h0c-.286-.85-.286-1.676,0-2.526Z" />
                 </svg>
             </div>
             <span class="font-bold text-base truncate">Contact List</span>

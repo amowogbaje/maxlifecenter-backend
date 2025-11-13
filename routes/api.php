@@ -34,5 +34,6 @@ Route::get('/user/products/sales/fetch', [UserDashboardController::class, 'fetch
 Route::post('/rewards/{id}/approve', [AdminDashboardController::class, 'approveReward'])
     ->name('admin.rewards.approve');
 
-Route::post('/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
+Route::post('user/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
+Route::post('admin/profile/update', [AdminDashboardController::class, 'updateProfile'])->name('admin.profile.update');
 Route::get('/users/search', [AdminUserController::class, 'search'])->name('admin.users.search');

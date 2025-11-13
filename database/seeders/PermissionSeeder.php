@@ -11,6 +11,7 @@ class PermissionSeeder extends Seeder
     {
         $permissions = [
             'view roles', 'create roles', 'edit roles',
+            'view rewards',
             'view updates', 'create updates', 'edit updates', 'view activity logs',
             'view admins', 'create admins', 'view purchases',
             'view dashboard', 'view users', 'view messages', 'create messages', 'send messages',

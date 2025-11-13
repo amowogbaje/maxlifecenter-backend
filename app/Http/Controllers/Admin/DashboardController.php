@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Analytics;
 use App\Models\User;
 use App\Models\AuditLog;
 use App\Models\Reward;
 use App\Models\UserReward;
+use Carbon\Carbon; 
 
 class DashboardController extends Controller
 {
@@ -70,6 +73,199 @@ class DashboardController extends Controller
 
         $activityLogs = $query->paginate(10)->appends($request->query());
         return view('admin.dashboard', compact('metricCards', 'activityLogs'));
+    }
+
+    public function analytics()
+    {
+        // 1. Current Date
+        $currentDate = \Carbon\Carbon::now()->isoFormat('dddd, MMMM D, YYYY');
+
+        // 2. Fetch analytics data from DB
+        // Assume the 'analytics' table has a single row with all precomputed data
+        $analytics = Analytics::first();
+
+        $statsCards = $analytics->stats_cards ?? '[]';
+        $salesData = $analytics->sales_data ?? '[]';
+        $categoryData = $analytics->category_data ?? '[]';
+        $pieChartData = $analytics->pie_chart_data ?? '[]';
+        $topProducts = $analytics->top_products ?? '[]';
+
+        // 3. Chart Axes/Helpers (keep simple)
+        $yAxisLabels = $analytics->y_axis_labels ?? '["800k","700k","600k","500k","400k","300k","200k","100k"]';
+        $selectedYear = $analytics->year ?? date('Y');
+
+        // return compact(
+        //     'currentDate',
+        //     'statsCards',
+        //     'salesData',
+        //     'categoryData',
+        //     'pieChartData',
+        //     'topProducts',
+        //     'yAxisLabels',
+        //     'selectedYear'
+        // );
+        // $salesData = [
+        //     ['month' => "Jan", 'value' => 47],
+        //     ['month' => "Feb", 'value' => 73],
+        //     ['month' => "Mar", 'value' => 76],
+        //     ['month' => "Apr", 'value' => 55],
+        //     ['month' => "May", 'value' => 73],
+        //     ['month' => "Jun", 'value' => 101],
+        //     ['month' => "Jul", 'value' => 77],
+        //     ['month' => "Aug", 'value' => 48],
+        //     ['month' => "Sep", 'value' => 70],
+        //     ['month' => "Oct", 'value' => 115],
+        //     ['month' => "Nov", 'value' => 125],
+        //     ['month' => "Dec", 'value' => 48],
+        // ];
+
+        // 4. Pass all data to the view
+        return view('admin.analytics', compact(
+            'currentDate',
+            'statsCards',
+            'salesData',
+            'categoryData',
+            'pieChartData',
+            'topProducts',
+            'yAxisLabels',
+            'selectedYear'
+        ));
+    }
+
+    public function analytics2()
+    {
+        // 1. Current Date
+        $currentDate = Carbon::now()->isoFormat('dddd, MMMM D, YYYY');
+        
+
+        // 2. Stats Cards Data
+        $statsCards = [
+            [
+                'title' => "Total Sales",
+                'value' => "₦120,000",
+                'change' => "+5.4%",
+                'icon' => 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
+                'bgColor' => "bg-red-500",
+                'changeColor' => "text-gray-500 bg-gray-50",
+            ],
+            [
+                'title' => "Total Order",
+                'value' => "146",
+                'change' => "+5.4%",
+                'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5.5M7 13l2.5 5.5m5.5-5.5h.01M17 13h.01',
+                'bgColor' => "bg-blue-500",
+                'changeColor' => "text-gray-500 bg-gray-50",
+            ],
+            [
+                'title' => "Total Sold Product",
+                'value' => "106",
+                'change' => "+5.4%",
+                'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5.5M7 13l2.5 5.5m5.5-5.5h.01M17 13h.01',
+                'bgColor' => "bg-blue-500",
+                'changeColor' => "text-gray-500 bg-gray-50",
+            ],
+        ];
+
+        // 3. Sales Chart Data
+        $salesData = [
+            ['month' => "Jan", 'value' => 47],
+            ['month' => "Feb", 'value' => 73],
+            ['month' => "Mar", 'value' => 76],
+            ['month' => "Apr", 'value' => 55],
+            ['month' => "May", 'value' => 73],
+            ['month' => "Jun", 'value' => 101],
+            ['month' => "Jul", 'value' => 77],
+            ['month' => "Aug", 'value' => 48],
+            ['month' => "Sep", 'value' => 70],
+            ['month' => "Oct", 'value' => 115],
+            ['month' => "Nov", 'value' => 125],
+            ['month' => "Dec", 'value' => 48],
+        ];
+
+        // 4. Category Bar Chart Data
+        $categoryData = [
+            ['month' => "Electronics", 'percentage' => 74],
+            ['month' => "Apparel", 'percentage' => 27],
+            ['month' => "Home Goods", 'percentage' => 54],
+            ['month' => "Books", 'percentage' => 59],
+            ['month' => "Sports", 'percentage' => 82],
+            ['month' => "Beauty", 'percentage' => 67],
+        ];
+        
+        // 5. Pie Chart Data
+        $pieChartData = [
+            ['label' => "Electronics", 'color' => "#FFBE00", 'percentage' => 16],
+            ['label' => "Apparel", 'color' => "#D377F3", 'percentage' => 5],
+            ['label' => "Home Goods", 'color' => "#222683", 'percentage' => 20],
+            ['label' => "Books", 'color' => "#4A86E4", 'percentage' => 22],
+            ['label' => "Sports", 'color' => "#EF746D", 'percentage' => 19],
+            ['label' => "Beauty", 'color' => "#5D923D", 'percentage' => 18],
+        ];
+
+        // 6. Top Selling Products Data
+        $topProducts = [
+            [
+                'name' => "Product A",
+                'price' => "₦100,000",
+                "image" => "https://watchlocker.ng/wp-content/uploads/2020/03/MTP-1314L-7AVDF.jpg",
+                'sales' => "247+ sales",
+                'change' => "+5.4%",
+                'changeColor' => "text-gray-500 bg-gray-50",
+            ],
+            [
+                'name' => "Product B",
+                "image" => "https://watchlocker.ng/wp-content/uploads/2020/03/MTP-1314L-7AVDF.jpg",
+                'price' => "₦100,000",
+                'sales' => "247+ sales",
+                'change' => "-5.4%",
+                'changeColor' => "text-red-500 bg-red-50",
+            ],
+            // Add more dummy data if needed...
+        ];
+        
+        // 7. Chart Axes/Helpers (can be kept simple)
+        $yAxisLabels = ['800k', '700k', '600k', '500k', '400k', '300k', '200k', '100k'];
+        $selectedYear = date('Y'); // Current year
+
+        // Pass all data to the view
+        return view('admin.analytics', compact(
+            'currentDate',
+            'statsCards',
+            'salesData',
+            'categoryData',
+            'pieChartData',
+            'topProducts',
+            'yAxisLabels',
+            'selectedYear'
+        ));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user =  $admin = Admin::find($request->admin_id);;
+        
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:50',
+            'last_name'  => 'required|string|max:50',
+            'phone'      => 'nullable|string|max:20',
+            'location'   => 'nullable|string|max:255',
+            'birthday'   => 'nullable|date|before:today|after:1900-01-01',
+            'bio'        => 'nullable|string|max:500',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        $admin->update($validator->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully!',
+        ]);
     }
 
     

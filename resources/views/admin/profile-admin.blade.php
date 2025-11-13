@@ -18,7 +18,7 @@
             <!-- Form fields -->
             <form id="profileForm">
                 @csrf
-                <input type="hidden" name="user_id" value="{{ $admin->id }}">
+                <input type="hidden" name="admin_id" value="{{ $admin->id }}">
                 <div class="grid gap-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="space-y-2">
@@ -82,7 +82,7 @@
 
         let formData = new FormData(this);
 
-        fetch("{{ route('user.profile.update') }}", {
+        fetch("{{ route('admin.profile.update') }}", {
             method: "POST",
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
