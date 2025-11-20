@@ -135,6 +135,7 @@ return request()->routeIs($routes)
             <span class="font-bold text-base truncate">Campaign & Updates</span>
         </a>
         @endcan
+        @can('view analytics')
         <a href="{{route('admin.analytics')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass('admin.analytics') }}">
             <div class="w-6 h-6 flex items-center justify-center">
 
@@ -149,6 +150,7 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Analytics</span>
         </a>
+        @endcan
 
         <a href="{{ route('admin.profile')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.profile') }}">
             <div class="w-6 h-6 flex items-center justify-center">

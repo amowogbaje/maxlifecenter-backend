@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+
+
 Route::middleware('guest.admin')->group(function () {
     Route::get('/', [AuthController::class, 'login'])->name('login');
     Route::get('/login', [AuthController::class, 'login'])->name('login');
@@ -19,6 +21,10 @@ Route::middleware('guest.admin')->group(function () {
 });
 
 Route::middleware(['auth:admin', 'admin'])->group(function () {
+    Route::get('users/fetch', [MessagesContactController::class, 'fetchUsers'])->name('users.fetch');
+    Route::get('users/fetch-all', [MessagesContactController::class, 'fetchAll'])->name('users.fetch.all');
+    Route::get('users/fetch-meta', [MessagesContactController::class, 'meta'])->name('users.fetch.meta');
+
 
     // 📊 Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -26,7 +32,7 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
 
     Route::get('/analytics', [DashboardController::class, 'analytics'])
         ->name('analytics');
-    
+
     Route::get('/logs/all', [MessageLogController::class, 'activityLogs'])
         ->name('logs.all')->middleware('can:view activity logs');
 
@@ -56,7 +62,7 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
     Route::get('/users/{id}', [DashboardController::class, 'showUser'])
         ->name('users.show')->middleware('can:view users');
 
-    
+
     Route::prefix('updates')->name('updates.')->group(function () {
         Route::get('/', [BlogController::class, 'index'])->name('index')->middleware('can:view updates');
         Route::get('/create', [BlogController::class, 'create'])->name('create')->middleware('can:create updates');
@@ -119,6 +125,9 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
 
             Route::post('/{message}/send', [MessagesController::class, 'send'])
                 ->name('send')->middleware('can:send messages');
+
+            Route::post('/{message}/test', [MessagesController::class, 'test'])
+                ->name('test')->middleware('can:send messages');
         });
 
         // 🗂 Message logs

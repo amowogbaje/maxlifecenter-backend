@@ -72,6 +72,21 @@ class User extends Authenticatable
         return "{$this->first_name} {$this->last_name}";
     }
 
+    public function getRewardAttribute()
+    {
+        // 1. Check if we have already eager loaded the 'rewards' relationship
+        //    This prevents N+1 issues if you are looping through users.
+        if ($this->relationLoaded('rewards')) {
+            return $this->rewards->sortByDesc('priority')->first();
+        }
+
+        // 2. Otherwise, run a specific query on the user_rewards table
+        //    We grab the one with the highest priority.
+        return $this->rewards()
+                    ->orderByDesc('priority')
+                    ->first();
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class);

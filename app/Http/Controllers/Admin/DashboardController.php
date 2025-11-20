@@ -373,56 +373,53 @@ class DashboardController extends Controller
         ];
 
         $search = $request->input('search');
+        $tier_level = $request->input('tier_level');
+        $rewards = Reward::all();
 
         $userRewards = UserReward::with(['user', 'reward'])
-            ->join('rewards', 'user_rewards.reward_id', '=', 'rewards.id')
-            ->select('user_rewards.*')
-            ->where('user_rewards.status', '!=', 'unclaimed')
-            ->when($search, function ($query, $search) {
-                $normalizedDate = null;
+           ->join('rewards', 'user_rewards.reward_id', '=', 'rewards.id')
+           ->select('user_rewards.*')
+           ->where('user_rewards.status', '!=', 'unclaimed')
+           ->when($search, function ($query, $search) {
+               $normalizedDate = null;
 
-                // Try to normalize any date format
-                try {
-                    $timestamp = strtotime($search);
-                    if ($timestamp !== false) {
-                        $normalizedDate = date('Y-m-d', $timestamp);
-                    }
-                } catch (\Exception $e) {
-                    $normalizedDate = null;
-                }
+               try {
+                   $timestamp = strtotime($search);
+                   if ($timestamp !== false) {
+                       $normalizedDate = date('Y-m-d', $timestamp);
+                   }
+               } catch (\Exception $e) {
+                   $normalizedDate = null;
+               }
 
-                $query->where(function ($q) use ($search, $normalizedDate) {
-                    // Search user fields
-                    $q->whereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('first_name', 'like', "%{$search}%")
-                                ->orWhere('last_name', 'like', "%{$search}%");
-                    })
-                    // Search reward fields
-                    ->orWhereHas('reward', function ($rewardQuery) use ($search) {
-                        $rewardQuery->where('title', 'like', "%{$search}%")
-                                    ->orWhere('reward_benefit', 'like', "%{$search}%");
-                    });
+               $query->where(function ($q) use ($search, $normalizedDate) {
+                   $q->whereHas('user', function ($userQuery) use ($search) {
+                       $userQuery->where('first_name', 'like', "%{$search}%")
+                               ->orWhere('last_name', 'like', "%{$search}%");
+                   })
+                   ->orWhereHas('reward', function ($rewardQuery) use ($search) {
+                       $rewardQuery->where('title', 'like', "%{$search}%");
+                   });
 
-                    // Handle date-based search
-                    if (preg_match('/^\d{4}-\d{2}$/', $search)) {
-                        // Match entire month (e.g., 2025-10)
-                        $q->orWhereBetween('user_rewards.achieved_at', [
-                            "{$search}-01",
-                            date('Y-m-t', strtotime($search . '-01')),
-                        ]);
-                    } elseif (!empty($normalizedDate)) {
-                        // Match specific date
-                        $q->orWhereDate('user_rewards.achieved_at', $normalizedDate);
-                    }
-                });
-            })
-            ->orderByRaw("FIELD(user_rewards.status, 'pending', 'claimed')")
-            ->orderBy('rewards.priority', 'asc')
-            ->paginate(10)->appends($request->query());
-
-
-
-        return view('admin.reward', compact('metricCards', 'userRewards'));
+                   if (preg_match('/^\d{4}-\d{2}$/', $search)) {
+                       $q->orWhereBetween('user_rewards.achieved_at', [
+                           "{$search}-01",
+                           date('Y-m-t', strtotime($search . '-01')),
+                       ]);
+                   } elseif (!empty($normalizedDate)) {
+                       $q->orWhereDate('user_rewards.achieved_at', $normalizedDate);
+                   }
+               });
+           })
+           ->when($request->input('tier_level'), function ($query, $tier_level) {
+               $query->whereHas('reward', function ($rewardQuery) use ($tier_level) {
+                   $rewardQuery->where('title', $tier_level);
+               });
+           })
+           ->orderByRaw("FIELD(user_rewards.status, 'pending', 'claimed')")
+           ->orderBy('rewards.priority', 'asc')
+           ->paginate(10)->appends($request->query());
+           return view('admin.reward', compact('metricCards', 'userRewards', 'rewards'));
     }
 
     public function approveReward($id)

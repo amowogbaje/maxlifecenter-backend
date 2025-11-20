@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Blog;
 use App\Models\Product;
 use App\Models\ProductOnSale;
 use App\Models\UserReward;
@@ -29,7 +30,8 @@ class DashboardController extends Controller
         $currentTier = $user->approvedTier->title;
         $nextTier = $user->nextToBeApprovedTier?->title ?? null;
         $recentProducts = ProductOnSale::latest()->take(6)->get();
-        $data = compact('purchaseCount', 'purchaseTotal','currentTier', 'nextTier', 'recentProducts');
+        $updates = Blog::where('status', 'published')->latest()->take(2)->get();
+        $data = compact('purchaseCount', 'purchaseTotal','currentTier', 'nextTier', 'recentProducts', 'updates');
 
         return view('user.dashboard', $data);
     }

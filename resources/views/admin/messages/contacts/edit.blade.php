@@ -7,155 +7,158 @@
             Edit Contact List
         </h1>
 
-        <form method="GET" action="{{ route('admin.messages.contacts.edit', $contactList->id) }}" id="filterForm">
-            <!-- Filters -->
-            @foreach ($selectedUserIds as $id)
-                <input type="hidden" name="user_ids[]" value="{{ $id }}">
-            @endforeach
-            
-            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                <div class="flex flex-col md:flex-wrap md:flex-row gap-4 md:items-center">
-                    <!-- Search -->
+        <form action="{{ route('admin.messages.contacts.update', $contactList->id) }}" 
+              method="POST" class="space-y-8" x-data="contactListTable()" x-init="init()">
+            @csrf
+            @method('PUT')
+
+            {{-- FILTER SECTION --}}
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b pb-6">
+                <div class="flex flex-col md:flex-wrap md:flex-row gap-4 md:items-center w-full">
                     <div class="flex-1 min-w-[250px]">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Search</label>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search users..." class="w-full h-11 px-4 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-700 focus:ring-2 focus:ring-indigo-500" />
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Search Users</label>
+                        <input type="text" x-model="clientSearch" placeholder="Type to filter users..." 
+                               class="w-full h-11 px-4 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-700 focus:ring-2 focus:ring-indigo-500" 
+                               @input="onSearchChange()">
                     </div>
 
-                    <!-- Reward Filter -->
                     <div class="min-w-[200px]">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Reward</label>
-                        <select name="reward_id" class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 focus:ring-2 focus:ring-indigo-500">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Reward Tier</label>
+                        <select name="reward_id" x-model="rewardId" 
+                                class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 focus:ring-2 focus:ring-indigo-500" 
+                                @change="onFilterChange()">
                             <option value="">All Rewards</option>
                             @foreach($rewards as $reward)
-                            <option value="{{ $reward->id }}" {{ request('reward_id') == $reward->id ? 'selected' : '' }}>
-                                {{ $reward->title }}
-                            </option>
+                                <option value="{{ $reward->id }}" {{ request('reward_id') == $reward->id ? 'selected' : '' }}>
+                                    {{ $reward->title }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
 
-                    <!-- Date Range -->
                     <div class="flex flex-col sm:flex-row items-center gap-2 min-w-[260px]">
                         <div class="flex-1">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Start Date</label>
-                            <input type="text" name="start_date" id="start_date" value="{{ request('start_date') }}" placeholder="Start Date" class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 flatpickr" />
+                            <input type="text" x-model="startDate" 
+                                   class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 flatpickr" 
+                                   placeholder="Start Date" @change="onFilterChange()" />
                         </div>
                         <div class="hidden sm:block text-gray-500 mt-6">to</div>
                         <div class="flex-1">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">End Date</label>
-                            <input type="text" name="end_date" id="end_date" value="{{ request('end_date') }}" placeholder="End Date" class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 flatpickr" />
+                            <input type="text" x-model="endDate" 
+                                   class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 flatpickr" 
+                                   placeholder="End Date" @change="onFilterChange()" />
                         </div>
-                    </div>
-
-                    <div class="flex items-end">
-                        <button type="submit" class="h-11 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl shadow-sm transition">
-                            Apply Filters
-                        </button>
                     </div>
                 </div>
             </div>
-        </form>
 
-        <form action="{{ route('admin.messages.contacts.update', $contactList->id) }}" method="POST" class="space-y-8">
-            @csrf
-            @method('PUT')
-
-            @foreach ($selectedUserIds as $id)
-                <input type="hidden" name="user_ids[]" value="{{ $id }}">
-            @endforeach
-
-            <!-- Users Section -->
+            {{-- USERS TABLE --}}
             <div class="space-y-4">
-                <h2 class="text-xl lg:text-2xl font-bold text-foreground">User List</h2>
-
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" id="select-all" class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                    <label for="select-all" class="text-sm text-gray-700 cursor-pointer select-none">Select All</label>
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl lg:text-2xl font-bold text-foreground">User List</h2>
+                    <div x-show="loading" class="text-sm text-indigo-600 animate-pulse font-medium">
+                        Loading users...
+                    </div>
                 </div>
 
+                {{-- <div class="text-xs text-gray-500 p-2 bg-gray-100 rounded" x-show="showDebug">
+                    <div>Selected users: <span x-text="selected.size"></span></div>
+                    <div>Total users loaded: <span x-text="data.length"></span></div>
+                    <div>Filtered users: <span x-text="filteredUsers.length"></span></div>
+                    <div>Current page: <span x-text="page"></span></div>
+                    <div>Showing: <span x-text="startIndex()"></span>-<span x-text="endIndex()"></span></div>
+                </div> --}}
 
+                <div class="flex items-center gap-4 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="select-all" class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" 
+                               :checked="selectAllState" 
+                               @change="toggleSelectAll($event.target.checked)">
+                        <label for="select-all" class="text-sm text-gray-700 cursor-pointer select-none">Select Page</label>
+                    </div>
 
-                <!-- User Checkboxes -->
-                <div class="space-y-3 user-list-checkboxes">
-                    @foreach($users as $user)
-                    <div class="bg-white rounded-[24px] shadow-sm p-4 lg:p-5 overflow-hidden">
-                        <div class="flex items-center gap-4 lg:gap-6 min-w-0">
-                            <div class="flex-shrink-0">
-                            @php
-                                $selectedUserIds = old('user_ids', $selectedUserIds ?? []);
-                            @endphp
-                                <input type="checkbox" name="user_ids[]" value="{{ $user->id }}" class="user-checkbox w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" {{ in_array($user->id, old('user_ids', $selectedUserIds)) ? 'checked' : '' }}>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 lg:gap-6">
-                                    <div class="flex flex-col gap-1 min-w-0">
-                                        <span class="text-base font-bold text-text-dark truncate">{{ $user->full_name }}</span>
-                                    </div>
-                                    <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
-                                        <span class="text-xs lg:text-base text-text-dark truncate">{{ $user->email }}</span>
-                                    </div>
-                                    <div class="flex flex-col gap-1 min-w-0">
-                                        <span class="text-base text-text-dark truncate">{{ $user->approvedTier->title }}</span>
+                    <div>
+                        <select x-model.number="perPage" class="border rounded-lg px-2 py-1 text-sm" @change="onPerPageChange()">
+                            <option value="10">10 per page</option>
+                            <option value="25">25 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
+                    </div>
+                </div>
+
+                {{-- User list --}}
+                <div class="space-y-3 user-list-checkboxes mt-3">
+                    <template x-for="user in paginatedUsers" :key="user.id">
+                        <div class="bg-white rounded-[24px] shadow-sm p-4 lg:p-5 overflow-hidden border border-transparent hover:border-indigo-100 transition">
+                            <div class="flex items-center gap-4 lg:gap-6 min-w-0">
+                                <div class="flex-shrink-0">
+                                    <input type="checkbox" 
+                                           :value="user.id" 
+                                           :checked="isSelected(user.id)" 
+                                           class="user-checkbox w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" 
+                                           @change="toggleUser($event, user.id)">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                        <div class="font-bold text-gray-800 truncate" x-text="user.full_name"></div>
+                                        <div class="text-sm text-gray-600 truncate" x-text="user.email"></div>
+                                        <div class="text-sm text-gray-500 truncate">
+                                            <span class="bg-gray-100 px-2 py-1 rounded" x-text="user.tier_level || 'No Tier'"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </template>
+
+                    <div x-show="paginatedUsers.length === 0 && !loading" class="text-center py-8 text-gray-500">
+                        No users found matching your search.
                     </div>
-                    @endforeach
                 </div>
-                {{-- <x-pagination :paginator="$users" /> --}}
 
-                @php
-                    $query = http_build_query([
-                        'user_ids' => $selectedUserIds,
-                        'search' => request('search'),
-                        'reward_id' => request('reward_id'),
-                        'start_date' => request('start_date'),
-                        'end_date' => request('end_date'),
-                    ]);
-                @endphp
-
-                <div class="flex justify-center lg:justify-end mt-4" id="paginationContainer">
-                    <div class="bg-white rounded-[14px] shadow-sm px-5 py-3 flex items-center gap-4">
-                        <span class="text-base text-text-dark">
-                            {{ $users->firstItem() }}-{{ $users->lastItem() }} of {{ $users->total() }}
+                {{-- Pagination --}}
+                <div class="flex justify-center lg:justify-end mt-4" x-show="filteredUsers.length > 0">
+                    <div class="bg-white rounded-[14px] shadow-sm px-5 py-3 flex items-center gap-4 border">
+                        <span class="text-sm text-gray-600">
+                            <span x-text="startIndex()"></span>-<span x-text="endIndex()"></span> of <span x-text="filteredUsers.length"></span>
                         </span>
-                        @if($users->onFirstPage())
-                        <svg class="w-6 h-6 text-gray-300">
-                            <path d="m15 18-6-6 6-6" /></svg>
-                        @else
-                        <a href="{{ $users->previousPageUrl()  . '&' . $query }}">
-                            <svg class="w-6 h-6 text-blue-500">
-                                <path d="m15 18-6-6 6-6" /></svg>
-                        </a>
-                        @endif
 
-                        @if($users->hasMorePages())
-                        <a href="{{ $users->nextPageUrl() . '&' . $query }}">
-                            <svg class="w-6 h-6 text-blue-500">
+                        <button type="button" @click="prevPage()" :disabled="page === 1" 
+                                class="p-1 hover:bg-gray-100 rounded disabled:opacity-50" :class="{'cursor-not-allowed': page === 1}">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m15 18-6-6 6-6" /></svg>
+                        </button>
+
+                        <button type="button" @click="nextPage()" :disabled="endIndex() >= filteredUsers.length" 
+                                class="p-1 hover:bg-gray-100 rounded disabled:opacity-50" :class="{'cursor-not-allowed': endIndex() >= filteredUsers.length}">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="m9 18 6-6-6-6" /></svg>
-                        </a>
-                        @else
-                        <svg class="w-6 h-6 text-gray-300">
-                            <path d="m9 18 6-6-6-6" /></svg>
-                        @endif
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Title -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700">Title</label>
-                <input type="text" name="title" value="{{ old('title', $contactList->title) }}" class="mt-2 w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm px-4 py-2" placeholder="Contact List Title here" required>
+            {{-- Hidden inputs for selected users --}}
+            <template x-for="userId in Array.from(selected)" :key="userId">
+                <input type="hidden" name="user_ids[]" :value="userId" />
+            </template>
+
+            {{-- Details Section --}}
+            <div class="grid gap-6 border-t pt-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700">Contact List Title</label>
+                    <input type="text" name="title" value="{{ old('title', $contactList->title) }}" class="mt-2 w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm px-4 py-2" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700">Description</label>
+                    <input type="text" name="description" value="{{ old('description', $contactList->description) }}" class="mt-2 w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm px-4 py-2" required>
+                </div>
             </div>
 
-            <!-- Description -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700">Description</label>
-                <input type="text" name="description" value="{{ old('description', $contactList->description) }}" class="mt-2 w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm px-4 py-2" placeholder="Enter description" required>
-            </div>
-
-            <!-- Actions -->
+            {{-- Footer Actions --}}
             <div class="flex items-center justify-end space-x-4 pt-4 border-t">
                 <a href="{{ route('admin.messages.contacts.index') }}" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100">
                     Cancel
@@ -173,88 +176,99 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    // Initialize Flatpickr
-    flatpickr(".flatpickr", {
-        dateFormat: "Y-m-d"
-        , allowInput: true
-    });
-
-    // Select All Functionality (Edit mode aware)
-    document.addEventListener("DOMContentLoaded", () => {
-        const selectAll = document.getElementById('select-all');
-        const checkboxes = document.querySelectorAll('.user-checkbox');
-
-        // Set select all checkbox if all are already checked
-        selectAll.checked = Array.from(checkboxes).every(cb => cb.checked);
-
-        selectAll.addEventListener('change', () => {
-            checkboxes.forEach(cb => cb.checked = selectAll.checked);
-        });
-
-        checkboxes.forEach(cb => {
-            cb.addEventListener('change', () => {
-                selectAll.checked = Array.from(checkboxes).every(c => c.checked);
-            });
-        });
-    });
-
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector('form[action*="update"]');
-    const checkboxes = document.querySelectorAll('.user-checkbox');
-
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', () => {
-            if (cb.checked) {
-                // add hidden input if not already exists
-                if (!form.querySelector(`input[type="hidden"][value="${cb.value}"]`)) {
-                    const hidden = document.createElement('input');
-                    hidden.type = 'hidden';
-                    hidden.name = 'user_ids[]';
-                    hidden.value = cb.value;
-                    form.prepend(hidden);
-                }
-            } else {
-                // remove hidden input if unchecked
-                const hidden = form.querySelector(`input[type="hidden"][value="${cb.value}"]`);
-                if (hidden) hidden.remove();
-            }
-        });
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    flatpickr(".flatpickr", { dateFormat: "Y-m-d", allowInput: true });
 });
 </script>
 
+<script>
+function contactListTable() {
+    return {
+        // State
+        data: [],
+        selected: new Set(),
+        clientSearch: '',
+        rewardId: '{{ request('reward_id') }}',
+        startDate: '{{ request('start_date') }}',
+        endDate: '{{ request('end_date') }}',
+        loading: true,
+        perPage: 10,
+        page: 1,
+        selectAllState: false,
+        showDebug: true,
 
-{{-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
+        // Computed
+        get filteredUsers() {
+            const term = this.clientSearch.trim().toLowerCase();
+            return this.data.filter(u => !term || u.full_name.toLowerCase().includes(term) || u.email.toLowerCase().includes(term));
+        },
 
-        const filterForm = document.getElementById('filterForm'); // or your actual form ID
-        const userListContainer = document.getElementById('userListContainer');
-        const paginationContainer = document.getElementById('paginationContainer');
+        get paginatedUsers() {
+            const start = (this.page - 1) * this.perPage;
+            return this.filteredUsers.slice(start, start + this.perPage);
+        },
 
-        filterForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Init
+        async init() {
+            this.initializeSelection();
+            await this.loadAllUsers();
+        },
 
-            const formData = new FormData(filterForm);
-            const params = new URLSearchParams(formData).toString();
-            const url = "{{ route('admin.messages.contacts.edit', $contactList->id) }}?" + params;
+        initializeSelection() {
+            const saved = @json($selectedUserIds ?? []);
+            saved.forEach(id => this.selected.add(Number(id)));
+        },
 
-            fetch(url, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    userListContainer.innerHTML = data.html;
-                    paginationContainer.innerHTML = data.pagination;
-                })
-                .catch(err => console.error('Error:', err));
-        });
-    });
+        // Load all users from backend
+        async loadAllUsers() {
+            this.loading = true;
 
-</script> --}}
+            const params = new URLSearchParams({
+                reward_id: this.rewardId || '',
+                start_date: this.startDate || '',
+                end_date: this.endDate || '',
+                search: this.clientSearch || ''
+            });
 
+            const url = `{{ route('admin.users.fetch.all') }}?${params}`;
+            const resp = await fetch(url);
+            const users = await resp.json();
+
+            const seen = new Set();
+            this.data = users
+                .map(u => ({
+                    id: Number(u.user_id),
+                    full_name: u.full_name,
+                    email: u.email,
+                    tier_level: u.tier_level || ''
+                }))
+                .filter(u => {
+                    if (seen.has(u.id)) return false;
+                    seen.add(u.id);
+                    return true;
+                });
+
+            this.loading = false;
+            this.updateSelectAllState();
+        },
+
+        // Search / Filters
+        async onFilterChange() { this.page = 1; await this.loadAllUsers(); },
+        onSearchChange() { this.page = 1; this.updateSelectAllState(); },
+        onPerPageChange() { this.page = 1; this.updateSelectAllState(); },
+
+        // Selection
+        isSelected(id) { return this.selected.has(Number(id)); },
+        toggleUser(e, id) { e.target.checked ? this.selected.add(id) : this.selected.delete(id); this.updateSelectAllState(); },
+        toggleSelectAll(checked) { this.paginatedUsers.forEach(u => checked ? this.selected.add(u.id) : this.selected.delete(u.id)); this.updateSelectAllState(); },
+        updateSelectAllState() { this.selectAllState = this.paginatedUsers.length > 0 && this.paginatedUsers.every(u => this.selected.has(u.id)); },
+
+        // Pagination
+        startIndex() { return (this.page - 1) * this.perPage + 1; },
+        endIndex() { return Math.min(this.page * this.perPage, this.filteredUsers.length); },
+        prevPage() { if (this.page > 1) this.page--; this.updateSelectAllState(); },
+        nextPage() { if (this.endIndex() < this.filteredUsers.length) this.page++; this.updateSelectAllState(); }
+    };
+}
+</script>
 @endpush

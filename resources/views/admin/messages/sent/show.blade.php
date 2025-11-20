@@ -57,6 +57,8 @@
             </div>
             @endif
 
+            
+
             <!-- Send Info -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-gray-100 pt-5">
                 <div>
