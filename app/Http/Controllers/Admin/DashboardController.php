@@ -36,9 +36,9 @@ class DashboardController extends Controller
             ['title' => $purchaseCount, 'subtitle' => 'Earnings', 'value' => '₦' . number_format($purchaseTotal), 'bgColor' => 'bg-purple', 'icon' => $rewardIcon, 'hasAvatar' => false],
             ['title' => $totalUsersCount, 'subtitle' => 'Users',  'bgColor' => 'bg-success', 'icon' => $usersIcon, 'hasAvatar' => false],
             ['title' => $eleniyan->active_users_count, 'subtitle' => 'Total Count - ELENIYAN', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/eleniyan.png'],
-            ['title' => $kabiyesi->active_users_count, 'subtitle' => 'Total Count - OLOYE', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/oloye.png'],
-            ['title' => $oloye->active_users_count, 'subtitle' => 'Total Count - BALOGUN', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/balogun.png'],
-            ['title' => $balogun->active_users_count, 'subtitle' => 'Total Count - KABIYESI', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/kabiyesi.png'],
+            ['title' => $oloye->active_users_count, 'subtitle' => 'Total Count - OLOYE', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/balogun.png'],
+            ['title' => $balogun->active_users_count, 'subtitle' => 'Total Count - BALOGUN', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/kabiyesi.png'],
+            ['title' => $kabiyesi->active_users_count, 'subtitle' => 'Total Count - KABIYESI', 'bgColor' => 'bg-green-500/20', 'icon' => $rewardIcon, 'hasAvatar' => true, 'avatarIcon' => 'images/oloye.png'],
         ];
 
         $search = $request->input('search');

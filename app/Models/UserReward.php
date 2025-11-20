@@ -23,4 +23,10 @@ class UserReward extends Model
     {
         return $this->belongsTo(Reward::class);
     }
+
+    public function scopeHighestClaimed($query)
+    {
+        return $query->where('status', 'claimed')
+            ->orderBy('reward_id', 'desc'); // or priority if you have one
+    }
 }

@@ -245,7 +245,6 @@ class MessagesContactController extends Controller
 
     public function fetchAll(Request $request)
     {
-
         $query = UserReward::query()
             ->with(['user', 'reward']); // eager load both sides
 
@@ -268,8 +267,18 @@ class MessagesContactController extends Controller
             });
         }
 
-        $records = $query->orderBy('id')
-            ->get()
+        $query->where(function ($q) {
+            $q->where('status', '!=', 'claimed')                   // include unclaimed normally
+            ->orWhereIn('id', function ($sub) {                  // but include only the highest claimed
+                    $sub->selectRaw('MAX(id)')
+                        ->from('user_rewards')
+                        ->whereColumn('user_id', 'user_rewards.user_id')
+                        ->where('status', 'claimed');
+                });
+        });
+
+        // Order by user first name
+        $records = $query->get()->sortBy(fn($ur) => $ur->user->first_name)
             ->map(function ($ur) {
                 return [
                     'user_id' => $ur->user_id,
@@ -279,10 +288,12 @@ class MessagesContactController extends Controller
                     'achieved_at' => $ur->achieved_at,
                     'status' => $ur->status,
                 ];
-            });
+            })
+            ->values(); // reset keys
 
         return response()->json($records);
     }
+
 
     public function fetchAllAlt(Request $request)
     {
