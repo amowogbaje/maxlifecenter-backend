@@ -37,7 +37,7 @@
 
                         <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
                             <span class="text-sm text-text-light">Date</span>
-                            <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date }}">{{ \Carbon\Carbon::parse($purchase['date'])->format('M d, Y H:i a') }}</span>
+                            <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $purchase->date_completed }}">{{ \Carbon\Carbon::parse($purchase['date_completed'])->format('M d, Y H:i a') }}</span>
                         </div>
                         {{-- <div class="flex flex-col gap-1 min-w-0">
                             <span class="text-sm text-text-light truncate">Bonus Points</span>
@@ -161,7 +161,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">Date</p>
-                                <p class="text-base text-brand-dark">{{ \Carbon\Carbon::parse($purchase->date_created)->format('M d, Y H:i a') }}</p>
+                                <p class="text-base text-brand-dark">{{ \Carbon\Carbon::parse($purchase->date_completed)->format('M d, Y H:i a') }}</p>
                             </div>
                             <div>
                                 <p class="text-sm text-brand-light-gray mb-1">Status</p>
