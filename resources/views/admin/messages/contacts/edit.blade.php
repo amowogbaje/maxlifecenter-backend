@@ -7,8 +7,7 @@
             Edit Contact List
         </h1>
 
-        <form action="{{ route('admin.messages.contacts.update', $contactList->id) }}" 
-              method="POST" class="space-y-8" x-data="contactListTable()" x-init="init()">
+        <form action="{{ route('admin.messages.contacts.update', $contactList->id) }}" method="POST" class="space-y-8" x-data="contactListTable()" x-init="init()">
             @csrf
             @method('PUT')
 
@@ -17,21 +16,17 @@
                 <div class="flex flex-col md:flex-wrap md:flex-row gap-4 md:items-center w-full">
                     <div class="flex-1 min-w-[250px]">
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Search Users</label>
-                        <input type="text" x-model="clientSearch" placeholder="Type to filter users..." 
-                               class="w-full h-11 px-4 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-700 focus:ring-2 focus:ring-indigo-500" 
-                               @input="onSearchChange()">
+                        <input type="text" x-model="clientSearch" placeholder="Type to filter users..." class="w-full h-11 px-4 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-700 focus:ring-2 focus:ring-indigo-500" @input="onSearchChange()">
                     </div>
 
                     <div class="min-w-[200px]">
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Reward Tier</label>
-                        <select name="reward_id" x-model="rewardId" 
-                                class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 focus:ring-2 focus:ring-indigo-500" 
-                                @change="onFilterChange()">
+                        <select name="reward_id" x-model="rewardId" class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 focus:ring-2 focus:ring-indigo-500" @change="onFilterChange()">
                             <option value="">All Rewards</option>
                             @foreach($rewards as $reward)
-                                <option value="{{ $reward->id }}" {{ request('reward_id') == $reward->id ? 'selected' : '' }}>
-                                    {{ $reward->title }}
-                                </option>
+                            <option value="{{ $reward->id }}" {{ request('reward_id') == $reward->id ? 'selected' : '' }}>
+                                {{ $reward->title }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -39,16 +34,12 @@
                     <div class="flex flex-col sm:flex-row items-center gap-2 min-w-[260px]">
                         <div class="flex-1">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Start Date</label>
-                            <input type="text" x-model="startDate" 
-                                   class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 flatpickr" 
-                                   placeholder="Start Date" @change="onFilterChange()" />
+                            <input type="text" x-model="startDate" class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 flatpickr" placeholder="Start Date" @change="onFilterChange()" x-flatpickr="startDate" />
                         </div>
                         <div class="hidden sm:block text-gray-500 mt-6">to</div>
                         <div class="flex-1">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">End Date</label>
-                            <input type="text" x-model="endDate" 
-                                   class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 flatpickr" 
-                                   placeholder="End Date" @change="onFilterChange()" />
+                            <input type="text" x-model="endDate" class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 flatpickr" placeholder="End Date" @change="onFilterChange()" x-flatpickr="endDate" />
                         </div>
                     </div>
                 </div>
@@ -73,9 +64,7 @@
 
                 <div class="flex items-center gap-4 flex-wrap">
                     <div class="flex items-center gap-2">
-                        <input type="checkbox" id="select-all" class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" 
-                               :checked="selectAllState" 
-                               @change="toggleSelectAll($event.target.checked)">
+                        <input type="checkbox" id="select-all" class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" :checked="selectAllState" @change="toggleSelectAll($event.target.checked)">
                         <label for="select-all" class="text-sm text-gray-700 cursor-pointer select-none">Select Page</label>
                     </div>
 
@@ -97,11 +86,7 @@
                         <div class="bg-white rounded-[24px] shadow-sm p-4 lg:p-5 overflow-hidden border border-transparent hover:border-indigo-100 transition">
                             <div class="flex items-center gap-4 lg:gap-6 min-w-0">
                                 <div class="flex-shrink-0">
-                                    <input type="checkbox" 
-                                           :value="user.id" 
-                                           :checked="isSelected(user.id)" 
-                                           class="user-checkbox w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" 
-                                           @change="toggleUser($event, user.id)">
+                                    <input type="checkbox" :value="user.id" :checked="isSelected(user.id)" class="user-checkbox w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" @change="toggleUser($event, user.id)">
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -128,14 +113,12 @@
                             <span x-text="startIndex()"></span>-<span x-text="endIndex()"></span> of <span x-text="filteredUsers.length"></span>
                         </span>
 
-                        <button type="button" @click="prevPage()" :disabled="page === 1" 
-                                class="p-1 hover:bg-gray-100 rounded disabled:opacity-50" :class="{'cursor-not-allowed': page === 1}">
+                        <button type="button" @click="prevPage()" :disabled="page === 1" class="p-1 hover:bg-gray-100 rounded disabled:opacity-50" :class="{'cursor-not-allowed': page === 1}">
                             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="m15 18-6-6 6-6" /></svg>
                         </button>
 
-                        <button type="button" @click="nextPage()" :disabled="endIndex() >= filteredUsers.length" 
-                                class="p-1 hover:bg-gray-100 rounded disabled:opacity-50" :class="{'cursor-not-allowed': endIndex() >= filteredUsers.length}">
+                        <button type="button" @click="nextPage()" :disabled="endIndex() >= filteredUsers.length" class="p-1 hover:bg-gray-100 rounded disabled:opacity-50" :class="{'cursor-not-allowed': endIndex() >= filteredUsers.length}">
                             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="m9 18 6-6-6-6" /></svg>
                         </button>
@@ -179,99 +162,155 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    flatpickr(".flatpickr", { dateFormat: "Y-m-d", allowInput: true });
-});
+    document.addEventListener('alpine:init', () => {
+        Alpine.directive('flatpickr', (el, {
+            expression
+        }, {
+            evaluateLater
+        }) => {
+            let set = evaluateLater(expression);
+
+            flatpickr(el, {
+                dateFormat: "Y-m-d"
+                , allowInput: true
+                , onChange: function(selectedDates, dateStr) {
+                    set(() => dateStr);
+                    el.dispatchEvent(new Event('input')); // notify Alpine instantly
+                }
+            });
+        });
+    });
+
 </script>
 
 <script>
-function contactListTable() {
-    return {
-        // State
-        data: [],
-        selected: new Set(),
-        clientSearch: '',
-        rewardId: '{{ request('reward_id') }}',
-        startDate: '{{ request('start_date') }}',
-        endDate: '{{ request('end_date') }}',
-        loading: true,
-        perPage: 10,
-        page: 1,
-        selectAllState: false,
-        showDebug: true,
+    function contactListTable() {
+        let debounceTimer;
 
-        // Computed
-        get filteredUsers() {
-            const term = this.clientSearch.trim().toLowerCase();
-            return this.data.filter(u => !term || u.full_name.toLowerCase().includes(term) || u.email.toLowerCase().includes(term));
-        },
+        function debounce(fn, delay = 400) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fn, delay);
+        }
 
-        get paginatedUsers() {
-            const start = (this.page - 1) * this.perPage;
-            return this.filteredUsers.slice(start, start + this.perPage);
-        },
+        return {
+            // State
+            data: []
+            , selected: new Set()
+            , clientSearch: ''
+            , rewardId: '{{ request('
+            reward_id ') }}'
+            , startDate: '{{ request('
+            start_date ') }}'
+            , endDate: '{{ request('
+            end_date ') }}'
+            , loading: true
+            , perPage: 10
+            , page: 1
+            , selectAllState: false
+            , showDebug: true,
 
-        // Init
-        async init() {
-            this.initializeSelection();
-            await this.loadAllUsers();
-        },
+            // Computed
+            get filteredUsers() {
+                const term = this.clientSearch.trim().toLowerCase();
+                return this.data.filter(u => !term || u.full_name.toLowerCase().includes(term) || u.email.toLowerCase().includes(term));
+            },
 
-        initializeSelection() {
-            const saved = @json($selectedUserIds ?? []);
-            saved.forEach(id => this.selected.add(Number(id)));
-        },
+            get paginatedUsers() {
+                const start = (this.page - 1) * this.perPage;
+                return this.filteredUsers.slice(start, start + this.perPage);
+            },
 
-        // Load all users from backend
-        async loadAllUsers() {
-            this.loading = true;
+            // Init
+            async init() {
+                this.initializeSelection();
+                await this.loadAllUsers();
+            },
 
-            const params = new URLSearchParams({
-                reward_id: this.rewardId || '',
-                start_date: this.startDate || '',
-                end_date: this.endDate || '',
-                search: this.clientSearch || ''
-            });
+            initializeSelection() {
+                const saved = @json($selectedUserIds ?? []);
+                saved.forEach(id => this.selected.add(Number(id)));
+            },
 
-            const url = `{{ route('admin.users.fetch.all') }}?${params}`;
-            const resp = await fetch(url);
-            const users = await resp.json();
+            // Load all users from backend
+            async loadAllUsers() {
+                this.loading = true;
 
-            const seen = new Set();
-            this.data = users
-                .map(u => ({
-                    id: Number(u.user_id),
-                    full_name: u.full_name,
-                    email: u.email,
-                    tier_level: u.tier_level || ''
-                }))
-                .filter(u => {
-                    if (seen.has(u.id)) return false;
-                    seen.add(u.id);
-                    return true;
+                const params = new URLSearchParams({
+                    reward_id: this.rewardId || ''
+                    , start_date: this.startDate || ''
+                    , end_date: this.endDate || ''
+                    , search: this.clientSearch || ''
                 });
 
-            this.loading = false;
-            this.updateSelectAllState();
-        },
+                const url = `{{ route('admin.users.fetch.all') }}?${params}`;
+                const resp = await fetch(url);
+                const users = await resp.json();
 
-        // Search / Filters
-        async onFilterChange() { this.page = 1; await this.loadAllUsers(); },
-        onSearchChange() { this.page = 1; this.updateSelectAllState(); },
-        onPerPageChange() { this.page = 1; this.updateSelectAllState(); },
+                const seen = new Set();
+                this.data = users
+                    .map(u => ({
+                        id: Number(u.user_id)
+                        , full_name: u.full_name
+                        , email: u.email
+                        , tier_level: u.tier_level || ''
+                    }))
+                    .filter(u => {
+                        if (seen.has(u.id)) return false;
+                        seen.add(u.id);
+                        return true;
+                    });
 
-        // Selection
-        isSelected(id) { return this.selected.has(Number(id)); },
-        toggleUser(e, id) { e.target.checked ? this.selected.add(id) : this.selected.delete(id); this.updateSelectAllState(); },
-        toggleSelectAll(checked) { this.paginatedUsers.forEach(u => checked ? this.selected.add(u.id) : this.selected.delete(u.id)); this.updateSelectAllState(); },
-        updateSelectAllState() { this.selectAllState = this.paginatedUsers.length > 0 && this.paginatedUsers.every(u => this.selected.has(u.id)); },
+                this.loading = false;
+                this.updateSelectAllState();
+            },
 
-        // Pagination
-        startIndex() { return (this.page - 1) * this.perPage + 1; },
-        endIndex() { return Math.min(this.page * this.perPage, this.filteredUsers.length); },
-        prevPage() { if (this.page > 1) this.page--; this.updateSelectAllState(); },
-        nextPage() { if (this.endIndex() < this.filteredUsers.length) this.page++; this.updateSelectAllState(); }
-    };
-}
+            // Search / Filters
+            async onFilterChange() {
+                this.page = 1;
+                await this.loadAllUsers();
+            }
+            , onSearchChange() {
+                this.page = 1;
+                this.updateSelectAllState();
+            }
+            , onPerPageChange() {
+                this.page = 1;
+                this.updateSelectAllState();
+            },
+
+            // Selection
+            isSelected(id) {
+                return this.selected.has(Number(id));
+            }
+            , toggleUser(e, id) {
+                e.target.checked ? this.selected.add(id) : this.selected.delete(id);
+                this.updateSelectAllState();
+            }
+            , toggleSelectAll(checked) {
+                this.paginatedUsers.forEach(u => checked ? this.selected.add(u.id) : this.selected.delete(u.id));
+                this.updateSelectAllState();
+            }
+            , updateSelectAllState() {
+                this.selectAllState = this.paginatedUsers.length > 0 && this.paginatedUsers.every(u => this.selected.has(u.id));
+            },
+
+            // Pagination
+            startIndex() {
+                return (this.page - 1) * this.perPage + 1;
+            }
+            , endIndex() {
+                return Math.min(this.page * this.perPage, this.filteredUsers.length);
+            }
+            , prevPage() {
+                if (this.page > 1) this.page--;
+                this.updateSelectAllState();
+            }
+            , nextPage() {
+                if (this.endIndex() < this.filteredUsers.length) this.page++;
+                this.updateSelectAllState();
+            }
+        };
+    }
+
 </script>
 @endpush

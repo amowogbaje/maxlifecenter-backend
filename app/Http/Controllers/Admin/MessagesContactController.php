@@ -76,7 +76,7 @@ class MessagesContactController extends Controller
 
         if ($request->filled(['start_date', 'end_date'])) {
             $query->whereHas('userRewards', function ($q) use ($request) {
-                $q->whereBetween('created_at', [
+                $q->whereBetween('achieved_at', [
                     $request->input('start_date'),
                     $request->input('end_date'),
                 ]);
@@ -211,7 +211,7 @@ class MessagesContactController extends Controller
         }
 
         if ($request->filled(['start_date', 'end_date'])) {
-            $query->whereBetween('created_at', [
+            $query->whereBetween('achieved_at', [
                 $request->input('start_date'),
                 $request->input('end_date'),
             ]);
@@ -244,55 +244,99 @@ class MessagesContactController extends Controller
     }
 
     public function fetchAll(Request $request)
-    {
-        $query = UserReward::query()
-            ->with(['user', 'reward']); // eager load both sides
+{
+    $rewardIdSelected = $request->filled('reward_id');
+    $dateFilterSelected = $request->filled(['start_date', 'end_date']);
+    $search = $request->input('search');
+    $rewardId = $rewardIdSelected ? (int) $request->input('reward_id') : null;
 
-        if ($request->filled('reward_id')) {
-            $query->where('reward_id', (int) $request->input('reward_id'));
-        }
+    /**
+     * STEP 1 — base query (NO reward_id filter yet)
+     */
+    $query = UserReward::query()->with(['user', 'reward']);
 
-        if ($request->filled(['start_date', 'end_date'])) {
-            $query->whereBetween('created_at', [
-                $request->input('start_date'),
-                $request->input('end_date'),
-            ]);
-        }
-
-        if ($search = $request->input('search')) {
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('first_name', 'like', "%{$search}%")
-                ->orWhere('last_name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        $query->where(function ($q) {
-            $q->where('status', '!=', 'claimed')                   // include unclaimed normally
-            ->orWhereIn('id', function ($sub) {                  // but include only the highest claimed
-                    $sub->selectRaw('MAX(id)')
-                        ->from('user_rewards')
-                        ->whereColumn('user_id', 'user_rewards.user_id')
-                        ->where('status', 'claimed');
-                });
+    // SEARCH
+    if ($search) {
+        $query->whereHas('user', function ($q) use ($search) {
+            $q->where('first_name', 'like', "%{$search}%")
+              ->orWhere('last_name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
         });
-
-        // Order by user first name
-        $records = $query->get()->sortBy(fn($ur) => $ur->user->first_name)
-            ->map(function ($ur) {
-                return [
-                    'user_id' => $ur->user_id,
-                    'full_name' => $ur->user->full_name,
-                    'email' => $ur->user->email,
-                    'tier_level' => $ur->reward->title,
-                    'achieved_at' => $ur->achieved_at,
-                    'status' => $ur->status,
-                ];
-            })
-            ->values(); // reset keys
-
-        return response()->json($records);
     }
+
+    // DATE FILTER
+    if ($dateFilterSelected) {
+        $query->whereBetween('achieved_at', [
+            $request->input('start_date'),
+            $request->input('end_date'),
+        ]);
+    }
+
+    // STEP 2 — fetch all (we need all to compute highest rewards)
+    $records = $query->get();
+    $countRecords = $query->count();
+
+
+    /**
+     * RULE 1:
+     * If ONLY reward_id is selected (NO dates):
+     *     Show ONLY users whose HIGHEST reward == reward_id
+     */
+    if ($rewardIdSelected && !$dateFilterSelected) {
+
+        // Group all rewards by user
+        $records = $records->groupBy('user_id')
+            ->map(function ($userRewards) use ($rewardId) {
+
+                // Highest reward for this user
+                $highest = $userRewards->sortByDesc('reward_id')->first();
+
+                // include only if highest reward matches the requested reward
+                return $highest->reward_id == $rewardId ? $highest : null;
+
+            })
+            ->filter()   // remove nulls
+            ->values();
+    }
+
+    /**
+     * RULE 2:
+     * If reward_id + date filter:
+     *     Apply reward filter normally
+     */
+    if ($rewardIdSelected && $dateFilterSelected) {
+        $records = $records->filter(function ($ur) use ($rewardId) {
+            return $ur->reward_id == $rewardId;
+        })->values();
+    }
+
+    /**
+     * RULE 3:
+     * If no reward_id → normal behavior
+     * (records untouched)
+     */
+
+    // Format final output
+    $records = $records
+        ->sortBy(fn($ur) => $ur->user->first_name)
+        ->map(function ($ur) {
+            return [
+                'user_id'     => $ur->user_id,
+                'full_name'   => $ur->user->full_name,
+                'email'       => $ur->user->email,
+                'tier_level'  => $ur->reward->title,
+                'achieved_at' => $ur->achieved_at,
+                'status'      => $ur->status,
+            ];
+        })
+        ->values();
+
+    // return response()->json($countRecords);
+    return response()->json($records);
+
+}
+
+
 
 
     public function fetchAllAlt(Request $request)
@@ -311,48 +355,66 @@ class MessagesContactController extends Controller
     // Return metadata: total count and last_updated timestamp (simple check)
     public function meta(Request $request)
     {
-        $query = User::query()
-            ->where('is_admin', false);
+        $search   = $request->input('search');
+        $rewardId = $request->input('reward_id');
+        $dates    = $request->filled(['start_date', 'end_date']);
+        $onlyRewardFilter = $request->filled('reward_id') && !$dates;
 
-        // search on users
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
+        // Start from UserReward model for accuracy
+        $query = UserReward::query()->with('user');
+
+        // SEARCH on user
+        if ($search) {
+            $query->whereHas('user', function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                    ->orWhere('last_name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
-        // reward filters on pivot
-        if ($request->filled('reward_id') || $request->filled(['start_date', 'end_date'])) {
-            $query->whereHas('userRewards', function ($q) use ($request) {
+        // DATE FILTER
+        if ($dates) {
+            $query->whereBetween('achieved_at', [
+                $request->input('start_date'),
+                $request->input('end_date'),
+            ]);
 
-                if ($request->filled('reward_id')) {
-                    $q->where('reward_id', (int) $request->input('reward_id'));
-                }
+            if ($rewardId) {
+                $query->where('reward_id', (int)$rewardId);
+            }
+        }
 
-                if ($request->filled(['start_date', 'end_date'])) {
-                    $q->whereBetween('created_at', [
-                        $request->input('start_date'),
-                        $request->input('end_date'),
-                    ]);
-                }
+        // ONLY reward_id → highest reward logic
+        if ($onlyRewardFilter) {
+            $query->whereIn('user_id', function ($sub) use ($rewardId) {
+                $sub->from('user_rewards')
+                    ->select('user_id')
+                    ->groupBy('user_id')
+                    ->havingRaw('MAX(reward_id) = ?', [$rewardId]);
             });
         }
 
-        // total count of unique users in the filtered set
-        $total = $query->distinct()->count('users.id');
+        // If only reward_id + no dates → still ensure reward filtering
+        if ($rewardId && !$dates) {
+            // no direct filter here because highest-reward logic handles it
+        }
 
-        // last updated timestamp among those filtered users
-        $lastUpdated = $query->max('updated_at');
+        // Count unique users
+        $total = $query->distinct('user_id')->count('user_id');
+
+        // last_updated from users table
+        $lastUpdated = User::whereIn('id', $query->pluck('user_id'))
+            ->max('updated_at');
 
         return response()->json([
-            'total' => $total,
+            'total'        => $total,
             'last_updated' => $lastUpdated
                 ? \Carbon\Carbon::parse($lastUpdated)->toIsoString()
                 : null,
         ]);
     }
+
+
 
 
 
