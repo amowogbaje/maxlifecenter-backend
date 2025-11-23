@@ -163,7 +163,7 @@
                 }
 
                 try {
-                    let response = await fetch('/api/check-identifier', {
+                    let response = await fetch('/api/check-identifier-b', {
                         method: 'POST'
                         , headers: {
                             'Content-Type': 'application/json'
@@ -185,7 +185,7 @@
                         this.hasPassword = true;
                         this.step = 2;
                     } else if (data.exists && data.redirectToOtp) {
-                        fetch('/api/send-otp', {
+                        fetch('/api/send-otp-b', {
                                 method: 'POST'
                                 , headers: {
                                     'Content-Type': 'application/json'
@@ -199,7 +199,7 @@
                                 return response.json();
                             })
                             .then(() => {
-                                window.location.href = "/verify-otp?identifier=" + encodeURIComponent(this.identifier);
+                                window.location.href = "/verify-otp-b?identifier=" + encodeURIComponent(this.identifier);
                             })
                             .catch(error => {
                                 console.error(error);

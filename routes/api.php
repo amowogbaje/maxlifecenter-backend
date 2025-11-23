@@ -18,8 +18,13 @@ Route::get('/user', function (Request $request) {
 Route::post('password', [AuthController::class, 'updatePassword'])->name('password.update');
     // ->middleware('signed');
 
-Route::post('/check-identifier', [BasicController::class, 'checkIdentifier']);
-Route::post('/send-otp', [BasicController::class, 'sendOtp']);
+Route::post('/check-identifier-b', [BasicController::class, 'checkIdentifier']);
+Route::post('/send-otp-b', [BasicController::class, 'sendOtp']);
+
+Route::post('/check-identifier', [BasicController::class, 'checkIdentifier2']);
+Route::post('/send-otp', [BasicController::class, 'sendOtp2']);
+Route::post('/verify-otp', [BasicController::class, 'verifyOtp2']);
+Route::post('/setup-password', [BasicController::class, 'setupPassword2']);
 
 Route::post('/webhooks/woocommerce', [WebhookController::class, 'handle'])
     ->name('webhooks.woocommerce')

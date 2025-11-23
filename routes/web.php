@@ -92,14 +92,16 @@ Route::group(['middleware' => 'guest'], function () {
     // Route::get('/', [AuthController::class, 'login'])->name('login');
     Route::get('/login-old', [AuthController::class, 'login'])->name('login-old');
     Route::get('/login', [AuthController::class, 'login2'])->name('login');
+    Route::get('/login-new', [AuthController::class, 'login3'])->name('login-new');
     Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
     Route::post('/login/new', [AuthController::class, 'newHandleLogin']);
 
 
-    Route::get('/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify');
-    Route::post('/verify-otp', [AuthController::class, 'handleOtp'])->name('otp.verify.submit');
+    Route::get('/verify-otp-b', [AuthController::class, 'verifyOtp'])->name('otp.verify');
+    Route::post('/verify-otp-b', [AuthController::class, 'handleOtp'])->name('otp.verify.submit');
 
-    Route::get('/password/{token}', [AuthController::class, 'setupPassword'])->name('password.setup');
+    Route::get('/password-b/{token}', [AuthController::class, 'setupPassword'])->name('password.setup');
+    
 
     
     // Route::get('/register', [AuthController::class, 'register'])->name('register');

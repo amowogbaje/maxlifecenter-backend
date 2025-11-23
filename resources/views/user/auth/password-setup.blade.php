@@ -220,7 +220,7 @@ this.token =    pathParts[pathParts.length - 1];
                 }
 
                 try {
-                    const res = await fetch("/api/password", {
+                    const res = await fetch("/api/password-b", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
