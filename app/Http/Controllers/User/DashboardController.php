@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $currentTier = $user->approvedTier->title;
         $nextTier = $user->nextToBeApprovedTier?->title ?? null;
         $recentProducts = ProductOnSale::latest()->take(6)->get();
-        $updates = Blog::where('status', 'published')->latest()->take(2)->get();
+        $updates = Blog::where('status', 'published')->latest()->take(3)->get();
         $data = compact('purchaseCount', 'purchaseTotal','currentTier', 'nextTier', 'recentProducts', 'updates');
 
         return view('user.dashboard', $data);
@@ -147,6 +147,75 @@ class DashboardController extends Controller
     public function rewards()
     {
         $user = User::find(auth('web')->user()->id);
+
+         $tierTitle = optional($user->approvedTier)->title;
+
+        // Mapping (use exactly the descriptions you provided)
+        $tierMap = [
+            'Eleniyan' => [
+                'title' => 'Eleniyan',
+                'discount_label' => '10% OFF',
+                'description' => '
+                    <p class="text-gray-700 text-sm mb-2">
+                        Command the kingdom\'s best with <strong>20% off</strong>. 
+                        Unlock up to <strong>₦150,000</strong> in royal value — reserved for our most loyal warriors of commerce.
+                    </p>
+                    <p class="text-xs italic text-indigo-700 font-medium">
+                        “Your loyalty speaks power — enjoy the prestige you\'ve earned.”
+                    </p>
+                ',
+                'bg_classes' => 'from-rose-50 to-pink-100',
+                'badge_class' => 'bg-rose-700 text-white'
+            ],
+            'Oloye' => [
+                'title' => 'Oloye',
+                'discount_label' => '15% OFF',
+                'description' => '
+                    <p class="text-gray-700 text-sm mb-2">
+                        Rise in the royal ranks and receive <strong>15% off</strong> your orders.
+                        Enjoy up to <strong>₦50,000</strong> in exclusive shopping rewards as recognition of your growing status.
+                    </p>
+                    <p class="text-xs italic text-amber-700 font-medium">
+                        “You\'re no longer just shopping — you\'re earning your royal privilege.”
+                    </p>
+                ',
+                'bg_classes' => 'from-yellow-50 to-amber-100',
+                'badge_class' => 'bg-amber-700 text-white'
+            ],
+            'Balogun' => [
+                'title' => 'Balogun',
+                'discount_label' => '20% OFF',
+                'description' => '
+                    <p class="text-gray-700 text-sm mb-2">
+                        Command the kingdom\'s best with <strong>20% off</strong>. 
+                        Unlock up to <strong>₦150,000</strong> in royal value — reserved for our most loyal warriors of commerce.
+                    </p>
+                    <p class="text-xs italic text-indigo-700 font-medium">
+                        “Your loyalty speaks power — enjoy the prestige you\'ve earned.”
+                    </p>
+                ',
+                'bg_classes' => 'from-indigo-50 to-blue-100',
+                'badge_class' => 'bg-indigo-700 text-white'
+            ],
+            'Kabiyesi' => [
+                'title' => 'Kabiyesi',
+                'discount_label' => '30% OFF',
+                'description' => '
+                    <p class="text-gray-700 text-sm mb-2">
+                        Reign at the very top with <strong>30% off</strong> your purchases. 
+                        Enjoy up to <strong>₦300,000</strong> in royal value — the kingdom\'s ultimate token of honor.
+                    </p>
+                    <p class="text-xs italic text-violet-700 font-medium">
+                        “This is the throne of loyalty — where true kings and queens belong.”
+                    </p>
+                ',
+                'bg_classes' => 'from-purple-50 to-violet-100',
+                'badge_class' => 'bg-violet-700 text-white'
+            ],
+        ];
+
+        $currentTier = $tierMap[$tierTitle] ?? null;
+
         $rewards = $user->rewards()
         ->withPivot(['id','status', 'mail_sent']) // include pivot fields
         // ->where('user_rewards.status', 'claimed')
@@ -161,7 +230,7 @@ class DashboardController extends Controller
 
         // return $rewards;
 
-        return view('user.reward', compact('user','rewards'));
+        return view('user.reward', compact('user','rewards', 'currentTier'));
     }
 
     public function claimReward($id)

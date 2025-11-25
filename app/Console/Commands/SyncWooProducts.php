@@ -37,6 +37,7 @@ class SyncWooProducts extends Command
                     [
                         'name' => $wooProduct['name'],
                         'price' => $wooProduct['price'],
+                        'url' => $wooProduct['permalink'],
                         'image_url' => $wooProduct['images'][0]['src'] ?? null,
                         'on_sale' => $wooProduct['on_sale'] ?? false,
                     ]

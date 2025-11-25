@@ -12,106 +12,39 @@
 
     </div>
 
+    <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-2xl overflow-hidden flex-1 flex items-center justify-center">
+        <img src="{{ asset('images/reward-banner.png') }}" alt="Reward banner" class="w-full h-full object-contain">
+    </div>
     <div class="flex flex-col lg:flex-row gap-6 my-5 py-2">
-
-        <!-- KOC Discounts (Swiper-enabled) -->
         <section class="bg-white rounded-2xl p-6 flex-1 shadow-sm relative overflow-hidden">
             <header class="flex items-center justify-between mb-6">
                 <h2 class="text-gray-900 text-xl font-bold">KOC Discounts</h2>
-                <div class="flex items-center text-blue-500 cursor-pointer hover:text-blue-600 transition">
-                    <span class="text-base font-bold mr-1">View all</span>
-                    <svg class="w-2 h-3" fill="currentColor" viewBox="0 0 6 10">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0.293 0.293C0.653 -0.068 1.221 -0.095 1.613 0.21L5.707 4.293C6.068 4.653 6.095 5.221 5.79 5.613L1.707 9.707C1.317 10.098 0.683 10.098 0.293 9.707C-0.098 9.317 -0.098 8.683 0.293 8.293L3.586 5L0.293 1.707C-0.098 1.317 -0.098 0.683 0.293 0.293Z" />
-                    </svg>
-                </div>
+
             </header>
 
-            <!-- Swiper Container -->
-            <div class="swiper myDiscountsSwiper">
-                <div class="swiper-wrapper">
+            @if($currentTier)
+            <article class="rounded-xl shadow-sm p-5 hover:shadow-md transition h-full bg-gradient-to-r {{ $currentTier['bg_classes'] }}">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lg font-bold text-gray-800">{{ $currentTier['title'] }}</h3>
 
-                    <!-- Eleniyan -->
-                    <div class="swiper-slide">
-                        <article class="bg-gradient-to-r from-rose-50 to-pink-100 rounded-xl shadow-sm p-5 hover:shadow-md transition h-full">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-lg font-bold text-rose-700">Eleniyan</h3>
-                                <span class="text-xs bg-rose-700 text-white px-3 py-1 rounded-full font-semibold">10% OFF</span>
-                            </div>
-                            <p class="text-gray-700 text-sm mb-2">
-                                Begin your royal journey with <strong>10% off</strong> every purchase. Enjoy up to
-                                <strong>₦30,000</strong> in royal rewards — your first taste of the kingdom's generosity.
-                            </p>
-                            <p class="text-xs italic text-rose-700 font-medium">
-                                “Start earning your crown — every purchase brings you closer to your next royal rank.”
-                            </p>
-                        </article>
-                    </div>
-
-                    <!-- Oloye -->
-                    <div class="swiper-slide">
-                        <article class="bg-gradient-to-r from-yellow-50 to-amber-100 rounded-xl shadow-sm p-5 hover:shadow-md transition h-full">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-lg font-bold text-amber-700">Oloye</h3>
-                                <span class="text-xs bg-amber-700 text-white px-3 py-1 rounded-full font-semibold">15% OFF</span>
-                            </div>
-                            <p class="text-gray-700 text-sm mb-2">
-                                Rise in the royal ranks and receive <strong>15% off</strong> your orders. Enjoy up to
-                                <strong>₦50,000</strong> in exclusive shopping rewards as recognition of your growing status.
-                            </p>
-                            <p class="text-xs italic text-amber-700 font-medium">
-                                “You're no longer just shopping — you're earning your royal privilege.”
-                            </p>
-                        </article>
-                    </div>
-
-                    <!-- Balogun -->
-                    <div class="swiper-slide">
-                        <article class="bg-gradient-to-r from-indigo-50 to-blue-100 rounded-xl shadow-sm p-5 hover:shadow-md transition h-full">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-lg font-bold text-indigo-700">Balogun</h3>
-                                <span class="text-xs bg-indigo-700 text-white px-3 py-1 rounded-full font-semibold">20% OFF</span>
-                            </div>
-                            <p class="text-gray-700 text-sm mb-2">
-                                Command the kingdom's best with <strong>20% off</strong>. Unlock up to
-                                <strong>₦150,000</strong> in royal value — reserved for our most loyal warriors of commerce.
-                            </p>
-                            <p class="text-xs italic text-indigo-700 font-medium">
-                                “Your loyalty speaks power — enjoy the prestige you've earned.”
-                            </p>
-                        </article>
-                    </div>
-
-                    <!-- Kabiyesi -->
-                    <div class="swiper-slide">
-                        <article class="bg-gradient-to-r from-purple-50 to-violet-100 rounded-xl shadow-sm p-5 hover:shadow-md transition h-full">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-lg font-bold text-violet-700">Kabiyesi</h3>
-                                <span class="text-xs bg-violet-700 text-white px-3 py-1 rounded-full font-semibold">30% OFF</span>
-                            </div>
-                            <p class="text-gray-700 text-sm mb-2">
-                                Reign at the very top with <strong>30% off</strong> your purchases. Enjoy up to
-                                <strong>₦300,000</strong> in royal value — the kingdom's ultimate token of honor.
-                            </p>
-                            <p class="text-xs italic text-violet-700 font-medium">
-                                “This is the throne of loyalty — where true kings and queens belong.”
-                            </p>
-                        </article>
-                    </div>
-
+                    <span class="text-xs px-3 py-1 rounded-full font-semibold {{ $currentTier['badge_class'] }}">
+                        {{ $currentTier['discount_label'] }}
+                    </span>
                 </div>
 
-                <!-- Pagination + Navigation -->
-                <div class="swiper-pagination mt-4"></div>
-                <div class="swiper-button-next text-gray-700"></div>
-                <div class="swiper-button-prev text-gray-700"></div>
-            </div>
-        </section>
+                {!! $currentTier['description'] !!}
 
-        <!-- TIMEX Banner -->
-        <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-2xl overflow-hidden flex-1 flex items-center justify-center">
-            <img src="{{ asset('images/reward-banner.png') }}" alt="TIMEX banner" class="w-full h-full object-contain">
-        </div>
+                
+            </article>
+            @else
+            <div class="p-6 border rounded-xl text-center text-gray-500">
+                No tier unlocked yet.
+            </div>
+            @endif
+
+        </section>
     </div>
+
 
     <!-- Main Content -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
