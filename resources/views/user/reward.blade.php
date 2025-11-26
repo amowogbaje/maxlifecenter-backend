@@ -18,7 +18,7 @@
     <div class="flex flex-col lg:flex-row gap-6 my-5 py-2">
         <section class="bg-white rounded-2xl p-6 flex-1 shadow-sm relative overflow-hidden">
             <header class="flex items-center justify-between mb-6">
-                <h2 class="text-gray-900 text-xl font-bold">KOC Discounts</h2>
+                <h2 class="text-gray-900 text-xl font-bold">Perks Just For You</h2>
 
             </header>
 
@@ -85,7 +85,7 @@
 
                     <!-- Description -->
                     <div class="flex-1 mb-3 md:mb-0">
-                        <p class="font-semibold text-gray-700">Description</p>
+                        <p class="font-semibold text-gray-700">Discount</p>
                         <p class="text-xs text-gray-500">
                             {{ $reward->description }}
                         </p>

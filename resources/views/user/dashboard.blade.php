@@ -157,10 +157,10 @@
 
 <div class="flex flex-col lg:flex-row gap-6">
 
-    <!-- KOC Discounts (Swiper-enabled) -->
+    <!-- Perks Just For You (Swiper-enabled) -->
     <section class="bg-white rounded-2xl p-6 flex-1 shadow-sm relative overflow-hidden">
         <header class="flex items-center justify-between mb-6">
-            <h2 class="text-gray-900 text-xl font-bold">KOC Discounts</h2>
+            <h2 class="text-gray-900 text-xl font-bold">Perks Just For You</h2>
 
         </header>
 

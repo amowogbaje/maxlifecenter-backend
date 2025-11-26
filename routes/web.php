@@ -91,8 +91,8 @@ Route::get('/sanctum/csrf-cookie', function () {
 Route::group(['middleware' => 'guest'], function () {
     // Route::get('/', [AuthController::class, 'login'])->name('login');
     Route::get('/login-old', [AuthController::class, 'login'])->name('login-old');
-    Route::get('/login', [AuthController::class, 'login2'])->name('login');
-    Route::get('/login-new', [AuthController::class, 'login3'])->name('login-new');
+    Route::get('/login-old-2', [AuthController::class, 'login2'])->name('login-old-2');
+    Route::get('/login', [AuthController::class, 'login3'])->name('login');
     Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
     Route::post('/login/new', [AuthController::class, 'newHandleLogin']);
 
