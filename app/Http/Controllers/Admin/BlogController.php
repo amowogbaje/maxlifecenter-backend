@@ -36,7 +36,7 @@ class BlogController extends Controller
         }
 
         // Paginate and transform images
-        $updates = $query->paginate(2)->withQueryString();
+        $updates = $query->paginate(9)->withQueryString();
         $updates->getCollection()->transform(function ($update) {
             $update->image = $update->image 
                 ? asset($update->image) 
@@ -61,11 +61,29 @@ class BlogController extends Controller
         return view('admin.blogs.create', $data);
     }
 
+    public function createTipTap()
+    {
+        $data = [
+            'page_title' => 'Create an Update',
+        ];
+
+        return view('admin.blogs.create-tip-tap', $data);
+    }
+
+    public function createTrix()
+    {
+        $data = [
+            'page_title' => 'Create an Update',
+        ];
+
+        return view('admin.blogs.create-trix', $data);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'title'  => ['required', 'string', 'max:191'],
-            'body'   => ['required', 'string'],
+            'body'   => ['required', 'json'],
             'image'  => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif', 'max:2040'],
             'status' => ['required', 'in:draft,published'],
         ]);
@@ -79,7 +97,7 @@ class BlogController extends Controller
                 'admin_id' => auth('admin')->id(),
                 'title'    => $validated['title'],
                 'slug'     => Str::slug($validated['title']),
-                'body'     => $validated['body'],
+                'body'     => json_decode($validated['body'], true),
                 'image'    => $imagePath,
                 'status'   => $validated['status'],
             ]);
@@ -122,7 +140,7 @@ class BlogController extends Controller
     {
         $validated = $request->validate([
             'title'  => ['required', 'string', 'max:191'],
-            'body'   => ['required', 'string'],
+            'body'   => ['required', 'json'],
             'image'  => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif', 'max:2040'],
             'status' => ['required', 'in:draft,published'],
         ]);
@@ -131,7 +149,7 @@ class BlogController extends Controller
             $data = [
                 'title'  => $validated['title'],
                 'slug'   => Str::slug($validated['title']),
-                'body'   => $validated['body'],
+                'body'   => json_decode($validated['body'], true),
                 'status' => $validated['status'],
             ];
 

@@ -11,7 +11,7 @@ return new class extends Migration
     {
         // 1️⃣ Fix existing invalid / NULL bodies
         DB::statement("
-            UPDATE updates
+            UPDATE blogs
             SET body = JSON_OBJECT(
                 'time', UNIX_TIMESTAMP(),
                 'blocks', JSON_ARRAY(),
@@ -22,14 +22,14 @@ return new class extends Migration
         ");
 
         // 2️⃣ Change column type to JSON
-        Schema::table('updates', function (Blueprint $table) {
+        Schema::table('blogs', function (Blueprint $table) {
             $table->json('body')->nullable(false)->change();
         });
     }
 
     public function down(): void
     {
-        Schema::table('updates', function (Blueprint $table) {
+        Schema::table('blogs', function (Blueprint $table) {
             $table->text('body')->change();
         });
     }

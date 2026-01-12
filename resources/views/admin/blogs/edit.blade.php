@@ -1,66 +1,72 @@
 @extends('admin.layouts.app')
 
+@push('tiptapscript')
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.28.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@2.8.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@1.10.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@2.11.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@2.6.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/table@2.3.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@1.6.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@1.4.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.9.0"></script>
+@endpush
+
 @section('content')
 <div class="min-h-screen flex items-center justify-center p-4 md:p-8">
     <div class="w-full max-w-[850px] bg-white rounded-[24px] p-8 md:p-12 flex flex-col gap-12">
-        <!-- Header -->
         <div class="flex justify-between items-center">
-            <h1 class="text-[22px] font-bold text-[#0A1629] font-nunito">
-                Edit Update
-            </h1>
-            <a href="{{ route('admin.updates.index') }}" class="flex items-center gap-3 h-12 px-4 rounded-[14px] bg-blue-500 text-white shadow-[0_6px_12px_0_rgba(63,140,255,0.26)] hover:bg-blue-600 transition-colors">
-                <span class="text-base font-bold">See All Updates</span>
+            <h1 class="text-[22px] font-bold text-[#0A1629] font-nunito">Edit Update</h1>
+            <a href="{{ route('admin.updates.index') }}" class="flex items-center gap-3 h-12 px-4 rounded-[14px] bg-gray-500 text-white hover:bg-gray-600 transition-colors">
+                <span class="text-base font-bold">Back to List</span>
             </a>
         </div>
 
-        <!-- Form -->
-        <form action="{{ route('admin.updates.update', $update) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-12">
+        <form action="{{ route('admin.updates.update', $update->id) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-12">
             @csrf
             @method('PUT')
 
-            <!-- Image Banner -->
             <div class="flex flex-col gap-[10px]">
-                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">
-                    Image Banner (Optional)
-                </label>
-                <label class="flex h-[204px] justify-center items-center border border-[#D8E0F0] rounded-[14px] cursor-pointer hover:bg-[#F8FAFB] transition-colors">
+                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Image Banner</label>
+                <label class="flex h-[204px] justify-center items-center border border-[#D8E0F0] rounded-[14px] cursor-pointer hover:bg-[#F8FAFB] transition-colors relative overflow-hidden">
                     <input type="file" accept="image/*" name="image" id="imageInput" class="hidden" onchange="previewImage(event)" />
                     <div id="imagePreviewContainer" class="flex items-center justify-center w-full h-full">
-                        <svg id="defaultIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" class="{{ $update->image ? 'hidden' : '' }}">
-                            <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#0A1629" stroke-width="2" />
-                            <path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="#0A1629" stroke-width="2" />
-                            <path d="M21 15L16 10L5 21" stroke="#0A1629" stroke-width="2" />
-                        </svg>
                         @if($update->image)
-                        <img id="imagePreview" src="{{ asset($update->image) }}" alt="Preview" class="max-h-full max-w-full object-contain rounded-[10px]" />
+                            <img id="imagePreview" src="{{ asset($update->image) }}" alt="Preview" class="max-h-full max-w-full object-contain rounded-[10px]" />
+                            <svg id="defaultIcon" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#0A1629" stroke-width="2" /><path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="#0A1629" stroke-width="2" /><path d="M21 15L16 10L5 21" stroke="#0A1629" stroke-width="2" /></svg>
                         @else
-                        <img id="imagePreview" src="#" alt="Preview" class="max-h-full max-w-full object-contain rounded-[10px] hidden" />
+                            <svg id="defaultIcon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#0A1629" stroke-width="2" /><path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="#0A1629" stroke-width="2" /><path d="M21 15L16 10L5 21" stroke="#0A1629" stroke-width="2" /></svg>
+                            <img id="imagePreview" src="#" alt="Preview" class="max-h-full max-w-full object-contain rounded-[10px] hidden" />
                         @endif
                     </div>
                 </label>
             </div>
 
-            <!-- Title -->
             <div class="flex flex-col gap-[10px]">
                 <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Title</label>
-                <input type="text" name="title" placeholder="Update Title" value="{{ old('title', $update->title) }}" class="h-[54px] px-[13px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required />
+                <input type="text" name="title" value="{{ old('title', $update->title) }}" class="h-[54px] px-[13px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required />
             </div>
 
-            <!-- Details -->
-            <div class="flex flex-col gap-[10px]">
+            <div class="flex flex-col gap-[10px]" 
+                 x-data="editorJsWrapper({{ json_encode($update->body) }})" 
+                 x-init="initEditor()">
                 <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Update Details</label>
-                <textarea name="body" placeholder="Update details..." class="h-[216px] p-[14px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required>{{ old('body', $update->body) }}</textarea>
+                <div class="rounded-[14px] border border-[#D8E0F0] bg-white p-6 focus-within:border-[#3F8CFF] transition-colors">
+                    <div id="editorjs_holder" class="prose max-w-none"></div>
+                </div>
+                <input type="hidden" name="body" x-ref="hiddenBody" value="{{ json_encode($update->body) }}">
             </div>
 
-            <!-- Status Buttons -->
             <div class="flex items-center gap-[30px] flex-wrap">
-                <button type="submit" name="status" value="draft" class="h-[53px] px-[22px] bg-black rounded-[14px] text-white font-bold hover:bg-[#1a1a1a]">Save as Draft</button>
-                <button type="submit" name="status" value="published" class="h-12 px-[39px] bg-[#3F8CFF] rounded-[14px] text-white font-bold hover:bg-[#2D7AEB]">Publish</button>
+                <button type="submit" name="status" value="draft" class="h-[53px] px-[22px] {{ $update->status == 'draft' ? 'bg-blue-100 text-blue-600 border-2 border-blue-600' : 'bg-black text-white' }} rounded-[14px] font-bold hover:opacity-80">Update as Draft</button>
+                <button type="submit" name="status" value="published" class="h-12 px-[39px] {{ $update->status == 'published' ? 'bg-green-500' : 'bg-[#3F8CFF]' }} rounded-[14px] text-white font-bold hover:opacity-80">Update & Publish</button>
             </div>
         </form>
     </div>
 </div>
+@endsection
 
+@push('script')
 <script>
     function previewImage(event) {
         const input = event.target;
@@ -75,16 +81,58 @@
                 defaultIcon.classList.add('hidden');
             }
             reader.readAsDataURL(input.files[0]);
-        } else if (!preview.src.includes('blob') && preview.src !== '#') {
-            // keep existing image if no new file is selected
-            preview.classList.remove('hidden');
-            defaultIcon.classList.add('hidden');
-        } else {
-            preview.src = '#';
-            preview.classList.add('hidden');
-            defaultIcon.classList.remove('hidden');
         }
     }
 
+    function editorJsWrapper(initialData) {
+        return {
+            editor: null,
+            retryCount: 0,
+            maxRetries: 30,
+            
+            initEditor() {
+                const requiredTools = ['EditorJS', 'Header', 'List', 'Paragraph', 'Quote', 'Table', 'Checklist', 'Delimiter', 'ImageTool'];
+                const allToolsReady = requiredTools.every(tool => typeof window[tool] !== 'undefined');
+
+                if (!allToolsReady) {
+                    if (this.retryCount >= this.maxRetries) return;
+                    this.retryCount++;
+                    setTimeout(() => this.initEditor(), 100);
+                    return;
+                }
+
+                this.editor = new window.EditorJS({
+                    holder: 'editorjs_holder',
+                    placeholder: 'Press "/" for commands...',
+                    // Load the existing data here
+                    data: typeof initialData === 'string' ? JSON.parse(initialData) : initialData,
+                    tools: {
+                        header: { class: window.Header, inlineToolbar: true },
+                        list: { class: window.List, inlineToolbar: true },
+                        paragraph: { class: window.Paragraph, inlineToolbar: true, config: { preserveBlank: true } },
+                        checklist: { class: window.Checklist, inlineToolbar: true },
+                        quote: { class: window.Quote, inlineToolbar: true },
+                        delimiter: window.Delimiter,
+                        table: { class: window.Table, inlineToolbar: true },
+                        image: {
+                            class: window.ImageTool,
+                            config: {
+                                endpoints: { byFile: "{{ route('admin.updates.upload') }}" },
+                                additionalRequestHeaders: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+                            }
+                        }
+                    },
+                    onChange: () => this.saveData()
+                });
+            },
+
+            saveData() {
+                if (!this.editor) return;
+                this.editor.save().then(outputData => {
+                    this.$refs.hiddenBody.value = JSON.stringify(outputData);
+                });
+            }
+        };
+    }
 </script>
-@endsection
+@endpush

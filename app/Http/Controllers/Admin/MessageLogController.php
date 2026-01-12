@@ -111,7 +111,7 @@ class MessageLogController extends Controller
         }
 
 
-        $activityLogs = $query->paginate(10)->appends($request->query());
+        $activityLogs = $query->paginate(1000)->appends($request->query());
         return view('admin.messages.logs.activity_logs', compact('activityLogs'));
     }
 }

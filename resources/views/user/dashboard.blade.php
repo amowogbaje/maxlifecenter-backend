@@ -92,7 +92,7 @@
                         </div>
 
                         <p class="text-gray-500 text-lg leading-4">
-                            {{ Str::limit(strip_tags($update->body), 100) }}
+                            {{ $update->excerpt }}
                         </p>
                     </div>
 

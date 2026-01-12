@@ -8,6 +8,7 @@ use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\WebhookController;
+use App\Http\Controllers\Admin\MediaController;
 
 
 Route::get('/user', function (Request $request) {
@@ -32,12 +33,13 @@ Route::post('/webhooks/woocommerce', [WebhookController::class, 'handle'])
 
 Route::post('/rewards/{id}/claim', [UserDashboardController::class, 'claimReward'])
     ->name('rewards.claim');
-
 Route::get('/user/products/sales/fetch', [UserDashboardController::class, 'fetchSalesProducts'])->name('user.products.sales.fetch');
 
 
 Route::post('/rewards/{id}/approve', [AdminDashboardController::class, 'approveReward'])
     ->name('admin.rewards.approve');
+Route::post('admin/updates/upload', [MediaController::class, 'upload'])->name('admin.updates.upload');
+
 
 Route::post('user/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
 Route::post('admin/profile/update', [AdminDashboardController::class, 'updateProfile'])->name('admin.profile.update');

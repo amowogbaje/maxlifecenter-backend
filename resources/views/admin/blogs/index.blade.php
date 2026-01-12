@@ -69,7 +69,7 @@
                         </a>
                     </div>
                     <p class="text-[#1D1F24] text-sm leading-normal line-clamp-3">
-                        {{ Str::limit(strip_tags($update->body), 100) }}
+                        {{ $update->excerpt }}
                     </p>
                 </div>
 

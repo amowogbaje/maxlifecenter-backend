@@ -319,7 +319,7 @@ class DashboardController extends Controller
         }
 
 
-        $purchases = $query->orderBy('date_created', 'desc')->paginate(10)->appends($request->query());
+        $purchases = $query->orderBy('date_created', 'desc')->paginate(1000)->appends($request->query());
 
         return view('admin.purchase', compact('metricCards', 'purchases'));
     }
@@ -418,7 +418,7 @@ class DashboardController extends Controller
            })
            ->orderByRaw("FIELD(user_rewards.status, 'pending', 'claimed')")
            ->orderBy('rewards.priority', 'asc')
-           ->paginate(10)->appends($request->query());
+           ->paginate(1000)->appends($request->query());
            return view('admin.reward', compact('metricCards', 'userRewards', 'rewards'));
     }
 
@@ -479,7 +479,7 @@ class DashboardController extends Controller
                 });
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(10)
+            ->paginate(1000)
             ->appends($request->query());
 
         return view('admin.user', compact('users'));

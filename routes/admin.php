@@ -66,6 +66,7 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
     Route::prefix('updates')->name('updates.')->group(function () {
         Route::get('/', [BlogController::class, 'index'])->name('index')->middleware('can:view updates');
         Route::get('/create', [BlogController::class, 'create'])->name('create')->middleware('can:create updates');
+        Route::get('/create-trix', [BlogController::class, 'createTrix'])->name('create-trix')->middleware('can:create updates');
         Route::post('/store', [BlogController::class, 'store'])->name('store')->middleware('can:create updates');
         Route::get('/{update}', [BlogController::class, 'edit'])->name('edit')->middleware('can:create updates');
         Route::put('/{update}', [BlogController::class, 'update'])->name('update')->middleware('can:create updates');
