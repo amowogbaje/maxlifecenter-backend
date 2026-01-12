@@ -27,18 +27,27 @@
             @method('PUT')
 
             <div class="flex flex-col gap-[10px]">
-                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Image Banner</label>
-                <label class="flex h-[204px] justify-center items-center border border-[#D8E0F0] rounded-[14px] cursor-pointer hover:bg-[#F8FAFB] transition-colors relative overflow-hidden">
+                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">
+                    Image Banner
+                </label>
+
+                <label class="relative h-[300px] md:h-[400px] w-full rounded-[14px] overflow-hidden border border-[#D8E0F0] cursor-pointer hover:bg-[#F8FAFB] transition-colors">
                     <input type="file" accept="image/*" name="image" id="imageInput" class="hidden" onchange="previewImage(event)" />
-                    <div id="imagePreviewContainer" class="flex items-center justify-center w-full h-full">
-                        @if($update->image)
-                            <img id="imagePreview" src="{{ asset($update->image) }}" alt="Preview" class="max-h-full max-w-full object-contain rounded-[10px]" />
-                            <svg id="defaultIcon" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#0A1629" stroke-width="2" /><path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="#0A1629" stroke-width="2" /><path d="M21 15L16 10L5 21" stroke="#0A1629" stroke-width="2" /></svg>
-                        @else
-                            <svg id="defaultIcon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#0A1629" stroke-width="2" /><path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="#0A1629" stroke-width="2" /><path d="M21 15L16 10L5 21" stroke="#0A1629" stroke-width="2" /></svg>
-                            <img id="imagePreview" src="#" alt="Preview" class="max-h-full max-w-full object-contain rounded-[10px] hidden" />
-                        @endif
+
+                    <!-- Default / placeholder icon -->
+                    <div id="defaultIconContainer" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 text-gray-400 transition-opacity duration-300
+            {{ $update->image ? 'hidden' : '' }}">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" class="mb-2">
+                            <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2" />
+                            <path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="currentColor" stroke-width="2" />
+                            <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <p class="text-lg font-semibold">No image selected</p>
                     </div>
+
+                    <!-- Preview / existing image -->
+                    <img id="imagePreview" src="{{ $update->image ? asset($update->image) : '#' }}" alt="Preview" class="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105
+             {{ $update->image ? '' : 'hidden' }}" />
                 </label>
             </div>
 
@@ -47,9 +56,7 @@
                 <input type="text" name="title" value="{{ old('title', $update->title) }}" class="h-[54px] px-[13px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required />
             </div>
 
-            <div class="flex flex-col gap-[10px]" 
-                 x-data="editorJsWrapper({{ json_encode($update->body) }})" 
-                 x-init="initEditor()">
+            <div class="flex flex-col gap-[10px]" x-data="editorJsWrapper({{ json_encode($update->body) }})" x-init="initEditor()">
                 <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Update Details</label>
                 <div class="rounded-[14px] border border-[#D8E0F0] bg-white p-6 focus-within:border-[#3F8CFF] transition-colors">
                     <div id="editorjs_holder" class="prose max-w-none"></div>
@@ -71,7 +78,7 @@
     function previewImage(event) {
         const input = event.target;
         const preview = document.getElementById('imagePreview');
-        const defaultIcon = document.getElementById('defaultIcon');
+        const defaultIcon = document.getElementById('defaultIconContainer');
 
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -86,10 +93,10 @@
 
     function editorJsWrapper(initialData) {
         return {
-            editor: null,
-            retryCount: 0,
-            maxRetries: 30,
-            
+            editor: null
+            , retryCount: 0
+            , maxRetries: 30,
+
             initEditor() {
                 const requiredTools = ['EditorJS', 'Header', 'List', 'Paragraph', 'Quote', 'Table', 'Checklist', 'Delimiter', 'ImageTool'];
                 const allToolsReady = requiredTools.every(tool => typeof window[tool] !== 'undefined');
@@ -102,27 +109,52 @@
                 }
 
                 this.editor = new window.EditorJS({
-                    holder: 'editorjs_holder',
-                    placeholder: 'Press "/" for commands...',
+                    holder: 'editorjs_holder'
+                    , placeholder: 'Press "/" for commands...',
                     // Load the existing data here
-                    data: typeof initialData === 'string' ? JSON.parse(initialData) : initialData,
-                    tools: {
-                        header: { class: window.Header, inlineToolbar: true },
-                        list: { class: window.List, inlineToolbar: true },
-                        paragraph: { class: window.Paragraph, inlineToolbar: true, config: { preserveBlank: true } },
-                        checklist: { class: window.Checklist, inlineToolbar: true },
-                        quote: { class: window.Quote, inlineToolbar: true },
-                        delimiter: window.Delimiter,
-                        table: { class: window.Table, inlineToolbar: true },
-                        image: {
-                            class: window.ImageTool,
-                            config: {
-                                endpoints: { byFile: "{{ route('admin.updates.upload') }}" },
-                                additionalRequestHeaders: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+                    data: typeof initialData === 'string' ? JSON.parse(initialData) : initialData
+                    , tools: {
+                        header: {
+                            class: window.Header
+                            , inlineToolbar: true
+                        }
+                        , list: {
+                            class: window.List
+                            , inlineToolbar: true
+                        }
+                        , paragraph: {
+                            class: window.Paragraph
+                            , inlineToolbar: true
+                            , config: {
+                                preserveBlank: true
                             }
                         }
-                    },
-                    onChange: () => this.saveData()
+                        , checklist: {
+                            class: window.Checklist
+                            , inlineToolbar: true
+                        }
+                        , quote: {
+                            class: window.Quote
+                            , inlineToolbar: true
+                        }
+                        , delimiter: window.Delimiter
+                        , table: {
+                            class: window.Table
+                            , inlineToolbar: true
+                        }
+                        , image: {
+                            class: window.ImageTool
+                            , config: {
+                                endpoints: {
+                                    byFile: "{{ route('admin.updates.upload') }}"
+                                }
+                                , additionalRequestHeaders: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            }
+                        }
+                    }
+                    , onChange: () => this.saveData()
                 });
             },
 
@@ -134,5 +166,6 @@
             }
         };
     }
+
 </script>
 @endpush

@@ -53,13 +53,21 @@ class EditorJsParser
                     $html .= "</ul>";
                     break;
 
-                case 'code':
-                    $html .= "<pre class='bg-gray-100 p-4 rounded mb-4'>{$data['code']}</pre>";
+                case 'image':
+                    $url = $data['file']['url'] ?? '';
+                    $caption = $data['caption'] ?? '';
+                    if ($url) {
+                        $html .= "<div class='my-6 text-center'>";
+                        $html .= "<img src='{$url}' alt='{$caption}' class='mx-auto max-w-full rounded-md' />";
+                        if ($caption) {
+                            $html .= "<p class='text-sm text-gray-500 mt-2'>{$caption}</p>";
+                        }
+                        $html .= "</div>";
+                    }
                     break;
 
-                // Add more block types if needed
-
                 default:
+                    // ignore unsupported blocks
                     break;
             }
         }
