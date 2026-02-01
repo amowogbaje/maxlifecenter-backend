@@ -63,13 +63,12 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
         ->name('users.show')->middleware('can:view users');
 
 
-    Route::prefix('updates')->name('updates.')->group(function () {
-        Route::get('/', [BlogController::class, 'index'])->name('index')->middleware('can:view updates');
-        Route::get('/create', [BlogController::class, 'create'])->name('create')->middleware('can:create updates');
-        Route::get('/create-trix', [BlogController::class, 'createTrix'])->name('create-trix')->middleware('can:create updates');
-        Route::post('/store', [BlogController::class, 'store'])->name('store')->middleware('can:create updates');
-        Route::get('/{update}', [BlogController::class, 'edit'])->name('edit')->middleware('can:create updates');
-        Route::put('/{update}', [BlogController::class, 'update'])->name('update')->middleware('can:create updates');
+    Route::prefix('blogs')->name('blogs.')->group(function () {
+        Route::get('/', [BlogController::class, 'index'])->name('index')->middleware('can:view blogs');
+        Route::get('/create', [BlogController::class, 'create'])->name('create')->middleware('can:create blogs');
+        Route::post('/store', [BlogController::class, 'store'])->name('store')->middleware('can:create blogs');
+        Route::get('/{blog}', [BlogController::class, 'edit'])->name('edit')->middleware('can:create blogs');
+        Route::put('/{blog}', [BlogController::class, 'update'])->name('update')->middleware('can:create blogs');
     });
 
     Route::get('/profile', [DashboardController::class, 'profile'])
@@ -147,18 +146,18 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
                 ->name('show')->middleware('can:view messages');
         });
 
-        // 👥 Message contacts
-        Route::prefix('contacts')->name('contacts.')->group(function () {
-            Route::get('/', [MessagesContactController::class, 'contacts'])
-                ->name('index')->middleware('can:manage contacts');
+        // 👥 Message subscriptions
+        Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
+            Route::get('/', [MessagesContactController::class, 'subscriptions'])
+                ->name('index')->middleware('can:manage subscriptions');
             Route::get('/create', [MessagesContactController::class, 'create'])
-                ->name('create')->middleware('can:manage contacts');
+                ->name('create')->middleware('can:manage subscriptions');
             Route::post('/store', [MessagesContactController::class, 'store'])
-                ->name('store')->middleware('can:manage contacts');
-            Route::get('/{contactId}', [MessagesContactController::class, 'edit'])
-                ->name('edit')->middleware('can:manage contacts');
-            Route::put('/{contactId}/update', [MessagesContactController::class, 'update'])
-                ->name('update')->middleware('can:manage contacts');
+                ->name('store')->middleware('can:manage subscriptions');
+            Route::get('/{subscriptionId}', [MessagesContactController::class, 'edit'])
+                ->name('edit')->middleware('can:manage subscriptions');
+            Route::put('/{subscriptionId}/update', [MessagesContactController::class, 'update'])
+                ->name('update')->middleware('can:manage subscriptions');
         });
     });
 });
