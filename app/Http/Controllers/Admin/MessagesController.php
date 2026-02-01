@@ -26,7 +26,7 @@ class MessagesController extends Controller
     }
     public function index()
     {
-        $noOfContactList = MessageContact::count();
+        $noOfSubscription = MessageContact::count();
         $noOfMessageTemplates = Message::count();
         $messageLogCount = AuditLog::whereIn('model_type', [
             Message::class,
@@ -36,7 +36,7 @@ class MessagesController extends Controller
 
         $metricCards = [
             ['title' => $noOfMessageTemplates, 'subtitle' => 'Total Message Templates', 'bgColor' => 'bg-green-600', 'svgIcon' => '<i class="fi fi-tr-envelopes text-white"></i>', 'routeName' => 'admin.messages.templates.index'],
-            ['title' => $noOfContactList, 'subtitle' => 'Total Contact List',  'bgColor' => 'bg-green-600', 'svgIcon' => '<i class="fi fi-tr-address-book text-white"></i>', 'routeName' => 'admin.messages.contacts.index'],
+            ['title' => $noOfSubscription, 'subtitle' => 'Total Contact List',  'bgColor' => 'bg-green-600', 'svgIcon' => '<i class="fi fi-tr-address-book text-white"></i>', 'routeName' => 'admin.messages.contacts.index'],
             ['title' => $messageLogCount, 'subtitle' => 'Messages Logs',  'bgColor' => 'bg-green-600', 'svgIcon' => '<i class="fi fi-tr-newsletter-subscribe text-white"></i>', 'routeName' => 'admin.messages.logs.index'],
         ];
 
@@ -99,10 +99,10 @@ class MessagesController extends Controller
     {
 
         $rewardLevels = Reward::all();
-        $contactLists = MessageContact::select('id', 'title', 'user_ids')->orderBy('title')->get();
+        $subscriptions = MessageContact::select('id', 'title', 'contact_ids')->orderBy('title')->get();
 
 
-        return view('admin.messages.templates.preview', compact('message', 'contactLists', 'rewardLevels'));
+        return view('admin.messages.templates.preview', compact('message', 'subscriptions', 'rewardLevels'));
     }
 
     public function previewOld(Message $message, Request $request)
@@ -118,8 +118,8 @@ class MessagesController extends Controller
     public function send(Request $request, Message $message)
     {
         $validated = $request->validate([
-            'send_mode'       => 'required|in:contact_list,custom',
-            'contact_list_id' => 'nullable|exists:message_contacts,id',
+            'send_mode'       => 'required|in:subscription,custom',
+            'subscription_id' => 'nullable|exists:message_contacts,id',
             'recipient_type'  => 'nullable|in:all,reward_level,individual',
             'reward_level'    => 'nullable|exists:rewards,id',
             'start_date'      => 'nullable|date',
@@ -134,7 +134,7 @@ class MessagesController extends Controller
 
             // Execute the right handler and populate $users and $logDetails
             match ($validated['send_mode']) {
-                'contact_list' => $this->handleContactList($validated, $users, $logDetails, $message),
+                'subscription' => $this->handleSubscription($validated, $users, $logDetails, $message),
                 'custom' => $this->handleCustomMode($validated, $users, $logDetails, $message),
             };
 
@@ -168,14 +168,14 @@ class MessagesController extends Controller
         }
     }
 
-    private function handleContactList(array $validated, &$users, &$logDetails, Message $message): void
+    private function handleSubscription(array $validated, &$users, &$logDetails, Message $message): void
     {
-        if (empty($validated['contact_list_id'])) {
+        if (empty($validated['subscription_id'])) {
             throw new \Exception('Contact list not provided.');
         }
 
-        $contactList = MessageContact::findOrFail($validated['contact_list_id']);
-        $userIds = $contactList->user_ids ?? [];
+        $subscription = MessageContact::findOrFail($validated['subscription_id']);
+        $userIds = $subscription->contact_ids ?? [];
 
         if (empty($userIds)) {
             throw new \Exception('The selected contact list has no users.');
@@ -184,8 +184,8 @@ class MessagesController extends Controller
         $users = User::whereIn('id', $userIds)->get();
 
         $logDetails = [
-            'send_mode' => 'contact_list',
-            'contact_list' => $contactList->only(['id', 'title']),
+            'send_mode' => 'subscription',
+            'subscription' => $subscription->only(['id', 'title']),
             'recipients' => $users->pluck('email')->toArray(),
             'message_id' => $message->id,
             'message_subject' => $message->subject,

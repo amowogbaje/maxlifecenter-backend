@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('action');
             $table->string('model_type')->index();
             $table->unsignedBigInteger('model_id')->index();
-            $table->unsignedBigInteger('user_id')->nullable()->index();
+            $table->unsignedBigInteger('admin_id')->nullable()->index();
             $table->json('old_data')->nullable();
             $table->json('new_data')->nullable();
             $table->text('description')->nullable();

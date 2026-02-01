@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class MessageContact extends Model
 {
-    protected $fillable = ['title', 'description', 'user_ids'];
+    protected $fillable = ['title', 'description', 'contact_ids'];
 
     protected $casts = [
-        'user_ids' => 'array',
+        'contact_ids' => 'array',
     ];
 
     public function getUserCountAttribute()
     {
-        return count($this->user_ids ?? []);
+        return count($this->contact_ids ?? []);
     }
 }

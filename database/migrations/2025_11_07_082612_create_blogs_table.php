@@ -3,34 +3,33 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        // 1️⃣ Fix existing invalid / NULL bodies
-        DB::statement("
-            UPDATE updates
-            SET body = JSON_OBJECT(
-                'time', UNIX_TIMESTAMP(),
-                'blocks', JSON_ARRAY(),
-                'version', '2.28.2'
-            )
-            WHERE body IS NULL
-               OR JSON_VALID(body) = 0
-        ");
-
-        // 2️⃣ Change column type to JSON
-        Schema::table('updates', function (Blueprint $table) {
-            $table->json('body')->nullable(false)->change();
+        Schema::create('blogs', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('admin_id')->default(0)->index();
+            $table->string('title')->nullable()->index();
+            $table->string('slug')->nullable()->index();
+            $table->json('body')->nullable(false);
+            $table->string('image', 255)->nullable();
+            $table->enum('status', ['draft', 'published'])->default('draft')->index();
+            $table->timestamp('created_at')->nullable()->index();
+            $table->timestamp('updated_at')->nullable()->index();
+            $table->softDeletes()->index();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::table('updates', function (Blueprint $table) {
-            $table->text('body')->change();
-        });
+        Schema::dropIfExists('blogs');
     }
 };

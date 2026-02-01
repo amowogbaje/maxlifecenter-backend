@@ -17,11 +17,11 @@ class AdminSeeder extends Seeder
 
         // Example fixed user
         Admin::create([
-            'first_name' => 'Gid',
-            'last_name' => 'Watcher',
-            'email' => 'hello@watchlocker.biz',
+            'first_name' => 'Tope',
+            'last_name' => 'Olajubu',
+            'email' => 'hello@maxlifecenter.org',
             'phone' => '08012345678',
-            'password'=> Hash::make('4545'),
+            'password'=> Hash::make('password'),
             'gender' => 'male',
         ]);
     }

@@ -11,11 +11,11 @@ class PermissionSeeder extends Seeder
     {
         $permissions = [
             'view roles', 'create roles', 'edit roles',
-            'view rewards', 'view analytics',
-            'view updates', 'create updates', 'edit updates', 'view activity logs',
-            'view admins', 'create admins', 'view purchases',
+            'view contacts', 'manage contacts',
+            'view blogs', 'create blogs', 'edit blogs', 'view activity logs',
+            'view admins', 'create admins', 'view subscriptions',
             'view dashboard', 'view users', 'view messages', 'create messages', 'send messages',
-            'view logs', 'manage uploads', 'manage contacts', 'manage settings'
+            'view logs', 'manage subscription', 'manage settings'
         ];
 
         foreach ($permissions as $perm) {

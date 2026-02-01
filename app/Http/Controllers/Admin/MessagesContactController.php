@@ -100,11 +100,11 @@ class MessagesContactController extends Controller
         $contactList = MessageContact::create([
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'user_ids' => [],
+            'contact_ids' => [],
         ]);
 
         $this->auditLogService->log(
-            'create_contact_list',
+            'create_subscription',
             $contactList,
             ['old' => [], 'new' => $contactList],
             'Contact list created'
@@ -119,11 +119,11 @@ class MessagesContactController extends Controller
         $contactList = MessageContact::findOrFail($id);
 
         // Get previously saved user IDs
-        $savedUserIds = $contactList->user_ids ?? [];
+        $savedUserIds = $contactList->contact_ids ?? [];
         
         // Merge with any temporary selections from request (for validation errors)
         $selectedUserIds = collect($savedUserIds)
-            ->merge($request->input('user_ids', []))
+            ->merge($request->input('contact_ids', []))
             ->unique()
             ->values()
             ->toArray();
@@ -139,8 +139,8 @@ class MessagesContactController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
-            'user_ids' => 'nullable|array',
-            'user_ids.*' => 'integer|distinct|exists:users,id',
+            'contact_ids' => 'nullable|array',
+            'contact_ids.*' => 'integer|distinct|exists:users,id',
         ]);
 
         DB::beginTransaction();
@@ -152,13 +152,13 @@ class MessagesContactController extends Controller
             $contactList->update([
                 'title' => $validatedData['title'],
                 'description' => $validatedData['description'],
-                'user_ids' => array_unique($validatedData['user_ids'] ?? []),
+                'contact_ids' => array_unique($validatedData['contact_ids'] ?? []),
             ]);
 
             $contactList->refresh();
 
             $this->auditLogService->log(
-                'update_contact_list',
+                'update_subscription',
                 $contactList,
                 ['old' => $oldData, 'new' => $contactList->toArray()],
                 Auth::guard('admin')->id(),
