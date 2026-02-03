@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BasicController;
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -38,7 +39,10 @@ Route::get('/user/products/sales/fetch', [UserDashboardController::class, 'fetch
 
 Route::post('/rewards/{id}/approve', [AdminDashboardController::class, 'approveReward'])
     ->name('admin.rewards.approve');
+
 Route::post('admin/blogs/upload', [MediaController::class, 'upload'])->name('admin.blogs.upload');
+Route::get('/admin/categories/search', [CategoryController::class, 'search'])
+    ->name('admin.categories.search');
 
 
 Route::post('user/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');

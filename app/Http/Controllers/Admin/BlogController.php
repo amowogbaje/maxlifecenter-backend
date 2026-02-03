@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\AuditLogService;
+use App\Models\Category;
+use App\Helpers\Slugger;
 
 
 class BlogController extends Controller
@@ -79,11 +81,35 @@ class BlogController extends Controller
             $blog = Blog::create([
                 'admin_id' => auth('admin')->id(),
                 'title'    => $validated['title'],
-                'slug'     => Str::slug($validated['title']),
+                'slug'     => Slugger::slug($validated['title'], Blog::class),
                 'body'     => json_decode($validated['body'], true),
                 'image'    => $imagePath,
                 'status'   => $validated['status'],
             ]);
+
+            if ($request->filled('categories')) {
+
+                $categoryIds = [];
+
+                foreach ($request->categories as $category) {
+                    // Existing category
+
+                    if (is_numeric($category)) {
+                        $categoryIds[] = (int) $category;
+                        continue;
+                    }
+
+                    // New category
+                    $newCategory = Category::firstOrCreate([
+                        'title' => trim($category),
+                        'slug'  => Slugger::slug(trim($category), Category::class),
+                    ]);
+
+                    $categoryIds[] = $newCategory->id;
+                }
+
+                $blog->categories()->sync($categoryIds);
+            }
 
             $this->auditLog->log(
                 'create_blog',
@@ -131,7 +157,7 @@ class BlogController extends Controller
         try {
             $data = [
                 'title'  => $validated['title'],
-                'slug'   => Str::slug($validated['title']),
+                'slug'   => Slugger::slug($validated['title'], Blog::class),
                 'body'   => json_decode($validated['body'], true),
                 'status' => $validated['status'],
             ];
@@ -149,6 +175,33 @@ class BlogController extends Controller
 
 
             $blogd = $blog->update($data);
+            if ($request->filled('categories')) {
+
+                $categoryIds = [];
+
+                foreach ($request->categories as $category) {
+
+                    // Existing category ID
+                    if (is_numeric($category)) {
+                        $categoryIds[] = (int) $category;
+                        continue;
+                    }
+
+                    // New category string
+                    $name = trim($category);
+
+                    $newCategory = Category::firstOrCreate(
+                        ['title' => $name],
+                        ['slug' => Slugger::slug($name, Category::class)]
+                    );
+
+                    $categoryIds[] = $newCategory->id;
+                }
+
+                // Sync categories for the blog
+                $blog->categories()->sync($categoryIds);
+            }
+
 
             $this->auditLog->log(
                 'update_blog',

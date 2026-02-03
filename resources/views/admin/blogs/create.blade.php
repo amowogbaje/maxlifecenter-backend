@@ -10,6 +10,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@1.6.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@1.4.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.9.0"></script>
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
 @endpush
 @section('content')
 <div class="min-h-screen flex items-center justify-center p-4 md:p-8">
@@ -57,6 +60,16 @@
                 <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Title</label>
                 <input type="text" name="title" placeholder="Update Blog Post Title" class="h-[54px] px-[13px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required />
             </div>
+            <!-- Categories -->
+            <div class="flex flex-col gap-[10px]">
+                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">
+                    Categories
+                </label>
+
+                <select id="categories" name="categories[]" multiple class="rounded-[14px] border border-[#D8E0F0] p-3">
+                </select>
+            </div>
+
 
             <!-- Details -->
             <div class="flex flex-col gap-[10px]" x-data="editorJsWrapper()" x-init="initEditor()">
@@ -202,6 +215,40 @@
             }
         , };
     }
+
+    new TomSelect('#categories', {
+        minChars: 3
+        , valueField: 'value'
+        , labelField: 'text'
+        , searchField: 'text',
+
+        create: function(input) {
+            const normalized = input.trim().toLowerCase();
+
+            // prevent duplicate creation in UI
+            const exists = Object.values(this.options).some(
+                option => option.text.toLowerCase() === normalized
+            );
+
+            if (exists) {
+                return false;
+            }
+
+            return {
+                value: normalized
+                , text: normalized.replace(/\b\w/g, l => l.toUpperCase())
+            };
+        },
+
+        load: function(query, callback) {
+            if (query.length < 3) return callback();
+
+            fetch(`{{ route('admin.categories.search') }}?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(json => callback(json))
+                .catch(() => callback());
+        }
+    });
 
 </script>
 @endpush

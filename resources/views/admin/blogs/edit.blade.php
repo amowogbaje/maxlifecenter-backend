@@ -10,6 +10,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@1.6.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@1.4.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.9.0"></script>
+
+
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 @endpush
 
 @section('content')
@@ -36,7 +40,7 @@
 
                     <!-- Default / placeholder icon -->
                     <div id="defaultIconContainer" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 text-gray-400 transition-opacity duration-300
-            {{ $blog->image ? 'hidden' : '' }}">
+                        {{ $blog->image ? 'hidden' : '' }}">
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" class="mb-2">
                             <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2" />
                             <path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="currentColor" stroke-width="2" />
@@ -55,6 +59,19 @@
                 <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Title</label>
                 <input type="text" name="title" value="{{ old('title', $blog->title) }}" class="h-[54px] px-[13px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required />
             </div>
+
+            <div class="flex flex-col gap-[10px]">
+                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">
+                    Categories
+                </label>
+
+                <select id="categories" name="categories[]" multiple class="rounded-[14px] border border-[#D8E0F0] p-3">
+                    @foreach($blog->categories as $category)
+                        <option value="{{ $category->id }}" selected>{{ $category->title }}</option>
+                    @endforeach
+                </select>
+            </div>
+
 
             <div class="flex flex-col gap-[10px]" x-data="editorJsWrapper({{ json_encode($blog->body) }})" x-init="initEditor()">
                 <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Blog Content</label>
@@ -166,6 +183,40 @@
             }
         };
     }
+
+    new TomSelect('#categories', {
+        minChars: 3
+        , valueField: 'value'
+        , labelField: 'text'
+        , searchField: 'text',
+
+        create: function(input) {
+            const normalized = input.trim().toLowerCase();
+
+            // prevent duplicate creation in UI
+            const exists = Object.values(this.options).some(
+                option => option.text.toLowerCase() === normalized
+            );
+
+            if (exists) {
+                return false;
+            }
+
+            return {
+                value: normalized
+                , text: normalized.replace(/\b\w/g, l => l.toUpperCase())
+            };
+        },
+
+        load: function(query, callback) {
+            if (query.length < 3) return callback();
+
+            fetch(`{{ route('admin.categories.search') }}?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(json => callback(json))
+                .catch(() => callback());
+        }
+    });
 
 </script>
 @endpush
