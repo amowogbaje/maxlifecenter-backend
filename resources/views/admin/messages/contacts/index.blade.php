@@ -3,16 +3,16 @@
 @section('content')
 <div class="max-w-6xl mx-auto py-8">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Contact List</h1>
-        <a href="{{ route('admin.messages.contacts.create') }}" 
+        <h1 class="text-2xl font-bold text-gray-800">Subscription List</h1>
+        <a href="{{ route('admin.messages.subscriptions.create') }}" 
            class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700">
-            + New Contact List
+            + New Subscription List
         </a>
     </div>
 
     <div class="space-y-4">
         <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-            <h2 class="text-xl lg:text-2xl font-bold text-foreground">Contact List</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-foreground">Subscription List</h2>
             <div class="flex items-center gap-4 w-full lg:w-auto">
                 <div class="relative flex-1 lg:w-[412px]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-dark">
@@ -64,7 +64,7 @@
         </div>
 
         <div class="space-y-3">
-            @foreach($contacts as $contact)
+            @foreach($subscriptions as $subscription)
             <div class="bg-white rounded-[24px] shadow-sm p-4 lg:p-5 overflow-hidden">
                 <div class="flex items-center gap-4 lg:gap-6 min-w-0">
                     <div class="w-[50px] h-[50px] bg-gray-300 rounded-full border-2 border-white relative flex-shrink-0 flex items-center justify-center">
@@ -80,19 +80,19 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light truncate">Title</span>
-                                <span class="text-base font-bold text-text-dark truncate" title="{{ $contact->title }}">{{ $contact->title }}</span>
+                                <span class="text-base font-bold text-text-dark truncate" title="{{ $subscription->title }}">{{ $subscription->title }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light truncate">Description</span>
-                                <span class="text-base font-bold text-text-dark truncate" title="{{ $contact->description }}"><img src="{{ asset('images/icons/diamond.svg') }}" alt="Rewards" class="inline-block w-4 h-4 mr-1">{{ $contact->description }}</span>
+                                <span class="text-base font-bold text-text-dark truncate" title="{{ $subscription->description }}"><img src="{{ asset('images/icons/diamond.svg') }}" alt="Rewards" class="inline-block w-4 h-4 mr-1">{{ $subscription->description }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light">{{$contact->user_count}}</span>
+                                <span class="text-sm text-text-light">{{$subscription->user_count}}</span>
                                 <span class="text-base text-text-dark truncate" title="Users">Users</span>
                             </div>
                         </div>
                     </div>
-                    <a href="{{ route('admin.messages.contacts.edit', ['contactId' => $contact->id]) }}" class="ml-3 hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
+                    <a href="{{ route('admin.messages.subscriptions.edit', ['subscriptionId' => $subscription->id]) }}" class="ml-3 hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -106,21 +106,21 @@
         <div class="flex justify-center lg:justify-end mt-4">
             <div class="bg-white rounded-[14px] shadow-sm px-5 py-3 flex items-center gap-4">
                 <span class="text-base text-text-dark">
-                    {{ $contacts->firstItem() }}-{{ $contacts->lastItem() }} of {{ $contacts->total() }}
+                    {{ $subscriptions->firstItem() }}-{{ $subscriptions->lastItem() }} of {{ $subscriptions->total() }}
                 </span>
 
-                @if($contacts->onFirstPage())
+                @if($subscriptions->onFirstPage())
                 <svg class="w-6 h-6 text-gray-300">
                     <path d="m15 18-6-6 6-6" /></svg>
                 @else
-                <a href="{{ $contacts->previousPageUrl() }}">
+                <a href="{{ $subscriptions->previousPageUrl() }}">
                     <svg class="w-6 h-6 text-blue-500">
                         <path d="m15 18-6-6 6-6" /></svg>
                 </a>
                 @endif
 
-                @if($contacts->hasMorePages())
-                <a href="{{ $contacts->nextPageUrl() }}">
+                @if($subscriptions->hasMorePages())
+                <a href="{{ $subscriptions->nextPageUrl() }}">
                     <svg class="w-6 h-6 text-blue-500">
                         <path d="m9 18 6-6-6-6" /></svg>
                 </a>

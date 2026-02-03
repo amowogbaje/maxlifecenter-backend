@@ -36,18 +36,18 @@ class BlogController extends Controller
         }
 
         // Paginate and transform images
-        $updates = $query->paginate(9)->withQueryString();
-        $updates->getCollection()->transform(function ($update) {
-            $update->image = $update->image 
-                ? asset($update->image) 
+        $blogs = $query->paginate(9)->withQueryString();
+        $blogs->getCollection()->transform(function ($blog) {
+            $blog->image = $blog->image 
+                ? asset($blog->image) 
                 :null;
                 // : asset('images/default-thumbnail.jpg');
-            return $update;
+            return $blog;
         });
 
         return view('admin.blogs.index', [
             'page_title' => 'Blog Posts',
-            'updates' => $updates,
+            'blogs' => $blogs,
         ]);
     }
 
@@ -55,29 +55,12 @@ class BlogController extends Controller
     public function create()
     {
         $data = [
-            'page_title' => 'Create an Update',
+            'page_title' => 'Create an Blog',
         ];
 
         return view('admin.blogs.create', $data);
     }
 
-    public function createTipTap()
-    {
-        $data = [
-            'page_title' => 'Create an Update',
-        ];
-
-        return view('admin.blogs.create-tip-tap', $data);
-    }
-
-    public function createTrix()
-    {
-        $data = [
-            'page_title' => 'Create an Update',
-        ];
-
-        return view('admin.blogs.create-trix', $data);
-    }
 
     public function store(Request $request)
     {
@@ -124,19 +107,19 @@ class BlogController extends Controller
 
 
 
-    public function edit(Blog $update)
+    public function edit(Blog $blog)
     {
         $data = [
             'page_title' => 'Edit Blog Post',
-            'update' => $update,
+            'blog' => $blog,
         ];
 
         
 
-        return view('admin.blogs.edit', compact('update'));
+        return view('admin.blogs.edit', compact('blog'));
     }
 
-    public function update(Request $request, Blog $update)
+    public function update(Request $request, Blog $blog)
     {
         $validated = $request->validate([
             'title'  => ['required', 'string', 'max:191'],
@@ -154,32 +137,32 @@ class BlogController extends Controller
             ];
 
             if ($request->hasFile('image')) {
-                if ($update->image && file_exists(public_path($update->image))) {
-                    @unlink(public_path($update->image));
+                if ($blog->image && file_exists(public_path($blog->image))) {
+                    @unlink(public_path($blog->image));
                 }
 
                 $data['image'] = $this->uploadAFile($request->file('image'), 'thumbnail');
             }
 
 
-            $oldData = $update->toArray();
+            $oldData = $blog->toArray();
 
 
-            $updated = $update->update($data);
+            $blogd = $blog->update($data);
 
             $this->auditLog->log(
                 'update_blog',
-                $update,
+                $blog,
                 [
                     'old' => $oldData,
-                    'new' => $update->fresh()->toArray(),
+                    'new' => $blog->fresh()->toArray(),
                 ],
-                'Updated blog post: ' . $update->title
+                'Updated blog post: ' . $blog->title
             );
 
-            if (! $updated) {
+            if (! $blogd) {
                 \Log::warning('Blog update failed to persist', [
-                    'blog_id' => $update->id,
+                    'blog_id' => $blog->id,
                     'admin_id' => auth()->id(),
                 ]);
 
@@ -189,7 +172,7 @@ class BlogController extends Controller
             return back()->with('success', 'Blog post updated successfully.');
         } catch (\Throwable $e) {
             \Log::error('Blog update failed', [
-                'blog_id' => $update->id ?? null,
+                'blog_id' => $blog->id ?? null,
                 'admin_id' => auth()->id(),
                 'request'  => $request->except(['image']),
                 'error'    => $e->getMessage(),

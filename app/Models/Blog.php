@@ -71,4 +71,9 @@ class Blog extends Model
         return EditorJsParser::parse($this->body ?? []);
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
 }

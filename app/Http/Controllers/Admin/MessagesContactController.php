@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Message;
 use App\Models\MessageContact;
-use App\Models\User;
-use App\Models\UserReward;
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Exception;
@@ -49,17 +48,16 @@ class MessagesContactController extends Controller
         return view('admin.messages.index', compact('metricCards'));
     }
 
-    public function contacts()
+    public function subscriptions()
     {
-        $contacts = MessageContact::paginate(10);
+        $subscriptions = MessageContact::paginate(10);
 
-        return view('admin.messages.contacts.index', compact('contacts'));
+        return view('admin.messages.contacts.index', compact('subscriptions'));
     }
 
     public function create(Request $request)
     {
-        $query = User::query();
-        $query->where('is_admin', false);
+        $query = Contact::query();
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -75,17 +73,14 @@ class MessagesContactController extends Controller
         }
 
         if ($request->filled(['start_date', 'end_date'])) {
-            $query->whereHas('userRewards', function ($q) use ($request) {
-                $q->whereBetween('achieved_at', [
-                    $request->input('start_date'),
-                    $request->input('end_date'),
-                ]);
-            });
+            $query->whereBetween('achieved_at', [
+                $request->input('start_date'),
+                $request->input('end_date'),
+            ]);
         }
 
 
         $users = $query->paginate(10);
-        $rewards = Reward::all();
         return view('admin.messages.contacts.create');
     }
 
@@ -110,16 +105,16 @@ class MessagesContactController extends Controller
             'Contact list created'
         );
 
-        return redirect()->route('admin.messages.contacts.edit', $contactList->id)
-            ->with('success', 'Contact list created successfully! Add Users here');
+        return redirect()->route('admin.messages.subscriptions.edit', $contactList->id)
+            ->with('success', 'Subscription list created successfully! Add Users here');
     }
 
     public function edit(Request $request, $id)
     {
-        $contactList = MessageContact::findOrFail($id);
+        $subscription = MessageContact::findOrFail($id);
 
         // Get previously saved user IDs
-        $savedUserIds = $contactList->contact_ids ?? [];
+        $savedUserIds = $subscription->contact_ids ?? [];
         
         // Merge with any temporary selections from request (for validation errors)
         $selectedUserIds = collect($savedUserIds)
@@ -128,9 +123,9 @@ class MessagesContactController extends Controller
             ->values()
             ->toArray();
         
-        $rewards = Reward::all();
+        
 
-        return view('admin.messages.contacts.edit', compact('rewards', 'contactList', 'selectedUserIds'));
+        return view('admin.messages.contacts.edit', compact('subscription', 'selectedUserIds'));
     }
 
     public function update(Request $request, $id)
@@ -162,17 +157,17 @@ class MessagesContactController extends Controller
                 $contactList,
                 ['old' => $oldData, 'new' => $contactList->toArray()],
                 Auth::guard('admin')->id(),
-                'Contact list updated'
+                'Subscription list updated'
             );
 
             DB::commit();
 
             return redirect()
-                ->route('admin.messages.contacts.index')
-                ->with('success', 'Contact list updated successfully.');
+                ->route('admin.messages.subscriptions.index')
+                ->with('success', 'Subscription list updated successfully.');
         } catch (ModelNotFoundException $e) {
             DB::rollBack();
-            Log::error('Contact list not found', [
+            Log::error('Subscription list not found', [
                 'id' => $id,
                 'admin_id' => Auth::guard('admin')->id(),
                 'error' => $e->getMessage(),
@@ -180,11 +175,11 @@ class MessagesContactController extends Controller
             ]);
 
             return redirect()
-                ->route('admin.messages.contacts.index')
-                ->with('error', 'Contact list not found.');
+                ->route('admin.messages.subscriptions.index')
+                ->with('error', 'Subscription list not found.');
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update contact list', [
+            Log::error('Failed to update subscription list', [
                 'id' => $id,
                 'admin_id' => Auth::guard('admin')->id(),
                 'error' => $e->getMessage(),
@@ -194,156 +189,105 @@ class MessagesContactController extends Controller
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Failed to update contact list. Please try again.');
+                ->with('error', 'Failed to update subscription list. Please try again.');
         }
     }
 
     public function fetchUsers(Request $request)
     {
         $offset = (int) $request->get('offset', 0);
-        $limit = (int) $request->get('limit', 100);
+        $limit  = min((int) $request->get('limit', 100), 100);
 
-        $query = UserReward::query()
-            ->with(['user', 'reward']); // eager load both sides
+        $query = Contact::query();
 
-        if ($request->filled('reward_id')) {
-            $query->where('reward_id', (int) $request->input('reward_id'));
-        }
-
+        // Date filter
         if ($request->filled(['start_date', 'end_date'])) {
-            $query->whereBetween('achieved_at', [
-                $request->input('start_date'),
-                $request->input('end_date'),
+            $query->whereBetween('created_at', [
+                Carbon::parse($request->start_date)->startOfDay(),
+                Carbon::parse($request->end_date)->endOfDay(),
             ]);
         }
 
+        // Search filter
         if ($search = $request->input('search')) {
-            $query->whereHas('user', function ($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
                 ->orWhere('last_name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
-        $records = $query->orderBy('id')
+        $records = $query
+            ->orderBy('id')
             ->offset($offset)
             ->limit($limit)
             ->get()
-            ->map(function ($ur) {
-                return [
-                    'user_id' => $ur->user_id,
-                    'full_name' => $ur->user->full_name,
-                    'email' => $ur->user->email,
-                    'tier_level' => $ur->reward->title,
-                    'achieved_at' => $ur->achieved_at,
-                    'status' => $ur->status,
-                ];
-            });
+            ->map(fn (Contact $contact) => [
+                'user_id'     => $contact->id,
+                'full_name'   => $contact->full_name, // accessor or computed
+                'email'       => $contact->email,
+                'created_at'  => $contact->created_at,
+            ]);
 
         return response()->json($records);
     }
 
+
     public function fetchAll(Request $request)
-{
-    $rewardIdSelected = $request->filled('reward_id');
-    $dateFilterSelected = $request->filled(['start_date', 'end_date']);
-    $search = $request->input('search');
-    $rewardId = $rewardIdSelected ? (int) $request->input('reward_id') : null;
+    {
+        $dateFilterSelected = $request->filled(['start_date', 'end_date']);
+        $search             = $request->input('search');
 
-    /**
-     * STEP 1 — base query (NO reward_id filter yet)
-     */
-    $query = UserReward::query()->with(['user', 'reward']);
+        /**
+         * STEP 1 — Base User query
+         */
+        $query = Contact::query();
 
-    // SEARCH
-    if ($search) {
-        $query->whereHas('user', function ($q) use ($search) {
-            $q->where('first_name', 'like', "%{$search}%")
-              ->orWhere('last_name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%");
-        });
+        /**
+         * SEARCH
+         */
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        /**
+         * DATE FILTER
+         * Applied ONLY when explicitly requested
+         */
+        if ($dateFilterSelected) {
+            $query->whereBetween('created_at', [
+                $request->input('start_date'),
+                $request->input('end_date'),
+            ]);
+        }
+
+        /**
+         * STEP 2 — Fetch users
+         */
+        $records = $query
+            ->orderBy('first_name')
+            ->get()
+            ->map(fn (Contact $contact) => [
+                'user_id'     => $contact->id,
+                'full_name'   => $contact->full_name,
+                'email'       => $contact->email,
+                'created_at'  => $contact->created_at,
+            ]);
+
+        return response()->json($records);
     }
 
-    // DATE FILTER
-    if ($dateFilterSelected) {
-        $query->whereBetween('achieved_at', [
-            $request->input('start_date'),
-            $request->input('end_date'),
-        ]);
-    }
-
-    // STEP 2 — fetch all (we need all to compute highest rewards)
-    $records = $query->get();
-    $countRecords = $query->count();
-
-
-    /**
-     * RULE 1:
-     * If ONLY reward_id is selected (NO dates):
-     *     Show ONLY users whose HIGHEST reward == reward_id
-     */
-    if ($rewardIdSelected && !$dateFilterSelected) {
-
-        // Group all rewards by user
-        $records = $records->groupBy('user_id')
-            ->map(function ($userRewards) use ($rewardId) {
-
-                // Highest reward for this user
-                $highest = $userRewards->sortByDesc('reward_id')->first();
-
-                // include only if highest reward matches the requested reward
-                return $highest->reward_id == $rewardId ? $highest : null;
-
-            })
-            ->filter()   // remove nulls
-            ->values();
-    }
-
-    /**
-     * RULE 2:
-     * If reward_id + date filter:
-     *     Apply reward filter normally
-     */
-    if ($rewardIdSelected && $dateFilterSelected) {
-        $records = $records->filter(function ($ur) use ($rewardId) {
-            return $ur->reward_id == $rewardId;
-        })->values();
-    }
-
-    /**
-     * RULE 3:
-     * If no reward_id → normal behavior
-     * (records untouched)
-     */
-
-    // Format final output
-    $records = $records
-        ->sortBy(fn($ur) => $ur->user->first_name)
-        ->map(function ($ur) {
-            return [
-                'user_id'     => $ur->user_id,
-                'full_name'   => $ur->user->full_name,
-                'email'       => $ur->user->email,
-                'tier_level'  => $ur->reward->title,
-                'achieved_at' => $ur->achieved_at,
-                'status'      => $ur->status,
-            ];
-        })
-        ->values();
-
-    // return response()->json($countRecords);
-    return response()->json($records);
-
-}
 
 
 
 
     public function fetchAllAlt(Request $request)
     {
-        return UserReward::query()
-            ->with(['user', 'reward'])
-            ->when($request->reward_id, fn($q) => $q->where('reward_id', $request->reward_id))
+        return Contact::query()
             ->get()
             ->map(fn($r) => $r->user);
     }
@@ -356,55 +300,43 @@ class MessagesContactController extends Controller
     public function meta(Request $request)
     {
         $search   = $request->input('search');
-        $rewardId = $request->input('reward_id');
-        $dates    = $request->filled(['start_date', 'end_date']);
-        $onlyRewardFilter = $request->filled('reward_id') && !$dates;
 
-        // Start from UserReward model for accuracy
-        $query = UserReward::query()->with('user');
+        $dates = $request->filled(['start_date', 'end_date']);
 
-        // SEARCH on user
+        /**
+         * STEP 1 — Base User query
+         */
+        $query = Contact::query();
+
+        /**
+         * SEARCH
+         */
         if ($search) {
-            $query->whereHas('user', function ($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
                 ->orWhere('last_name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
-        // DATE FILTER
+        /**
+         * DATE FILTER
+         */
         if ($dates) {
-            $query->whereBetween('achieved_at', [
+            $query->whereBetween('created_at', [
                 $request->input('start_date'),
                 $request->input('end_date'),
             ]);
-
-            if ($rewardId) {
-                $query->where('reward_id', (int)$rewardId);
-            }
         }
 
-        // ONLY reward_id → highest reward logic
-        if ($onlyRewardFilter) {
-            $query->whereIn('user_id', function ($sub) use ($rewardId) {
-                $sub->from('user_rewards')
-                    ->select('user_id')
-                    ->groupBy('user_id')
-                    ->havingRaw('MAX(reward_id) = ?', [$rewardId]);
-            });
-        }
+        
 
-        // If only reward_id + no dates → still ensure reward filtering
-        if ($rewardId && !$dates) {
-            // no direct filter here because highest-reward logic handles it
-        }
+        /**
+         * META CALCULATIONS
+         */
+        $total = (clone $query)->count();
 
-        // Count unique users
-        $total = $query->distinct('user_id')->count('user_id');
-
-        // last_updated from users table
-        $lastUpdated = User::whereIn('id', $query->pluck('user_id'))
-            ->max('updated_at');
+        $lastUpdated = (clone $query)->max('updated_at');
 
         return response()->json([
             'total'        => $total,
@@ -413,8 +345,6 @@ class MessagesContactController extends Controller
                 : null,
         ]);
     }
-
-
 
 
 

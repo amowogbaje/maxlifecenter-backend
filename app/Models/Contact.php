@@ -1,17 +1,12 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class Contact extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -19,28 +14,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'id',
-        'woo_id',
         'first_name',
         'last_name',
         'email',
-        'phone',
-        'gender',
-        'bonus_point',
-        'password',
-        'company',
-        'address_1',
-        'address_2',
-        'city',
-        'state',
-        'postcode',
-        'country',
-        'is_admin',
-        'current_reward_id',
-        'bio',
-        'location',
-        'birthday',
-        'purchases',
-        'total_spent',
+        'email_verified_at'
     ];
 
 

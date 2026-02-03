@@ -33,35 +33,11 @@
                 <select name="recipient_type" id="recipient_type" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3" required>
                     <option value="">-- Select Recipient Type --</option>
                     <option value="all">All Users</option>
-                    <option value="reward_level">Based on Reward Level</option>
                     <option value="individual">Individual Users</option>
                 </select>
             </div>
 
-            {{-- Reward Level Section --}}
-            <div id="rewardLevelSection" class="hidden space-y-4">
-                <div>
-                    <label for="reward_level" class="block text-sm font-medium text-gray-700 mb-1">Select Reward
-                        Level</label>
-                    <select name="reward_level" id="reward_level" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3">
-                        <option value="">-- Select Reward Level --</option>
-                        @foreach($rewardLevels as $level)
-                        <option value="{{ $level->id }}">{{ $level->title }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                        <input type="text" name="start_date" id="start_date" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="YYYY-MM-DD" autocomplete="off">
-                    </div>
-                    <div>
-                        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                        <input type="text" name="end_date" id="end_date" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="YYYY-MM-DD" autocomplete="off">
-                    </div>
-                </div>
-            </div>
+            
 
             {{-- Individual Users Section --}}
             <div id="individualUserSection" class="hidden space-y-4">
@@ -112,14 +88,11 @@
 
 <script>
     $(function() {
-        const rewardLevelSection = $('#rewardLevelSection');
         const individualUserSection = $('#individualUserSection');
 
         $('#recipient_type').on('change', function() {
-            rewardLevelSection.addClass('hidden');
             individualUserSection.addClass('hidden');
 
-            if (this.value === 'reward_level') rewardLevelSection.removeClass('hidden');
             if (this.value === 'individual') individualUserSection.removeClass('hidden');
         });
 

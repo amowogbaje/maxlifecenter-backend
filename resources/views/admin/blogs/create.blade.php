@@ -17,15 +17,15 @@
         <!-- Header -->
         <div class="flex justify-between items-center">
             <h1 class="text-[22px] font-bold text-[#0A1629] font-nunito">
-                Create New Update
+                Create New Blog Post
             </h1>
-            <a href="{{ route('admin.updates.index') }}" class="flex items-center gap-3 h-12 px-4 rounded-[14px] bg-blue-500 text-white shadow-[0_6px_12px_0_rgba(63,140,255,0.26)] hover:bg-blue-600 transition-colors">
-                <span class="text-base font-bold">See All Updates</span>
+            <a href="{{ route('admin.blogs.index') }}" class="flex items-center gap-3 h-12 px-4 rounded-[14px] bg-blue-500 text-white shadow-[0_6px_12px_0_rgba(63,140,255,0.26)] hover:bg-blue-600 transition-colors">
+                <span class="text-base font-bold">See All Blog Posts</span>
             </a>
         </div>
 
         <!-- Form -->
-        <form action="{{ route('admin.updates.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-12">
+        <form action="{{ route('admin.blogs.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-12">
             @csrf
 
             <!-- Image Banner -->
@@ -55,12 +55,12 @@
             <!-- Title -->
             <div class="flex flex-col gap-[10px]">
                 <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Title</label>
-                <input type="text" name="title" placeholder="Update Title" class="h-[54px] px-[13px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required />
+                <input type="text" name="title" placeholder="Update Blog Post Title" class="h-[54px] px-[13px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required />
             </div>
 
             <!-- Details -->
             <div class="flex flex-col gap-[10px]" x-data="editorJsWrapper()" x-init="initEditor()">
-                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Update Details</label>
+                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Content</label>
 
                 <div class="rounded-[14px] border border-[#D8E0F0] bg-white p-6 focus-within:border-[#3F8CFF] transition-colors">
                     <div id="editorjs_holder" class="prose max-w-none"></div>
@@ -173,7 +173,7 @@
                             class: window.ImageTool
                             , config: {
                                 endpoints: {
-                                    byFile: "{{ route('admin.updates.upload') }}"
+                                    byFile: "{{ route('admin.blogs.upload') }}"
                                 , }
                                 , additionalRequestHeaders: {
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'

@@ -36,6 +36,7 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Dashboard</span>
         </a>
+        
         @can('view activity logs')
         <a href="{{ route('admin.logs.all') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass(['admin.logs.all', 'admin.logs.show']) }}">
             <div class="w-6 h-6 flex items-center justify-center">
@@ -48,7 +49,7 @@ return request()->routeIs($routes)
         @endcan
         
         
-        @can('view users')
+        {{-- @can('view users')
         <a href="{{ route('admin.users') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass(['admin.users', 'admin.users.show']) }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 stroke-current {{ svgClass(['admin.users', 'admin.users.show']) }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -57,7 +58,8 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Users Management</span>
         </a>
-        @endcan
+        @endcan --}}
+
 
         
         @can('view roles')
@@ -91,7 +93,6 @@ return request()->routeIs($routes)
             <span class="font-bold text-base truncate">Blog Management</span>
         </a>
         @endcan
-        
 
         <a href="{{ route('admin.profile')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.profile') }}">
             <div class="w-6 h-6 flex items-center justify-center">
@@ -101,7 +102,7 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Profile</span>
         </a>
-        
+
         @can('view messages')
         <a href="{{ route('admin.messages.sent.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.sent.index') }}">
             <div class="w-6 h-6 flex items-center justify-center">
@@ -122,7 +123,7 @@ return request()->routeIs($routes)
                     <path d="M10.982,11.15c.526,.176,1.055,.264,1.585,.264s1.059-.088,1.585-.264c.612-.205,1.101-.692,1.306-1.303,.354-1.05,.354-2.115,0-3.165-.206-.611-.694-1.099-1.307-1.303-1.052-.352-2.118-.352-3.17,0-.612,.205-1.101,.692-1.306,1.303-.354,1.05-.354,2.115,0,3.165,.206,.611,.694,1.099,1.306,1.303Zm-.358-4.148c.106-.316,.359-.568,.676-.674,.426-.143,.847-.214,1.268-.214s.841,.071,1.268,.214c.317,.106,.57,.358,.676,.674,.286,.85,.286,1.676,0,2.526-.106,.316-.359,.568-.676,.674-.854,.285-1.683,.285-2.535,0-.317-.106-.57-.358-.676-.674h0c-.286-.85-.286-1.676,0-2.526Z" />
                 </svg>
             </div>
-            <span class="font-bold text-base truncate">Contact List</span>
+            <span class="font-bold text-base truncate">Subscription List</span>
         </a>
         @endcan
 

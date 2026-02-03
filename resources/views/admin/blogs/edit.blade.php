@@ -16,13 +16,13 @@
 <div class="min-h-screen flex items-center justify-center p-4 md:p-8">
     <div class="w-full max-w-[850px] bg-white rounded-[24px] p-8 md:p-12 flex flex-col gap-12">
         <div class="flex justify-between items-center">
-            <h1 class="text-[22px] font-bold text-[#0A1629] font-nunito">Edit Update</h1>
-            <a href="{{ route('admin.updates.index') }}" class="flex items-center gap-3 h-12 px-4 rounded-[14px] bg-gray-500 text-white hover:bg-gray-600 transition-colors">
+            <h1 class="text-[22px] font-bold text-[#0A1629] font-nunito">Edit Blog Post</h1>
+            <a href="{{ route('admin.blogs.index') }}" class="flex items-center gap-3 h-12 px-4 rounded-[14px] bg-gray-500 text-white hover:bg-gray-600 transition-colors">
                 <span class="text-base font-bold">Back to List</span>
             </a>
         </div>
 
-        <form action="{{ route('admin.updates.update', $update->id) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-12">
+        <form action="{{ route('admin.blogs.update', $blog->id) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-12">
             @csrf
             @method('PUT')
 
@@ -36,7 +36,7 @@
 
                     <!-- Default / placeholder icon -->
                     <div id="defaultIconContainer" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 text-gray-400 transition-opacity duration-300
-            {{ $update->image ? 'hidden' : '' }}">
+            {{ $blog->image ? 'hidden' : '' }}">
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" class="mb-2">
                             <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2" />
                             <path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="currentColor" stroke-width="2" />
@@ -46,27 +46,27 @@
                     </div>
 
                     <!-- Preview / existing image -->
-                    <img id="imagePreview" src="{{ $update->image ? asset($update->image) : '#' }}" alt="Preview" class="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105
-             {{ $update->image ? '' : 'hidden' }}" />
+                    <img id="imagePreview" src="{{ $blog->image ? asset($blog->image) : '#' }}" alt="Preview" class="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105
+             {{ $blog->image ? '' : 'hidden' }}" />
                 </label>
             </div>
 
             <div class="flex flex-col gap-[10px]">
                 <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Title</label>
-                <input type="text" name="title" value="{{ old('title', $update->title) }}" class="h-[54px] px-[13px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required />
+                <input type="text" name="title" value="{{ old('title', $blog->title) }}" class="h-[54px] px-[13px] rounded-[14px] border border-[#D8E0F0] bg-white text-sm text-[#7D8592] focus:outline-none focus:border-[#3F8CFF]" required />
             </div>
 
-            <div class="flex flex-col gap-[10px]" x-data="editorJsWrapper({{ json_encode($update->body) }})" x-init="initEditor()">
-                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Update Details</label>
+            <div class="flex flex-col gap-[10px]" x-data="editorJsWrapper({{ json_encode($blog->body) }})" x-init="initEditor()">
+                <label class="text-sm font-bold text-[#7D8592] font-nunito leading-6">Blog Content</label>
                 <div class="rounded-[14px] border border-[#D8E0F0] bg-white p-6 focus-within:border-[#3F8CFF] transition-colors">
                     <div id="editorjs_holder" class="prose max-w-none"></div>
                 </div>
-                <input type="hidden" name="body" x-ref="hiddenBody" value="{{ json_encode($update->body) }}">
+                <input type="hidden" name="body" x-ref="hiddenBody" value="{{ json_encode($blog->body) }}">
             </div>
 
             <div class="flex items-center gap-[30px] flex-wrap">
-                <button type="submit" name="status" value="draft" class="h-[53px] px-[22px] {{ $update->status == 'draft' ? 'bg-blue-100 text-blue-600 border-2 border-blue-600' : 'bg-black text-white' }} rounded-[14px] font-bold hover:opacity-80">Update as Draft</button>
-                <button type="submit" name="status" value="published" class="h-12 px-[39px] {{ $update->status == 'published' ? 'bg-green-500' : 'bg-[#3F8CFF]' }} rounded-[14px] text-white font-bold hover:opacity-80">Update & Publish</button>
+                <button type="submit" name="status" value="draft" class="h-[53px] px-[22px] {{ $blog->status == 'draft' ? 'bg-blue-100 text-blue-600 border-2 border-blue-600' : 'bg-black text-white' }} rounded-[14px] font-bold hover:opacity-80">Update as Draft</button>
+                <button type="submit" name="status" value="published" class="h-12 px-[39px] {{ $blog->status == 'published' ? 'bg-green-500' : 'bg-[#3F8CFF]' }} rounded-[14px] text-white font-bold hover:opacity-80">Update & Publish</button>
             </div>
         </form>
     </div>
@@ -146,7 +146,7 @@
                             class: window.ImageTool
                             , config: {
                                 endpoints: {
-                                    byFile: "{{ route('admin.updates.upload') }}"
+                                    byFile: "{{ route('admin.blogs.upload') }}"
                                 }
                                 , additionalRequestHeaders: {
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'

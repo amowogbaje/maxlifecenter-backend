@@ -38,7 +38,7 @@ Route::get('/user/products/sales/fetch', [UserDashboardController::class, 'fetch
 
 Route::post('/rewards/{id}/approve', [AdminDashboardController::class, 'approveReward'])
     ->name('admin.rewards.approve');
-Route::post('admin/updates/upload', [MediaController::class, 'upload'])->name('admin.updates.upload');
+Route::post('admin/blogs/upload', [MediaController::class, 'upload'])->name('admin.blogs.upload');
 
 
 Route::post('user/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');

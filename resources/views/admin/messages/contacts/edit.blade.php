@@ -4,10 +4,10 @@
 <div class="max-w-4xl mx-auto py-10">
     <div class="bg-white shadow-xl rounded-2xl p-8">
         <h1 class="text-3xl font-bold text-gray-800 mb-8 border-b pb-4">
-            Edit Contact List
+            Edit Subscription List
         </h1>
 
-        <form action="{{ route('admin.messages.contacts.update', $contactList->id) }}" method="POST" class="space-y-8" x-data="contactListTable()" x-init="init()">
+        <form action="{{ route('admin.messages.subscriptions.update', $subscription->id) }}" method="POST" class="space-y-8" x-data="subscriptionTable()" x-init="init()">
             @csrf
             @method('PUT')
 
@@ -19,17 +19,6 @@
                         <input type="text" x-model="clientSearch" placeholder="Type to filter users..." class="w-full h-11 px-4 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-700 focus:ring-2 focus:ring-indigo-500" @input="onSearchChange()">
                     </div>
 
-                    <div class="min-w-[200px]">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Reward Tier</label>
-                        <select name="reward_id" x-model="rewardId" class="w-full h-11 px-4 rounded-xl border border-gray-200 shadow-sm text-gray-700 focus:ring-2 focus:ring-indigo-500" @change="onFilterChange()">
-                            <option value="">All Rewards</option>
-                            @foreach($rewards as $reward)
-                            <option value="{{ $reward->id }}" {{ request('reward_id') == $reward->id ? 'selected' : '' }}>
-                                {{ $reward->title }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
 
                     <div class="flex flex-col sm:flex-row items-center gap-2 min-w-[260px]">
                         <div class="flex-1">
@@ -134,23 +123,23 @@
             {{-- Details Section --}}
             <div class="grid gap-6 border-t pt-6">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700">Contact List Title</label>
-                    <input type="text" name="title" value="{{ old('title', $contactList->title) }}" class="mt-2 w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm px-4 py-2" required>
+                    <label class="block text-sm font-semibold text-gray-700">Subscription List Title</label>
+                    <input type="text" name="title" value="{{ old('title', $subscription->title) }}" class="mt-2 w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm px-4 py-2" required>
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700">Description</label>
-                    <input type="text" name="description" value="{{ old('description', $contactList->description) }}" class="mt-2 w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm px-4 py-2" required>
+                    <input type="text" name="description" value="{{ old('description', $subscription->description) }}" class="mt-2 w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm px-4 py-2" required>
                 </div>
             </div>
 
             {{-- Footer Actions --}}
             <div class="flex items-center justify-end space-x-4 pt-4 border-t">
-                <a href="{{ route('admin.messages.contacts.index') }}" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100">
+                <a href="{{ route('admin.messages.subscriptions.index') }}" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100">
                     Cancel
                 </a>
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg shadow-md transition">
-                    Update Contact List
+                    Update Subscription List
                 </button>
             </div>
         </form>
@@ -184,7 +173,7 @@
 </script>
 
 <script>
-    function contactListTable() {
+    function subscriptionTable() {
         let debounceTimer;
 
         function debounce(fn, delay = 400) {
@@ -197,8 +186,6 @@
             data: []
             , selected: new Set()
             , clientSearch: ''
-            , rewardId: '{{ request('
-            reward_id ') }}'
             , startDate: '{{ request('
             start_date ') }}'
             , endDate: '{{ request('
@@ -236,8 +223,7 @@
                 this.loading = true;
 
                 const params = new URLSearchParams({
-                    reward_id: this.rewardId || ''
-                    , start_date: this.startDate || ''
+                    start_date: this.startDate || ''
                     , end_date: this.endDate || ''
                     , search: this.clientSearch || ''
                 });
