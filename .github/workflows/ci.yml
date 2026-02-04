@@ -31,7 +31,7 @@ jobs:
           port: ${{ secrets.FTP_PORT }}
           protocol: ftp
           local-dir: ./
-          server-dir: /domains/dev.dayout.cloud/public_html/
+          server-dir: /public_html/
           exclude: |
             **/.git*
             **/.github*
