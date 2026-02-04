@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BasicController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -18,7 +19,7 @@ Route::get('/user', function (Request $request) {
 
 
 Route::post('password', [AuthController::class, 'updatePassword'])->name('password.update');
-    // ->middleware('signed');
+// ->middleware('signed');
 
 Route::post('/check-identifier-b', [BasicController::class, 'checkIdentifier']);
 Route::post('/send-otp-b', [BasicController::class, 'sendOtp']);
@@ -43,6 +44,14 @@ Route::post('/rewards/{id}/approve', [AdminDashboardController::class, 'approveR
 Route::post('admin/blogs/upload', [MediaController::class, 'upload'])->name('admin.blogs.upload');
 Route::get('/admin/categories/search', [CategoryController::class, 'search'])
     ->name('admin.categories.search');
+
+Route::get('blogs', [BlogController::class, 'index'])->name('api.blogs.index');                  // List posts, filter by category/featured
+Route::get('blogs/search', [BlogController::class, 'search'])->name('api.blogs.search');                // Search posts
+Route::get('blogs/slugs', [BlogController::class, 'allSlugs'])->name('api.blogs.slugs');                 // All post slugs
+Route::get('blogs/{slug}', [BlogController::class, 'show'])->name('api.blogs.show');                  // Single post by slug
+Route::get('blogs/{id}/related', [BlogController::class, 'related'])->name('api.blogs.related');              // Related posts by post ID
+Route::get('categories/slugs', [BlogController::class, 'allCategorySlugs'])->name('api.categories.slugs');           // All category slugs
+
 
 
 Route::post('user/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
