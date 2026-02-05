@@ -19,7 +19,7 @@ jobs:
       with:
         php-version: '8.2'
 
-    - name: Install Composer dependencies
+    - name: Install Composer dependencies check 
       run: composer install --no-dev --optimize-autoloader
 
    ## - name: Run Tests
