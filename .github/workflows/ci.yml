@@ -1,9 +1,9 @@
-name: Deploy to main
+name: Deploy to UAT
 
 on:
   push:
     branches:
-      - main
+      - uat
 
 jobs:
   deploy:
@@ -11,30 +11,24 @@ jobs:
     environment: PROD
 
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v4
+    - name: Check out the repository
+      uses: actions/checkout@v2
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
 
-      - name: Install Composer dependencies
-        run: composer install --no-dev --optimize-autoloader --no-scripts
+    - name: Install Composer dependencies
+      run: composer install --no-dev --optimize-autoloader
 
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT }}
-          protocol: ftp
-          local-dir: ./
-          server-dir: /public_html/
-          exclude: |
-            **/.git*
-            **/.github*
-            **/node_modules/**
-            **/storage/**
-            **/.env
+    - name: Deploy application
+      env:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+      run: |
+        echo "$key" > /tmp/private_key
+        chmod 600 /tmp/private_key
+        rsync -avz -e "ssh -i /tmp/private_key -o StrictHostKeyChecking=no -p $port" --exclude='.env' --exclude='node_modules' --exclude='storage' ./ $username@$host:/home/u264470298/domains/admin.maxlifecenter.org/public_html
