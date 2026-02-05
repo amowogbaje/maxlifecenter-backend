@@ -12,7 +12,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy via SSH
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install Composer dependencies (local)
+        run: composer install --no-dev --optimize-autoloader --no-scripts
+
+      - name: Deploy application via rsync
+        env:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+        run: |
+          echo "$key" > /tmp/private_key
+          chmod 600 /tmp/private_key
+          rsync -avz -e "ssh -i /tmp/private_key -o StrictHostKeyChecking=no -p $port" \
+            --exclude='.env' --exclude='node_modules' --exclude='storage' ./ \
+            $username@$host:/home/$username/domains/admin.maxlifecenter.org/public_html
+
+      - name: Run post-deploy commands on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -20,8 +41,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cd domains/admin.maxlifecenter.org/public_html
-            git pull origin main
+            cd /home/${{ secrets.USERNAME }}/domains/admin.maxlifecenter.org/public_html
             composer install --no-dev --optimize-autoloader --no-scripts
-            php artisan migrate
-            # php artisan optimize:clear
+            php artisan migrate --force
+            php artisan config:clear
+            php artisan cache:clear
