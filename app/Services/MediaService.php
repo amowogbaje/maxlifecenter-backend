@@ -10,7 +10,7 @@ class MediaService
     /**
      * Handle the file upload and return the public URL.
      */
-    public function upload(UploadedFile $file, string $folder = 'updates'): string
+    public function upload(UploadedFile $file, string $folder = 'blogs'): string
     {
         // Generate a unique name: time + random string + original extension
         $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();

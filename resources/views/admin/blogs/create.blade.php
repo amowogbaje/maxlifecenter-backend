@@ -53,6 +53,10 @@
                     <!-- Preview image -->
                     <img id="imagePreview" src="#" alt="Preview" class="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105 hidden" />
                 </label>
+                @error('image')
+                <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                @enderror
+
             </div>
 
             <!-- Title -->
@@ -102,38 +106,58 @@
         const defaultIcon = document.getElementById('defaultIconContainer');
 
         if (input.files && input.files[0]) {
+            const file = input.files[0];
+
+            // Validate size
+            if (file.size > 2 * 1024 * 1024) {
+                showLiveToast("Image too large! Maximum size is 2MB.");
+                input.value = ""; // reset input
+                preview.src = '#';
+                preview.classList.add('hidden');
+                defaultIcon.classList.remove('hidden');
+                return;
+            }
+
+            // Validate type
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                showLiveToast("Invalid image type! Allowed: JPEG, PNG, GIF, WEBP.");
+                input.value = ""; // reset input
+                preview.src = '#';
+                preview.classList.add('hidden');
+                defaultIcon.classList.remove('hidden');
+                return;
+            }
+
+            // File is valid → show preview
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;
                 preview.classList.remove('hidden');
                 defaultIcon.classList.add('hidden');
             }
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
         } else {
+            // No file selected → show placeholder
             preview.src = '#';
             preview.classList.add('hidden');
             defaultIcon.classList.remove('hidden');
         }
     }
 
+
+
     function editorJsWrapper() {
         return {
-            editor: null
-            , retryCount: 0
-            , maxRetries: 30,
+            editor: null,
+            retryCount: 0,
+            maxRetries: 30,
 
             initEditor() {
                 const requiredTools = [
-                    'EditorJS'
-                    , 'Header'
-                    , 'List'
-                    , 'Paragraph'
-                    , 'Quote'
-                    , 'Table'
-                    , 'Checklist'
-                    , 'Delimiter'
-                    , 'ImageTool'
-                , ];
+                    'EditorJS', 'Header', 'List', 'Paragraph', 'Quote',
+                    'Table', 'Checklist', 'Delimiter', 'ImageTool'
+                ];
 
                 const allToolsReady = requiredTools.every(
                     tool => typeof window[tool] !== 'undefined'
@@ -144,68 +168,70 @@
                         console.error('Editor.js tools failed to load.');
                         return;
                     }
-
                     this.retryCount++;
                     setTimeout(() => this.initEditor(), 100);
                     return;
                 }
 
                 this.editor = new window.EditorJS({
-                    holder: 'editorjs_holder'
-                    , placeholder: 'Press "/" for commands...'
-                    , tools: {
-                        header: {
-                            class: window.Header
-                            , inlineToolbar: true
-                        , }
-                        , list: {
-                            class: window.List
-                            , inlineToolbar: true
-                        , }
-                        , paragraph: {
-                            class: window.Paragraph
-                            , inlineToolbar: true
-                            , config: {
-                                preserveBlank: true
-                            , }
-                        , }
-                        , checklist: {
-                            class: window.Checklist
-                            , inlineToolbar: true
-                        , }
-                        , quote: {
-                            class: window.Quote
-                            , inlineToolbar: true
-                        , }
-                        , delimiter: window.Delimiter
-                        , table: {
-                            class: window.Table
-                            , inlineToolbar: true
-                        , }
-                        , image: {
-                            class: window.ImageTool
-                            , config: {
-                                endpoints: {
-                                    byFile: "{{ route('admin.blogs.upload') }}"
-                                , }
-                                , additionalRequestHeaders: {
+                    holder: 'editorjs_holder',
+                    placeholder: 'Press "/" for commands...',
+                    tools: {
+                        header: { class: window.Header, inlineToolbar: true },
+                        list: { class: window.List, inlineToolbar: true },
+                        paragraph: {
+                            class: window.Paragraph,
+                            inlineToolbar: true,
+                            config: { preserveBlank: true }
+                        },
+                        checklist: { class: window.Checklist, inlineToolbar: true },
+                        quote: { class: window.Quote, inlineToolbar: true },
+                        delimiter: window.Delimiter,
+                        table: { class: window.Table, inlineToolbar: true },
+                        image: {
+                            class: window.ImageTool,
+                            config: {
+                                additionalRequestHeaders: {
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                , }
-                            , }
-                        , }
+                                },
+                                uploader: {
+                                    uploadByFile(file) {
+                                        return new Promise((resolve, reject) => {
+                                            const formData = new FormData();
+                                            formData.append('image', file);
 
-                    , }
-                    , onChange: () => {
-                        this.saveData();
-                    }
-                , });
+                                            fetch("{{ route('admin.blogs.upload') }}", {
+                                                method: 'POST',
+                                                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                                body: formData
+                                            })
+                                            .then(res => res.json())
+                                            .then(data => {
+                                                if (data.success && data.file?.url) {
+                                                    resolve({ success: 1, file: { url: data.file.url } });
+                                                } else {
+                                                    showLiveToast(data?.message || "Image upload failed", "error");
+                                                    reject(new Error(data?.message || "Upload failed"));
+                                                }
+                                            })
+                                            .catch(err => {
+                                                showLiveToast("Image upload failed: " + err.message, "error");
+                                                reject(err);
+                                            });
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    onChange: () => this.saveData()
+                });
             },
 
             saveData() {
                 if (!this.editor) return;
 
-                this.editor
-                    .save()
+                this.editor.save()
                     .then(outputData => {
                         this.$refs.hiddenBody.value = JSON.stringify(outputData);
                     })
@@ -213,8 +239,9 @@
                         console.error('Saving failed:', error);
                     });
             }
-        , };
+        };
     }
+
 
     new TomSelect('#categories', {
         minChars: 3
@@ -249,6 +276,8 @@
                 .catch(() => callback());
         }
     });
+
+
 
 </script>
 @endpush

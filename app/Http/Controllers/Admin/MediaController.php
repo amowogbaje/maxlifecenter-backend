@@ -7,6 +7,7 @@ use App\Services\MediaService;
 use App\Http\Resources\EditorJsImageResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Log;
 
 class MediaController extends Controller
 {
@@ -31,6 +32,7 @@ class MediaController extends Controller
 
         // 2. Handle Validation Failure
         if ($validator->fails()) {
+            Log::warning('Image upload validation failed', ['errors' => $validator->errors()]);
             return response()->json([
                 'success' => 0,
                 'message' => $validator->errors()->first('image')
@@ -48,6 +50,7 @@ class MediaController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
+            Log::error('Image upload failed', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => 0,
                 'message' => 'Upload failed on the server.'

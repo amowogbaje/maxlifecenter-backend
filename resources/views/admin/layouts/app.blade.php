@@ -64,6 +64,7 @@
                         <path d="m6 6 12 12" /> </svg> </button> </div>
         </div>
         @endif
+        <div id="live-toast-container" class="fixed top-24 right-4 z-50 space-y-3 max-w-[420px] lg:max-w-[549px]"></div>
 
         @include('admin.partials.sidebar')
 
@@ -76,5 +77,61 @@
         </div>
     </div>
     @stack('script')
+    <script>
+        function showLiveToast(message, type = "error", duration = 3000) {
+            const container = document.getElementById("live-toast-container");
+            if (!container) return;
+
+            const toast = document.createElement("div");
+            toast.className = `
+                rounded-[14px] p-4 lg:p-5 flex items-start gap-3 shadow-lg border
+                ${type === "success" ? "bg-green-100 border-green-200" : ""}
+                ${type === "error" ? "bg-red-100 border-red-200" : ""}
+                ${type === "warning" ? "bg-yellow-100 border-yellow-200" : ""}
+                opacity-0 transform transition-all duration-300
+            `;
+
+            toast.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 flex-shrink-0 mt-0.5
+                    ${type === "success" ? "text-green-600" : ""}
+                    ${type === "error" ? "text-red-600" : ""}
+                    ${type === "warning" ? "text-yellow-600" : ""}" 
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    ${
+                    type === "success"
+                        ? '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />'
+                        : type === "error"
+                        ? '<circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12" y2="16" />'
+                        : '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0z" />'
+                    }
+                </svg>
+                <span class="font-semibold text-sm flex-1 leading-relaxed
+                    ${type === "success" ? "text-green-700" : ""}
+                    ${type === "error" ? "text-red-700" : ""}
+                    ${type === "warning" ? "text-yellow-700" : ""}">
+                    ${message}
+                </span>
+                <button class="w-5 h-5 text-black hover:text-gray-600 flex-shrink-0 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            // Fade in
+            setTimeout(() => toast.classList.add("opacity-100"), 50);
+
+            // Remove on button click
+            toast.querySelector("button").addEventListener("click", () => {
+                toast.remove();
+            });
+
+            // Auto remove after duration
+            setTimeout(() => toast.remove(), duration);
+        }
+    </script>
 </body>
 </html>

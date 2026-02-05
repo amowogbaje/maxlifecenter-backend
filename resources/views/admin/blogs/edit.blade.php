@@ -51,8 +51,11 @@
 
                     <!-- Preview / existing image -->
                     <img id="imagePreview" src="{{ $blog->image ? asset($blog->image) : '#' }}" alt="Preview" class="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105
-             {{ $blog->image ? '' : 'hidden' }}" />
+                        {{ $blog->image ? '' : 'hidden' }}" />
                 </label>
+                @error('image')
+                <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex flex-col gap-[10px]">
@@ -67,7 +70,7 @@
 
                 <select id="categories" name="categories[]" multiple class="rounded-[14px] border border-[#D8E0F0] p-3">
                     @foreach($blog->categories as $category)
-                        <option value="{{ $category->id }}" selected>{{ $category->title }}</option>
+                    <option value="{{ $category->id }}" selected>{{ $category->title }}</option>
                     @endforeach
                 </select>
             </div>
@@ -97,16 +100,57 @@
         const preview = document.getElementById('imagePreview');
         const defaultIcon = document.getElementById('defaultIconContainer');
 
+        // Store the current image src (existing image if any)
+        const currentSrc = preview.src && !preview.classList.contains('hidden') ? preview.src : null;
+
         if (input.files && input.files[0]) {
+            const file = input.files[0];
+
+            // Validate size
+            if (file.size > 2 * 1024 * 1024) {
+                showLiveToast("Image too large! Maximum size is 2MB.");
+                input.value = ""; // reset input
+                // Keep existing image if any
+                if (currentSrc) {
+                    preview.src = currentSrc;
+                    preview.classList.remove('hidden');
+                    defaultIcon.classList.add('hidden');
+                } else {
+                    preview.src = '#';
+                    preview.classList.add('hidden');
+                    defaultIcon.classList.remove('hidden');
+                }
+                return;
+            }
+
+            // Validate type
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                showLiveToast("Invalid image type! Allowed: JPEG, PNG, GIF, WEBP.");
+                input.value = ""; // reset input
+                if (currentSrc) {
+                    preview.src = currentSrc;
+                    preview.classList.remove('hidden');
+                    defaultIcon.classList.add('hidden');
+                } else {
+                    preview.src = '#';
+                    preview.classList.add('hidden');
+                    defaultIcon.classList.remove('hidden');
+                }
+                return;
+            }
+
+            // File is valid → preview
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;
                 preview.classList.remove('hidden');
                 defaultIcon.classList.add('hidden');
             }
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
         }
     }
+
 
     function editorJsWrapper(initialData) {
         return {
@@ -162,11 +206,48 @@
                         , image: {
                             class: window.ImageTool
                             , config: {
-                                endpoints: {
-                                    byFile: "{{ route('admin.blogs.upload') }}"
-                                }
-                                , additionalRequestHeaders: {
+                                additionalRequestHeaders: {
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                                , uploader: {
+                                    /**
+                                     * Custom upload function
+                                     * Must return a Promise resolving { success: 1, file: { url: '' } } 
+                                     * or rejecting with an error object
+                                     */
+                                    uploadByFile(file) {
+                                        return new Promise((resolve, reject) => {
+                                            const formData = new FormData();
+                                            formData.append('image', file);
+
+                                            fetch("{{ route('admin.blogs.upload') }}", {
+                                                    method: 'POST'
+                                                    , headers: {
+                                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                                    }
+                                                    , body: formData
+                                                })
+                                                .then(res => res.json())
+                                                .then(data => {
+                                                    if (data.success && data.file?.url) {
+                                                        resolve({
+                                                            success: 1
+                                                            , file: {
+                                                                url: data.file.url
+                                                            }
+                                                        });
+                                                    } else {
+                                                        showLiveToast(data?.message || "Image upload failed", "error");
+                                                        reject(new Error(data?.message || "Upload failed"));
+                                                    }
+                                                })
+                                                .catch(err => {
+                                                    showLiveToast("Image upload failed: " + err.message, "error");
+                                                    reject(err);
+                                                });
+                                        });
+                                    }
+
                                 }
                             }
                         }
