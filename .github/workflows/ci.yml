@@ -22,6 +22,6 @@ jobs:
           script: |
             cd domains/admin.maxlifecenter.org/public_html
             git pull origin main
-            composer install --no-dev --optimize-autoloader
-            php artisan migrate --force
-            php artisan optimize:clear
+            composer install --no-dev --optimize-autoloader --no-scripts
+            php artisan migrate
+            # php artisan optimize:clear
