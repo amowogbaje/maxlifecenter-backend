@@ -48,4 +48,4 @@ jobs:
             php artisan cache:clear
             php artisan db:seed --force
             php artisan permission:sync
-            chmod -R 777 storage bootstrap/cache
+            # chmod -R 777 storage bootstrap/cache
