@@ -51,6 +51,7 @@ Route::get('blogs/slugs', [BlogController::class, 'allSlugs'])->name('api.blogs.
 Route::get('blogs/{slug}', [BlogController::class, 'show'])->name('api.blogs.show');                  // Single post by slug
 Route::get('blogs/{id}/related', [BlogController::class, 'related'])->name('api.blogs.related');              // Related posts by post ID
 Route::get('categories/slugs', [BlogController::class, 'allCategorySlugs'])->name('api.categories.slugs');           // All category slugs
+Route::get('categories/{slug}/posts', [BlogController::class, 'postsByCategory'])->name('api.categories.posts');           // Posts by category slug
 
 
 

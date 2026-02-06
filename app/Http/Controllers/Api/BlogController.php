@@ -119,6 +119,25 @@ class BlogController extends Controller
         }
     }
 
+    public function postsByCategory($slug, Request $request)
+    {
+        try {
+            $category = Category::where('slug', $slug)->first();
+            if (!$category) return response()->json(['message' => 'Category not found'], 404);
+
+            $limit = $request->get('limit', 10);
+            $posts = Blog::published()->with(['categories', 'admin'])
+                         ->whereHas('categories', fn($q) => $q->where('categories.id', $category->id))
+                         ->latest()
+                         ->take($limit)
+                         ->get();
+
+            return response()->json(BlogResource::collection($posts));
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch posts for category', 'error' => $e->getMessage()], 500);
+        }
+    }
+
     // -------------------
     // All post slugs
     // -------------------
