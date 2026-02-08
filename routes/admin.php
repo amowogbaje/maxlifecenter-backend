@@ -151,9 +151,9 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
             Route::get('/', [MessagesContactController::class, 'subscriptions'])
                 ->name('index')->middleware('can:manage subscriptions');
             Route::get('/create', [MessagesContactController::class, 'create'])
-                ->name('create')->middleware('can:manage subscriptions');
+                ->name('create')->middleware('can:create subscriptions');
             Route::post('/store', [MessagesContactController::class, 'store'])
-                ->name('store')->middleware('can:manage subscriptions');
+                ->name('store')->middleware('can:create subscriptions');
             Route::get('/{subscriptionId}', [MessagesContactController::class, 'edit'])
                 ->name('edit')->middleware('can:manage subscriptions');
             Route::put('/{subscriptionId}/update', [MessagesContactController::class, 'update'])

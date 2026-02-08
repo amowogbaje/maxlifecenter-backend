@@ -4,10 +4,12 @@
 <div class="max-w-6xl mx-auto py-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Subscription List</h1>
+        @can('create subscriptions')
         <a href="{{ route('admin.messages.subscriptions.create') }}" 
            class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700">
             + New Subscription List
         </a>
+        @endcan
     </div>
 
     <div class="space-y-4">

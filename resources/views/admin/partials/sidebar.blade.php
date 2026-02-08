@@ -36,6 +36,42 @@ return request()->routeIs($routes)
             </div>
             <span class="font-bold text-base truncate">Dashboard</span>
         </a>
+
+        @can('view blogs')
+        <a href="{{ route('admin.blogs.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass(['admin.blogs.index', 'admin.blogs.edit']) }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                <svg class="w-6 h-6 fill-current {{ svgClass(['admin.blogs.index', 'admin.blogs.edit']) }}" viewBox="0 0 24 24" width="512" height="512">
+                    <path d="m21,18v-5c0-4.963-4.037-9-9-9S3,8.037,3,13v5c-1.654,0-3,1.346-3,3v3h24v-3c0-1.654-1.346-3-3-3ZM5,13c0-3.859,3.141-7,7-7s7,3.141,7,7v5H5v-5Zm17,9H2v-1c0-.552.448-1,1-1h18c.552,0,1,.448,1,1v1ZM2.335,6.646L.018,4.426l1.383-1.443,2.317,2.22-1.383,1.443Zm3.419-3.122l-1.212-2.717L6.368-.008l1.212,2.717-1.826.814Zm15.912,3.122l-1.383-1.443,2.317-2.22,1.383,1.443-2.317,2.22Zm-3.42-3.122l-1.826-.814L17.633-.008l1.826.814-1.213,2.717Zm-6.246,5.477v2c-1.103,0-2,.897-2,2h-2c0-2.206,1.794-4,4-4Z" /></svg>
+            </div>
+            <span class="font-bold text-base truncate">Blog Management</span>
+        </a>
+        @endcan
+
+        @can('manage subscriptions')
+        <a href="{{ route('admin.messages.subscriptions.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.subscriptions.index') }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.subscriptions.index') }}" viewBox="0 0 24 24">
+                    <path d="M20.78,2.555c-.052-.161-.181-.285-.344-.33-.184-.05-4.526-1.226-7.869-1.226-3.435,0-7.692,1.176-7.872,1.227-.169,.047-.301,.179-.348,.348-.019,.069-.205,.746-.426,1.832h-.839c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.648c-.186,1.047-.372,2.324-.489,3.729h-.758c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.688c-.034,.606-.054,1.23-.054,1.865s.02,1.258,.054,1.865h-.688c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.758c.118,1.403,.304,2.681,.49,3.729h-.649c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.84c.221,1.085,.405,1.762,.425,1.832,.046,.167,.175,.297,.341,.346,.17,.05,4.214,1.229,7.878,1.229s7.708-1.178,7.878-1.229c.159-.047,.285-.169,.335-.328,.05-.158,1.235-3.934,1.235-9.444s-1.185-9.288-1.235-9.445Zm-.878,18.33c-.952,.258-4.333,1.115-7.335,1.115s-6.361-.851-7.326-1.112c-.256-1.022-1.123-4.787-1.123-8.888s.865-7.858,1.122-8.884c1-.259,4.516-1.116,7.327-1.116,2.748,0,6.338,.865,7.337,1.12,.262,.934,1.111,4.31,1.111,8.88s-.853,7.954-1.113,8.885Z" />
+                    <path d="M12.567,14.26c-2.28,0-4.134,1.851-4.134,4.125,0,.276,.224,.5,.5,.5s.5-.224,.5-.5c0-1.723,1.406-3.125,3.134-3.125s3.134,1.402,3.134,3.125c0,.276,.224,.5,.5,.5s.5-.224,.5-.5c0-2.274-1.854-4.125-4.134-4.125Z" />
+                    <path d="M10.982,11.15c.526,.176,1.055,.264,1.585,.264s1.059-.088,1.585-.264c.612-.205,1.101-.692,1.306-1.303,.354-1.05,.354-2.115,0-3.165-.206-.611-.694-1.099-1.307-1.303-1.052-.352-2.118-.352-3.17,0-.612,.205-1.101,.692-1.306,1.303-.354,1.05-.354,2.115,0,3.165,.206,.611,.694,1.099,1.306,1.303Zm-.358-4.148c.106-.316,.359-.568,.676-.674,.426-.143,.847-.214,1.268-.214s.841,.071,1.268,.214c.317,.106,.57,.358,.676,.674,.286,.85,.286,1.676,0,2.526-.106,.316-.359,.568-.676,.674-.854,.285-1.683,.285-2.535,0-.317-.106-.57-.358-.676-.674h0c-.286-.85-.286-1.676,0-2.526Z" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">Subscription List</span>
+        </a>
+        @endcan
+
+        @can('view admins')
+        <a href="{{ route('admin.list.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass(['admin.list.index', 'admin.list.show']) }}">
+            <div class="w-6 h-6 flex items-center justify-center">
+                <svg class="w-10 h-10 stroke-current {{ svgClass(['admin.list.index', 'admin.list.show']) }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 19V18C3 15.7909 4.79086 14 7 14H11C13.2091 14 15 15.7909 15 18V19M15 11C16.6569 11 18 9.65685 18 8C18 6.34315 16.6569 5 15 5M21 19V18C21 15.7909 19.2091 14 17 14H16.5M12 8C12 9.65685 10.6569 11 9 11C7.34315 11 6 9.65685 6 8C6 6.34315 7.34315 5 9 5C10.6569 5 12 6.34315 12 8Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <span class="font-bold text-base truncate">Admin Management</span>
+        </a>
+        @endcan
+
+        
         
         @can('view activity logs')
         <a href="{{ route('admin.logs.all') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass(['admin.logs.all', 'admin.logs.show']) }}">
@@ -73,27 +109,7 @@ return request()->routeIs($routes)
         </a>
         @endcan
 
-        @can('view admins')
-        <a href="{{ route('admin.list.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass(['admin.list.index', 'admin.list.show']) }}">
-            <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-10 h-10 stroke-current {{ svgClass(['admin.list.index', 'admin.list.show']) }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 19V18C3 15.7909 4.79086 14 7 14H11C13.2091 14 15 15.7909 15 18V19M15 11C16.6569 11 18 9.65685 18 8C18 6.34315 16.6569 5 15 5M21 19V18C21 15.7909 19.2091 14 17 14H16.5M12 8C12 9.65685 10.6569 11 9 11C7.34315 11 6 9.65685 6 8C6 6.34315 7.34315 5 9 5C10.6569 5 12 6.34315 12 8Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </div>
-            <span class="font-bold text-base truncate">Admin Management</span>
-        </a>
-        @endcan
-
-        @can('view blogs')
-        <a href="{{ route('admin.blogs.index') }}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors {{ menuClass(['admin.blogs.index', 'admin.blogs.edit']) }}">
-            <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-6 h-6 fill-current {{ svgClass(['admin.blogs.index', 'admin.blogs.edit']) }}" viewBox="0 0 24 24" width="512" height="512">
-                    <path d="m21,18v-5c0-4.963-4.037-9-9-9S3,8.037,3,13v5c-1.654,0-3,1.346-3,3v3h24v-3c0-1.654-1.346-3-3-3ZM5,13c0-3.859,3.141-7,7-7s7,3.141,7,7v5H5v-5Zm17,9H2v-1c0-.552.448-1,1-1h18c.552,0,1,.448,1,1v1ZM2.335,6.646L.018,4.426l1.383-1.443,2.317,2.22-1.383,1.443Zm3.419-3.122l-1.212-2.717L6.368-.008l1.212,2.717-1.826.814Zm15.912,3.122l-1.383-1.443,2.317-2.22,1.383,1.443-2.317,2.22Zm-3.42-3.122l-1.826-.814L17.633-.008l1.826.814-1.213,2.717Zm-6.246,5.477v2c-1.103,0-2,.897-2,2h-2c0-2.206,1.794-4,4-4Z" /></svg>
-            </div>
-            <span class="font-bold text-base truncate">Blog Management</span>
-        </a>
-        @endcan
-
+        
         <a href="{{ route('admin.profile')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.profile') }}">
             <div class="w-6 h-6 flex items-center justify-center">
                 <svg class="w-10 h-10 fill-current {{ svgClass('admin.profile') }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -114,18 +130,7 @@ return request()->routeIs($routes)
         </a>
         @endcan
 
-        @can('manage subscriptions')
-        <a href="{{ route('admin.messages.subscriptions.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.subscriptions.index') }}">
-            <div class="w-6 h-6 flex items-center justify-center">
-                <svg class="w-10 h-10 stroke-current {{ svgClass('admin.messages.subscriptions.index') }}" viewBox="0 0 24 24">
-                    <path d="M20.78,2.555c-.052-.161-.181-.285-.344-.33-.184-.05-4.526-1.226-7.869-1.226-3.435,0-7.692,1.176-7.872,1.227-.169,.047-.301,.179-.348,.348-.019,.069-.205,.746-.426,1.832h-.839c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.648c-.186,1.047-.372,2.324-.489,3.729h-.758c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.688c-.034,.606-.054,1.23-.054,1.865s.02,1.258,.054,1.865h-.688c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.758c.118,1.403,.304,2.681,.49,3.729h-.649c-.276,0-.5,.224-.5,.5s.224,.5,.5,.5h.84c.221,1.085,.405,1.762,.425,1.832,.046,.167,.175,.297,.341,.346,.17,.05,4.214,1.229,7.878,1.229s7.708-1.178,7.878-1.229c.159-.047,.285-.169,.335-.328,.05-.158,1.235-3.934,1.235-9.444s-1.185-9.288-1.235-9.445Zm-.878,18.33c-.952,.258-4.333,1.115-7.335,1.115s-6.361-.851-7.326-1.112c-.256-1.022-1.123-4.787-1.123-8.888s.865-7.858,1.122-8.884c1-.259,4.516-1.116,7.327-1.116,2.748,0,6.338,.865,7.337,1.12,.262,.934,1.111,4.31,1.111,8.88s-.853,7.954-1.113,8.885Z" />
-                    <path d="M12.567,14.26c-2.28,0-4.134,1.851-4.134,4.125,0,.276,.224,.5,.5,.5s.5-.224,.5-.5c0-1.723,1.406-3.125,3.134-3.125s3.134,1.402,3.134,3.125c0,.276,.224,.5,.5,.5s.5-.224,.5-.5c0-2.274-1.854-4.125-4.134-4.125Z" />
-                    <path d="M10.982,11.15c.526,.176,1.055,.264,1.585,.264s1.059-.088,1.585-.264c.612-.205,1.101-.692,1.306-1.303,.354-1.05,.354-2.115,0-3.165-.206-.611-.694-1.099-1.307-1.303-1.052-.352-2.118-.352-3.17,0-.612,.205-1.101,.692-1.306,1.303-.354,1.05-.354,2.115,0,3.165,.206,.611,.694,1.099,1.306,1.303Zm-.358-4.148c.106-.316,.359-.568,.676-.674,.426-.143,.847-.214,1.268-.214s.841,.071,1.268,.214c.317,.106,.57,.358,.676,.674,.286,.85,.286,1.676,0,2.526-.106,.316-.359,.568-.676,.674-.854,.285-1.683,.285-2.535,0-.317-.106-.57-.358-.676-.674h0c-.286-.85-.286-1.676,0-2.526Z" />
-                </svg>
-            </div>
-            <span class="font-bold text-base truncate">Subscription List</span>
-        </a>
-        @endcan
+        
 
         @can('view messages')
         <a href="{{ route('admin.messages.templates.index')}}" class="w-full flex items-center gap-6 px-6 py-3 rounded-[14px] text-left transition-colors  {{ menuClass('admin.messages.templates.index') }}">
