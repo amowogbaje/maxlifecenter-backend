@@ -23,7 +23,7 @@ class SyncPermissions extends Command
         $role = Role::firstOrCreate(
             ['id' => 1],
             [
-                'name' => 'Admin', // add required fields here
+                'name' => 'Super Admin', // add required fields here
             ]
         );
 

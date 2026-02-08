@@ -46,14 +46,18 @@ class BlogController extends Controller
     public function search(Request $request)
     {
         try {
-            $query = Blog::published()->with(['categories', 'admin'])
-                         ->where('title', 'like', '%'.$request->q.'%')
-                         ->orWhere('body', 'like', '%'.$request->q.'%');
+            $query = Blog::published()
+                ->with(['categories', 'admin'])
+                ->where(function ($q) use ($request) {
+                    $q->where('title', 'like', '%' . $request->q . '%')
+                    ->orWhere('body', 'like', '%' . $request->q . '%');
+                });
 
             $limit = $request->get('limit', 10);
+
             $posts = $query->latest()->take($limit)->get();
 
-             return response()->json(BlogResource::collection($posts));
+            return response()->json(BlogResource::collection($posts));
         } catch (\Exception $e) {
             return response()->json(['message' => 'Search failed', 'error' => $e->getMessage()], 500);
         }
