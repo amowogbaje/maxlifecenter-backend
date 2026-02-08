@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Support\Str;
 
 class Admin extends Authenticatable implements AuthorizableContract
 {
@@ -32,6 +33,14 @@ class Admin extends Authenticatable implements AuthorizableContract
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    public function getInitialsAttribute(): string
+    {
+        return Str::upper(
+            Str::substr($this->first_name ?? '', 0, 1) .
+            Str::substr($this->last_name ?? '', 0, 1)
+        );
     }
 
     public function role()

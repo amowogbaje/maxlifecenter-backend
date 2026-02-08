@@ -22,7 +22,7 @@ return request()->routeIs($routes)
 
     <div class="flex flex-col items-center pt-[70px] lg:pt-[70px] pb-8">
         <div class="w-[74px] h-[74px] bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-            <span class="text-2xl font-bold text-success">{{ Str::substr(auth('admin')->user()->first_name, 0, 1) }}</span>
+            <span class="text-2xl font-bold text-success">{{ auth('admin')->user()->initials }}</span>
         </div>
         <h2 class="text-2xl font-bold text-foreground">Welcome, {{ auth('admin')->user()->first_name}}</h2>
     </div>

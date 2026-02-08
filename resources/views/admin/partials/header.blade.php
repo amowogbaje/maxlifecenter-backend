@@ -11,7 +11,7 @@
 
     <div class="relative" @click.outside="profileDropdownOpen = false">
         <button @click="profileDropdownOpen = !profileDropdownOpen" class="flex items-center gap-3 lg:gap-5 w-full lg:w-auto justify-between lg:justify-end hover:bg-gray-50 p-2 rounded-lg transition-colors">
-            <div class="w-[50px] h-[50px] bg-gray-300 rounded-full border-2 border-white"></div>
+            <div class="w-[50px] h-[50px] bg-white rounded-full border-2 border-green-500 flex items-center justify-center"> <span class="text-xl font-bold text-success">{{ auth('admin')->user()->initials }}</span></div>
             <div class="flex flex-col flex-1 lg:flex-initial min-w-0 text-left">
                 <span class="font-bold text-base text-text-dark truncate">{{ auth('admin')->user()->full_name}}</span>
                 <span class="text-sm text-text-light truncate">{{ auth('admin')->user()->email}}</span>

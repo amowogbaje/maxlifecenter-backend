@@ -17,13 +17,7 @@
             <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-8">
                 <div class="flex flex-col sm:flex-row items-start gap-6 mb-6 lg:mb-0">
                     <div class="flex items-center gap-4">
-                        <div class="w-[50px] h-[50px] rounded-full border-2 border-white overflow-hidden bg-gray-200">
-                            <img src="{{ auth('admin')->user()->profile_picture 
-                                ? asset('storage/' . auth('admin')->user()->profile_picture) 
-                                : asset('images/profile.jpg') }}" 
-                                alt="{{ auth('admin')->user()->first_name }}" 
-                                class="w-full h-full object-cover" />
-                        </div>
+                        <div class="w-[50px] h-[50px] bg-white rounded-full border-2 border-green-500 flex items-center justify-center"> <span class="text-xl font-bold text-success">{{ auth('admin')->user()->initials }}</span></div>
                         <div>
                             <h2 class="text-gray-800 font-bold text-base">
                                 {{ auth('admin')->user()->first_name }} {{ auth('admin')->user()->last_name }}
