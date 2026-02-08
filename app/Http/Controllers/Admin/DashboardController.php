@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\User;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Validator;
 use App\Models\AuditLog;
 use Carbon\Carbon; 
+use Log;
 
 class DashboardController extends Controller
 {
@@ -225,7 +227,8 @@ class DashboardController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $user =  $admin = Admin::find($request->admin_id);;
+        $admin =  $admin = Admin::find($request->admin_id);
+        Log::info('Admin profile update request', ['admin_id' => $request->admin_id, 'input' => $request->all()]);
         
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:50',

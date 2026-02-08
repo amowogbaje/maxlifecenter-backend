@@ -54,7 +54,7 @@ Route::get('/artisan-command/{signature}', function ($signature) {
 
 
 
-require __DIR__.'/auth.php';
+// require __DIR__.'/auth.php';
 
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('welcome.home');

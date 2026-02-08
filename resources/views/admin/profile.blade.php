@@ -38,7 +38,7 @@
             <!-- Form fields -->
             <form id="profileForm">
                 @csrf
-                <input type="hidden" name="user_id" value="{{ auth('admin')->user()->id }}">
+                <input type="hidden" name="admin_id" value="{{ auth('admin')->user()->id }}">
                 <div class="grid gap-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="space-y-2">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BasicController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\WebhookController;
@@ -42,5 +43,6 @@ Route::get('categories/{slug}/posts', [BlogController::class, 'postsByCategory']
 
 
 
+Route::post('user/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
 Route::post('admin/profile/update', [AdminDashboardController::class, 'updateProfile'])->name('admin.profile.update');
 Route::get('/users/search', [AdminUserController::class, 'search'])->name('admin.users.search');
