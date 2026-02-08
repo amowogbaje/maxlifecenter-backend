@@ -292,7 +292,7 @@ class DashboardController extends Controller
     public function showUser($id)
     {
         $user = User::find($id);
-        return view('admin.profile-user', compact('user'));
+        return view('admin.profile-admin', compact('user'));
     }
 
     

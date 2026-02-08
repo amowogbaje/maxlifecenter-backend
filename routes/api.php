@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\BasicController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Api\BlogController;
-use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\WebhookController;
@@ -29,18 +28,6 @@ Route::post('/send-otp', [BasicController::class, 'sendOtp2']);
 Route::post('/verify-otp', [BasicController::class, 'verifyOtp2']);
 Route::post('/setup-password', [BasicController::class, 'setupPassword2']);
 
-Route::post('/webhooks/woocommerce', [WebhookController::class, 'handle'])
-    ->name('webhooks.woocommerce')
-    ->middleware(['wc.signed', 'throttle:300,1']);
-
-Route::post('/rewards/{id}/claim', [UserDashboardController::class, 'claimReward'])
-    ->name('rewards.claim');
-Route::get('/user/products/sales/fetch', [UserDashboardController::class, 'fetchSalesProducts'])->name('user.products.sales.fetch');
-
-
-Route::post('/rewards/{id}/approve', [AdminDashboardController::class, 'approveReward'])
-    ->name('admin.rewards.approve');
-
 Route::post('admin/blogs/upload', [MediaController::class, 'upload'])->name('admin.blogs.upload');
 Route::get('/admin/categories/search', [CategoryController::class, 'search'])
     ->name('admin.categories.search');
@@ -55,6 +42,5 @@ Route::get('categories/{slug}/posts', [BlogController::class, 'postsByCategory']
 
 
 
-Route::post('user/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
 Route::post('admin/profile/update', [AdminDashboardController::class, 'updateProfile'])->name('admin.profile.update');
 Route::get('/users/search', [AdminUserController::class, 'search'])->name('admin.users.search');

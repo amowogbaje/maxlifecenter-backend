@@ -114,10 +114,14 @@
                         </div>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 lg:gap-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 lg:gap-6">
                             <div class="flex flex-col gap-1 min-w-0">
                                 <span class="text-sm text-text-light truncate">Name</span>
                                 <span class="text-base font-bold text-text-dark truncate" title="{{ $admin->full_name }}">{{ $admin->full_name }}</span>
+                            </div>
+                            <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
+                                <span class="text-sm text-text-light">Email</span>
+                                <span class="text-xs lg:text-base text-text-dark truncate" title="{{ $admin->email }}">{{ $admin->email }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0 sm:col-span-2 lg:col-span-1">
                                 <span class="text-sm text-text-light">Role</span>
@@ -126,12 +130,12 @@
 
                         </div>
                     </div>
-                    <a href="{{ route('admin.list.show', ['id' => $admin->id])}}" class="hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
+                    {{-- <a href="{{ route('admin.list.show', ['id' => $admin->id])}}" class="hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                    </a>
+                    </a> --}}
                 </div>
             </div>
             @endforeach
