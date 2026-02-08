@@ -120,7 +120,7 @@
 
         let formData = new FormData(this);
 
-        fetch("{{ route('user.profile.update') }}", {
+        fetch("{{ route('admin.profile.update') }}", {
             method: "POST",
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
