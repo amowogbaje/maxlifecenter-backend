@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Message;
-use App\Models\MessageContact;
+use App\Models\Subscription;
 use App\Models\Contact;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
@@ -19,7 +19,7 @@ use Log;
 use App\Models\Reward;
 use Carbon\Carbon;
 
-class MessagesContactController extends Controller
+class SubscriptionController extends Controller
 {
 
     private AuditLogService $auditLogService;
@@ -50,9 +50,9 @@ class MessagesContactController extends Controller
 
     public function subscriptions()
     {
-        $subscriptions = MessageContact::paginate(10);
+        $subscriptions = Subscription::paginate(10);
 
-        return view('admin.messages.contacts.index', compact('subscriptions'));
+        return view('admin.messages.subscriptions.index', compact('subscriptions'));
     }
 
     public function create(Request $request)
@@ -66,14 +66,10 @@ class MessagesContactController extends Controller
             });
         }
 
-        if ($rewardId = $request->input('reward_id')) {
-            $query->whereHas('rewards', function ($q) use ($rewardId) {
-                $q->where('reward_id', $rewardId);
-            });
-        }
+        
 
         if ($request->filled(['start_date', 'end_date'])) {
-            $query->whereBetween('achieved_at', [
+            $query->whereBetween('created_at', [
                 $request->input('start_date'),
                 $request->input('end_date'),
             ]);
@@ -81,7 +77,7 @@ class MessagesContactController extends Controller
 
 
         $users = $query->paginate(10);
-        return view('admin.messages.contacts.create');
+        return view('admin.messages.subscriptions.create');
     }
 
 
@@ -92,10 +88,9 @@ class MessagesContactController extends Controller
             'description' => 'required|string|max:255',
         ]);
 
-        $contactList = MessageContact::create([
+        $contactList = Subscription::create([
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'contact_ids' => [],
         ]);
 
         $this->auditLogService->log(
@@ -111,7 +106,7 @@ class MessagesContactController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $subscription = MessageContact::findOrFail($id);
+        $subscription = Subscription::findOrFail($id);
 
         // Get previously saved user IDs
         $savedUserIds = $subscription->contact_ids ?? [];
@@ -125,7 +120,7 @@ class MessagesContactController extends Controller
         
         
 
-        return view('admin.messages.contacts.edit', compact('subscription', 'selectedUserIds'));
+        return view('admin.messages.subscriptions.edit', compact('subscription', 'selectedUserIds'));
     }
 
     public function update(Request $request, $id)
@@ -141,7 +136,7 @@ class MessagesContactController extends Controller
         DB::beginTransaction();
 
         try {
-            $contactList = MessageContact::findOrFail($id);
+            $contactList = Subscription::findOrFail($id);
             $oldData = $contactList->toArray();
 
             $contactList->update([

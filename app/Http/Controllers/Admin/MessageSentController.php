@@ -53,7 +53,7 @@ class MessageSentController extends Controller
         $log = AuditLog::with('admin')->findOrFail($id);
 
         abort_unless(
-            in_array($log->model_type, [\App\Models\Message::class, \App\Models\MessageContact::class]),
+            in_array($log->model_type, [\App\Models\Message::class, \App\Models\Subscription::class]),
             404,
             'Invalid log type.'
         );

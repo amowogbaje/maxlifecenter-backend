@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MessageContact extends Model
+class Subscription extends Model
 {
     protected $fillable = ['title', 'description', 'contact_ids'];
 

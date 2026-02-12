@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\MessagesController;
 use App\Http\Controllers\Admin\MessageLogController;
-use App\Http\Controllers\Admin\MessagesContactController;
+use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\MessageSentController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,9 +21,9 @@ Route::middleware('guest.admin')->group(function () {
 });
 
 Route::middleware(['auth:admin', 'admin'])->group(function () {
-    Route::get('users/fetch', [MessagesContactController::class, 'fetchUsers'])->name('users.fetch');
-    Route::get('users/fetch-all', [MessagesContactController::class, 'fetchAll'])->name('users.fetch.all');
-    Route::get('users/fetch-meta', [MessagesContactController::class, 'meta'])->name('users.fetch.meta');
+    Route::get('users/fetch', [SubscriptionController::class, 'fetchUsers'])->name('users.fetch');
+    Route::get('users/fetch-all', [SubscriptionController::class, 'fetchAll'])->name('users.fetch.all');
+    Route::get('users/fetch-meta', [SubscriptionController::class, 'meta'])->name('users.fetch.meta');
 
 
     // 📊 Dashboard routes
@@ -148,15 +148,15 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
 
         // 👥 Message subscriptions
         Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
-            Route::get('/', [MessagesContactController::class, 'subscriptions'])
+            Route::get('/', [SubscriptionController::class, 'subscriptions'])
                 ->name('index')->middleware('can:manage subscriptions');
-            Route::get('/create', [MessagesContactController::class, 'create'])
+            Route::get('/create', [SubscriptionController::class, 'create'])
                 ->name('create')->middleware('can:create subscriptions');
-            Route::post('/store', [MessagesContactController::class, 'store'])
+            Route::post('/store', [SubscriptionController::class, 'store'])
                 ->name('store')->middleware('can:create subscriptions');
-            Route::get('/{subscriptionId}', [MessagesContactController::class, 'edit'])
+            Route::get('/{subscriptionId}', [SubscriptionController::class, 'edit'])
                 ->name('edit')->middleware('can:manage subscriptions');
-            Route::put('/{subscriptionId}/update', [MessagesContactController::class, 'update'])
+            Route::put('/{subscriptionId}/update', [SubscriptionController::class, 'update'])
                 ->name('update')->middleware('can:manage subscriptions');
         });
     });

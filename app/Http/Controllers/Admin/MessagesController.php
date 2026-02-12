@@ -119,7 +119,7 @@ class MessagesController extends Controller
     {
         $validated = $request->validate([
             'send_mode'       => 'required|in:subscription,custom',
-            'subscription_id' => 'nullable|exists:message_contacts,id',
+            'subscription_id' => 'nullable|exists:subscriptions,id',
             'recipient_type'  => 'nullable|in:all,reward_level,individual',
             'reward_level'    => 'nullable|exists:rewards,id',
             'start_date'      => 'nullable|date',

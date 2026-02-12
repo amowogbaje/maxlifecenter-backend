@@ -17,7 +17,7 @@ class MessageLogController extends Controller
         $query = AuditLog::query()
             ->whereIn('model_type', [
                 \App\Models\Message::class,
-                \App\Models\MessageContact::class,
+                \App\Models\Subscription::class,
             ])
             ->with('admin') // if your AuditLog has a admin() relationship
             ->latest();
@@ -63,7 +63,7 @@ class MessageLogController extends Controller
         $log = AuditLog::with('admin')->findOrFail($id);
 
         abort_unless(
-            in_array($log->model_type, [\App\Models\Message::class, \App\Models\MessageContact::class]),
+            in_array($log->model_type, [\App\Models\Message::class, \App\Models\Subscription::class]),
             404,
             'Invalid log type.'
         );
