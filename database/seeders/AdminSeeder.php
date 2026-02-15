@@ -17,8 +17,8 @@ class AdminSeeder extends Seeder
 
         // Example fixed user
         Admin::create([
-            'first_name' => 'Tope',
-            'last_name' => 'Olajubu',
+            'first_name' => 'Super',
+            'last_name' => 'Admin',
             'email' => 'hello@maxlifecenter.org',
             'phone' => '08012345678',
             'password'=> Hash::make('password'),
