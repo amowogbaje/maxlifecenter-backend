@@ -15,7 +15,7 @@ class PermissionSeeder extends Seeder
             'view blogs', 'create blogs', 'edit blogs', 'view activity logs',
             'view admins', 'create admins', 'view subscriptions',
             'view dashboard', 'view users', 'view messages', 'create messages', 'send messages',
-            'view logs', 'create subscriptions', 'manage subscriptions', 'manage settings'
+            'view logs', 'create subscriptions', 'manage subscriptions', 'manage settings', 'view subscription-links'
         ];
 
         foreach ($permissions as $perm) {

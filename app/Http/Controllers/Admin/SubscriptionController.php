@@ -9,14 +9,17 @@ use App\Models\Message;
 use App\Models\Subscription;
 use App\Models\Contact;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Exception;
 use App\Services\AuditLogService;
 use Auth;
 use DB;
 use Log;
+use Illuminate\Support\Facades\Cache; 
+use Illuminate\Support\Facades\Mail; 
+use App\Mail\VerifySubscriptionEmail;
 
-use App\Models\Reward;
 use Carbon\Carbon;
 
 class SubscriptionController extends Controller
@@ -108,20 +111,14 @@ class SubscriptionController extends Controller
     {
         $subscription = Subscription::findOrFail($id);
 
-        // Get previously saved user IDs
-        $savedUserIds = $subscription->contact_ids ?? [];
-        
-        // Merge with any temporary selections from request (for validation errors)
-        $selectedUserIds = collect($savedUserIds)
-            ->merge($request->input('contact_ids', []))
-            ->unique()
-            ->values()
-            ->toArray();
-        
-        
+        $contacts = $subscription->contacts()->paginate(25);
 
-        return view('admin.messages.subscriptions.edit', compact('subscription', 'selectedUserIds'));
+        return view(
+            'admin.messages.subscriptions.edit',
+            compact('subscription', 'contacts')
+        );
     }
+
 
     public function update(Request $request, $id)
     {
@@ -188,7 +185,7 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function fetchUsers(Request $request)
+    public function fetchContacts(Request $request)
     {
         $offset = (int) $request->get('offset', 0);
         $limit  = min((int) $request->get('limit', 100), 100);
@@ -339,6 +336,152 @@ class SubscriptionController extends Controller
                 ? \Carbon\Carbon::parse($lastUpdated)->toIsoString()
                 : null,
         ]);
+    }
+
+    public function subscribe(Request $request, Subscription $subscription): JsonResponse
+    {
+        $validated = $request->validate([
+            'name'  => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email'],
+            'phone' => ['nullable', 'string'],
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            // Create or reuse contact
+            $contact = Contact::firstOrCreate(
+                ['email' => $validated['email'] ?? null],
+                [
+                    'name'  => $validated['name'],
+                    'phone' => $validated['phone'] ?? null,
+                ]
+            );
+
+            // If email exists and not verified → cache & send email
+            if ($contact->email && !$contact->email_verified_at) {
+
+                $token = (string) Str::uuid();
+
+                Cache::put(
+                    "subscription_verify:{$token}",
+                    [
+                        'subscription_id' => $subscription->id,
+                        'contact_id'      => $contact->id,
+                    ],
+                    now()->addMinutes(30)
+                );
+
+                Mail::to($contact->email)->send(
+                    new VerifySubscriptionEmail($token)
+                );
+
+                DB::commit();
+
+                return response()->json([
+                    'message' => 'Verification email sent. Please confirm to complete subscription.',
+                ], Response::HTTP_ACCEPTED);
+            }
+
+            // Attach immediately if no email OR already verified
+            $subscription->contacts()->syncWithoutDetaching([$contact->id]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Subscribed successfully',
+                'data' => [
+                    'subscription_id' => $subscription->id,
+                    'contact_id' => $contact->id,
+                ],
+            ], Response::HTTP_CREATED);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            report($e);
+
+            return response()->json([
+                'message' => 'Subscription failed',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function verify(string $token): JsonResponse
+    {
+        $cacheKey = "subscription_verify:{$token}";
+
+        $data = Cache::get($cacheKey);
+
+        if (!$data) {
+            return response()->json([
+                'message' => 'Invalid or expired verification link',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $contact = Contact::findOrFail($data['contact_id']);
+            $subscription = Subscription::findOrFail($data['subscription_id']);
+
+            $contact->update([
+                'email_verified_at' => now(),
+            ]);
+
+            $subscription->contacts()->syncWithoutDetaching([$contact->id]);
+
+            Cache::forget($cacheKey);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Email verified and subscription completed',
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            report($e);
+
+            return response()->json([
+                'message' => 'Verification failed',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+     public function unsubscribe(Request $request, Subscription $subscription): JsonResponse
+    {
+        $validated = $request->validate([
+            'contact_id' => ['required', 'exists:contacts,id'],
+        ]);
+
+        $contactId = $validated['contact_id'];
+
+        // Optional: ownership check
+        if ($subscription->user_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        try {
+            $subscription->contacts()->detach($contactId);
+
+            return response()->json([
+                'message' => 'Contact unsubscribed successfully',
+                'data' => [
+                    'subscription_id' => $subscription->id,
+                    'contact_id' => $contactId,
+                    'contacts_count' => $subscription->contacts()->count(),
+                ]
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'message' => 'Failed to unsubscribe contact'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
 

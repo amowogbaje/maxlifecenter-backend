@@ -21,9 +21,9 @@ Route::middleware('guest.admin')->group(function () {
 });
 
 Route::middleware(['auth:admin', 'admin'])->group(function () {
-    Route::get('users/fetch', [SubscriptionController::class, 'fetchUsers'])->name('users.fetch');
-    Route::get('users/fetch-all', [SubscriptionController::class, 'fetchAll'])->name('users.fetch.all');
-    Route::get('users/fetch-meta', [SubscriptionController::class, 'meta'])->name('users.fetch.meta');
+    Route::get('contacts/fetch', [SubscriptionController::class, 'fetchContacts'])->name('contacts.fetch');
+    Route::get('contacts/fetch-all', [SubscriptionController::class, 'fetchAll'])->name('contacts.fetch.all');
+    Route::get('contacts/fetch-meta', [SubscriptionController::class, 'meta'])->name('contacts.fetch.meta');
 
 
     // 📊 Dashboard routes

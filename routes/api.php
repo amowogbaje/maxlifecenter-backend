@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BasicController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -41,6 +42,8 @@ Route::get('blogs/{id}/related', [BlogController::class, 'related'])->name('api.
 Route::get('categories/slugs', [BlogController::class, 'allCategorySlugs'])->name('api.categories.slugs');           // All category slugs
 Route::get('categories/{slug}/posts', [BlogController::class, 'postsByCategory'])->name('api.categories.posts');           // Posts by category slug
 
+Route::post('/subscriptions/{subscription}/subscribe', [SubscriptionController::class, 'subscribe']);
+Route::delete('/subscriptions/{subscription}/unsubscribe', [SubscriptionController::class, 'unsubscribe']);
 
 
 Route::post('user/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');

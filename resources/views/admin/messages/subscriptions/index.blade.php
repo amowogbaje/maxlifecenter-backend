@@ -5,8 +5,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Subscription List</h1>
         @can('create subscriptions')
-        <a href="{{ route('admin.messages.subscriptions.create') }}" 
-           class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700">
+        <a href="{{ route('admin.messages.subscriptions.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700">
             + New Subscription List
         </a>
         @endcan
@@ -89,15 +88,43 @@
                                 <span class="text-base font-bold text-text-dark truncate" title="{{ $subscription->description }}"><img src="{{ asset('images/icons/diamond.svg') }}" alt="Rewards" class="inline-block w-4 h-4 mr-1">{{ $subscription->description }}</span>
                             </div>
                             <div class="flex flex-col gap-1 min-w-0">
-                                <span class="text-sm text-text-light">{{$subscription->user_count}}</span>
-                                <span class="text-base text-text-dark truncate" title="Users">Users</span>
+                                <span class="text-sm text-text-light">Subscribers</span>
+                                <span class="text-base text-text-dark truncate" title="Subscribers">{{$subscription->contact_count}}</span>
                             </div>
+                            @can('view subscription-links')
+                            <div class="flex flex-col gap-1 min-w-0" x-data="{ copied: false }">
+                                <span class="text-sm text-text-light">Link</span>
+
+                                <button type="button" @click="
+                                    const text = '{{ config('app.url') }}/api/subscriptions/{{ $subscription->id }}/subscribe';
+                                    if (navigator.clipboard && window.isSecureContext) {
+                                        navigator.clipboard.writeText(text);
+                                    } else {
+                                        const textarea = document.createElement('textarea');
+                                        textarea.value = text;
+                                        textarea.style.position = 'fixed';
+                                        textarea.style.opacity = '0';
+                                        document.body.appendChild(textarea);
+                                        textarea.focus();
+                                        textarea.select();
+                                        document.execCommand('copy');
+                                        document.body.removeChild(textarea);
+                                    }
+                                    copied = true;
+                                    setTimeout(() => copied = false, 1500);
+                                " class="text-left text-sm font-medium text-indigo-600 hover:underline flex items-center gap-1">
+                                    <span x-show="!copied">Copy subscribe link</span>
+                                    <span x-show="copied" class="text-green-600">Copied ✓</span>
+                                </button>
+                            </div>
+                            @endcan
+
                         </div>
                     </div>
                     <a href="{{ route('admin.messages.subscriptions.edit', ['subscriptionId' => $subscription->id]) }}" class="ml-3 hidden sm:flex w-9 h-9 lg:w-11 lg:h-11 bg-light-blue rounded-[10px] lg:rounded-[14px] items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </a>
                 </div>

@@ -36,7 +36,8 @@ jobs:
             cd /home/${{ secrets.USERNAME }}/domains/admin.maxlifecenter.org/public_html
             composer install --no-dev --optimize-autoloader --no-scripts
             php artisan migrate --force
-            php artisan optimize:clear
-            php artisan optimize
+            # php artisan optimize:clear
+            # php artisan optimize
+            php artisan db:seed --force --class=PermissionSeeder
             php artisan permission:sync
             # chmod -R 777 storage bootstrap/cache

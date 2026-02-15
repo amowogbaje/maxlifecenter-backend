@@ -3,17 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Subscription extends Model
 {
-    protected $fillable = ['title', 'description', 'contact_ids'];
+    protected $fillable = ['title', 'description'];
 
-    protected $casts = [
-        'contact_ids' => 'array',
-    ];
+    
 
-    public function getUserCountAttribute()
+    public function getContactCountAttribute(): int
     {
-        return count($this->contact_ids ?? []);
+        return $this->contacts()->count();
+    }
+
+    public function contacts(): BelongsToMany
+    {
+        return $this->belongsToMany(Contact::class, 'subscription_contacts')->withTimestamps();
     }
 }
