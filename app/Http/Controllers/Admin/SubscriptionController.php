@@ -342,19 +342,27 @@ class SubscriptionController extends Controller
     {
         $validated = $request->validate([
             'name'  => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email'],
+            'email' => ['required', 'email'],
             'phone' => ['nullable', 'string'],
         ]);
 
         DB::beginTransaction();
 
         try {
-            // Create or reuse contact
+            $name = trim($validated['name'] ?? '');
+
+            [$firstName, $lastName] = array_pad(
+                preg_split('/\s+/', $name, 2),
+                2,
+                null
+            );
+
             $contact = Contact::firstOrCreate(
-                ['email' => $validated['email'] ?? null],
+                ['email' => $validated['email']],
                 [
-                    'name'  => $validated['name'],
-                    'phone' => $validated['phone'] ?? null,
+                    'first_name' => $firstName,
+                    'last_name'  => $lastName,
+                    'phone'      => $validated['phone'] ?? null,
                 ]
             );
 
@@ -373,7 +381,7 @@ class SubscriptionController extends Controller
                 );
 
                 Mail::to($contact->email)->send(
-                    new VerifySubscriptionEmail($token)
+                    new VerifySubscriptionEmail($token, $subscription)
                 );
 
                 DB::commit();

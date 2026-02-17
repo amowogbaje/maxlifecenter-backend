@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailPreviewController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\SubscriptionController;
 use Illuminate\Support\Facades\Artisan;
 
 Route::get('/migrate', function () {
@@ -52,6 +53,7 @@ Route::get('/artisan-command/{signature}', function ($signature) {
 
 
 
+Route::get('/subscriptions/verify/{token}', [SubscriptionController::class, 'verify']);
 
 
 // require __DIR__.'/auth.php';
