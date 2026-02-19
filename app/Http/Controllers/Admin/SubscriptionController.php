@@ -399,8 +399,8 @@ class SubscriptionController extends Controller
             return response()->json([
                 'message' => 'Subscribed successfully',
                 'data' => [
-                    'subscription_id' => $subscription->id,
-                    'contact_id' => $contact->id,
+                    'subscription' => $subscription,
+                    'contact' => $contact,
                 ],
             ], Response::HTTP_CREATED);
 
