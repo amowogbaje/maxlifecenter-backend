@@ -13,12 +13,12 @@
     <!-- component -->
     <!-- component -->
     <!-- Header -->
-    <div class="w-full h-[92px] bg-black shadow-lg flex items-center justify-center px-4">
-        <div class="flex items-center gap-[14px]">
-            <img src="{{ asset('images/kclanco.png')}}" alt="Logo 1" class="w-[124px] h-[33px]" />
-            <img src="{{ asset('images/watchlocker.png')}}" alt="Logo 2" class="w-[183px] h-[44px]" />
-        </div>
-    </div>
+    
+<div class="w-full h-[92px] bg-black shadow-lg flex items-center justify-center px-4">
+    <h1 class="text-white text-2xl md:text-3xl font-extrabold tracking-widest uppercase">
+        MAX LIFE CENTER
+    </h1>
+</div>
     @yield('content')
 
 </body>
